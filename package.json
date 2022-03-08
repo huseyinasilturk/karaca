@@ -14,7 +14,7 @@
     "axios": "^0.21",
     "cross-env": "^5.2.1",
     "jquery": "^3.6",
-    "laravel-mix": "^6.0.6",
+    "laravel-mix": "^6.0.43",
     "lodash": "^4.17.19",
     "popper.js": "^1.16.1",
     "postcss": "^8.1.14",
@@ -22,5 +22,23 @@
     "rtlcss": "^3.0",
     "sass": "1.30.0",
     "sass-loader": "^11.0.1"
-  }
+  },
+  "name": "karaca",
+  "description": "",
+  "version": "1.0.0",
+  "main": "webpack.mix.js",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huseyinasilturk/karaca.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/huseyinasilturk/karaca/issues"
+  },
+  "homepage": "https://github.com/huseyinasilturk/karaca#readme"
 }
