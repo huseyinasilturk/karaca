@@ -15,6 +15,7 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\MiscellaneousController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartsController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ObjectiveController;
 use App\Models\Objective;
 
@@ -45,9 +46,9 @@ Route::prefix("objective")->name("objective")->group(function () {
 |
 */
 
+
 // Main Page Route
 Route::get('/', [DashboardController::class, 'dashboardEcommerce'])->name('dashboard-ecommerce');
-
 
 /* Route Dashboards */
 Route::group(['prefix' => 'dashboard'], function () {
@@ -57,7 +58,11 @@ Route::group(['prefix' => 'dashboard'], function () {
 /* Route Dashboards */
 
 /* Route Apps */
-Route::group(['prefix' => 'app'], function () {
+Route::group(['prefix' => 'app', "name" => "app"], function () {
+
+    Route::get("roles", [RoleController::class, "index"])->name(".roles");
+
+    // ** TEMA
     Route::get('email', [AppsController::class, 'emailApp'])->name('app-email');
     Route::get('chat', [AppsController::class, 'chatApp'])->name('app-chat');
     Route::get('todo', [AppsController::class, 'todoApp'])->name('app-todo');
@@ -226,6 +231,11 @@ Route::get('/error', [MiscellaneousController::class, 'error'])->name('error');
 
 /* Route Authentication Pages */
 Route::group(['prefix' => 'auth'], function () {
+
+    Route::post("login", [AuthenticationController::class, 'loginUser'])->name("login");
+    Route::get("login", [AuthenticationController::class, 'login'])->name("login");
+
+    // ** Tema
     Route::get('login-basic', [AuthenticationController::class, 'login_basic'])->name('auth-login-basic');
     Route::get('login-cover', [AuthenticationController::class, 'login_cover'])->name('auth-login-cover');
     Route::get('register-basic', [AuthenticationController::class, 'register_basic'])->name('auth-register-basic');

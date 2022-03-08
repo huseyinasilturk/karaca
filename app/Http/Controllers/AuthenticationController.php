@@ -3,9 +3,38 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Validator;
 
 class AuthenticationController extends Controller
 {
+    public function loginUser(Request $request)
+    {
+        $validator = Validator::make($request->only("user_name", "password"), [
+            'user_name' => 'required|string|min:3',
+            'password' => 'required|string|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(["errors" => $validator->errors()], 422);
+        }
+
+        if (!auth()->attempt($validator->validated())) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return response()->json(['message' => 'Giriş Başarılı', "status" => 200]);
+    }
+
+    public function login()
+    {
+        $pageConfigs = ['blankPage' => true];
+
+        return view('/live/authentication/login', ['pageConfigs' => $pageConfigs]);
+    }
+
+
+    // ** TEMA FONKSİYONLARI
+
     // Login basic
     public function login_basic()
     {
