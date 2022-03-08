@@ -123,7 +123,7 @@
                             <div
                          data-parent="#{{ $key }}-add"
                               id="{{ $key }}-add"
-                              class="accordion-collapse collapse show"
+                              class="accordion-collapse collapse  show"
                             >
                               <div class="accordion-body">
                                 <div class="card-header header-elements-inline">
