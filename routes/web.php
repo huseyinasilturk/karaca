@@ -16,6 +16,24 @@ use App\Http\Controllers\MiscellaneousController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ObjectiveController;
+use App\Models\Objective;
+
+/*
+|--------------------------------------------------------------------------
+| LİVE Routes
+|--------------------------------------------------------------------------
+|
+|
+*/
+
+Route::prefix("objective")->name("objective")->group(function () {
+    Route::get("/", [ObjectiveController::class, "index"])->name(".index");
+    Route::post("/add", [ObjectiveController::class, "store"])->name(".store");
+    Route::put("/update", [ObjectiveController::class, "update"])->name(".update");
+    Route::delete("/delete", [ObjectiveController::class, "delete"])->name(".delete");
+});
+
 
 /*
 |--------------------------------------------------------------------------
@@ -97,7 +115,7 @@ Route::group(['prefix' => 'card'], function () {
 Route::group(['prefix' => 'component'], function () {
     Route::get('accordion', [ComponentsController::class, 'accordion'])->name('component-accordion');
     Route::get('alert', [ComponentsController::class, 'alert'])->name('component-alert');
-    Route::get('avatar', [ComponentsController::class, 'avatar'])->name('component-avatar');
+    Route::get('avatar', [ComponentsController::class, 'avatar'])->name('   -avatar');
     Route::get('badges', [ComponentsController::class, 'badges'])->name('component-badges');
     Route::get('breadcrumbs', [ComponentsController::class, 'breadcrumbs'])->name('component-breadcrumbs');
     Route::get('buttons', [ComponentsController::class, 'buttons'])->name('component-buttons');
