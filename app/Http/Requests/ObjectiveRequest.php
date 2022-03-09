@@ -13,7 +13,7 @@ class ObjectiveRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,20 @@ class ObjectiveRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'text1' => 'min:3|nullable',
+            'text2' => 'min:3|nullable',
+            'text3' => 'min:3|nullable',
+            'number1' => 'min:3|nullable',
+            'number2' => 'min:3|nullable',
+            'number3' => 'min:3|nullable',
+            'name' => 'required',
+        ];
+    }
+    public function attributes()
+    {
+        return [
+            'text1' => __("Metin 1"),
+            'text2' => __("Metin 2"),
         ];
     }
 }
