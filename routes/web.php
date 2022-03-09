@@ -41,9 +41,12 @@ Route::prefix("product")->name("product")->group(function () {
     Route::get("/", [ProductController::class, "index"])->name(".index");
     Route::get("/add", [ProductController::class, "create"])->name(".create");
     Route::post("/add", [ProductController::class, "store"])->name(".store");
-    Route::put("/update", [ProductController::class, "update"])->name(".update");
-    Route::delete("/delete", [ProductController::class, "delete"])->name(".delete");
+    Route::get("/edit/{id}", [ProductController::class, "edit"])->name(".edit");
+    Route::post("/update", [ProductController::class, "update"])->name(".update");
+    Route::delete("/delete/{id}", [ProductController::class, "delete"])->name(".delete");
+    Route::post("/delete", [ProductController::class, "imageDestroy"])->name(".imageDestroy");
 
+});
 Route::prefix("user")->name("user")->group(function () {
     Route::get("/list", [UserController::class, "list"])->name(".list");
     Route::post("/add", [UserController::class, "store"])->name(".store");
