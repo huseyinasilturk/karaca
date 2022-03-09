@@ -24,24 +24,6 @@ class ObjectiveController extends Controller
                     'text1' => __('Kalite Adı'),
                 ],
             ],
-            'color' => [
-                'name' => __('Renk'),
-                'inputs' => [
-                    'text1' => __('Renk Adı'),
-                ],
-            ],
-            'material' => [
-                'name' => __('Materyal'),
-                'inputs' => [
-                    'text1' => __('Materyal Adı'),
-                ],
-            ],
-            'addressType' => [
-                'name' => __('Adres Tipi'),
-                'inputs' => [
-                    'text1' => __('Adres Tipi'),
-                ],
-            ],
             'companyType' => [
                 'name' => __('Firma Tipi'),
                 'inputs' => [
@@ -171,14 +153,5 @@ class ObjectiveController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Objective  $objective
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(ObjectivePostRequest $request)
-    {
-        //
-    }
+
 }

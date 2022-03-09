@@ -369,31 +369,7 @@ $(function () {
     });
   }
 
-  // Form Validation
-  if (newUserForm.length) {
-    newUserForm.validate({
-      errorClass: 'error',
-      rules: {
-        'user-fullname': {
-          required: true
-        },
-        'user-name': {
-          required: true
-        },
-        'user-email': {
-          required: true
-        }
-      }
-    });
 
-    newUserForm.on('submit', function (e) {
-      var isValid = newUserForm.valid();
-      e.preventDefault();
-      if (isValid) {
-        newUserSidebar.modal('hide');
-      }
-    });
-  }
 
   // Phone Number
   if (dtContact.length) {

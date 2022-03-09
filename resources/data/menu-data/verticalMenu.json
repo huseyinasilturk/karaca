@@ -1,15 +1,26 @@
 {
-  "menu": [ 
+  "menu": [
     {
       "navheader": "Canlı",
       "slug": ""
     },
 
+
+    {
+      "navheader": "Araçlar",
+      "slug": ""
+    },
     {
       "url": "app/roles",
       "name": "Roller",
       "icon": "mail",
       "slug": ".index"
+    },
+    {
+      "url": "objective",
+      "name": "Nesneler",
+      "icon": "command",
+      "slug": "objective.index"
     },
 
     {
