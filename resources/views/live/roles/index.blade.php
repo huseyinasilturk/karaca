@@ -4,8 +4,6 @@
 
 @section('vendor-style')
     <!-- Vendor css files -->
-    <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap5.min.css')) }}">
-    <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/responsive.bootstrap5.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/buttons.bootstrap5.min.css')) }}">
 @endsection
 @section('page-style')
@@ -26,7 +24,7 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-end mt-1 pt-25">
                             <div class="role-heading">
-                                <h4 class="fw-bolder">{{ Str::title($role->name) }}</h4>
+                                <h4 class="fw-bolder">{{ Str::title($role->title) }}</h4>
                                 <a href="javascript:;" class="role-edit-modal" data-bs-toggle="modal"
                                     data-bs-target="#addRoleModal">
                                     <small class="fw-bolder">Rolü Düzenle</small>
@@ -37,7 +35,6 @@
                 </div>
             </div>
         @endforeach
-
 
         <div class="col-xl-4 col-lg-6 col-md-6">
             <div class="card">
@@ -82,18 +79,17 @@
                             </div>
                             <div class="col-12">
                                 <h4 class="mt-2 pt-50 mb-1">Yetkiler</h4>
-                                <div class="row justify-content-between align-items-center">
+                                <div class="row justify-content-start align-items-center">
                                     @foreach ($permissions as $permission)
                                         <div class="col-sm-12 col-md-3 mb-2">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="permissions[]"
                                                     value={{ $permission->id }} id="{{ $permission->name }}" />
                                                 <label class="form-check-label"
-                                                    for="{{ $permission->name }}">{{ Str::title($permission->name) }}</label>
+                                                    for="{{ $permission->name }}">{{ Str::title($permission->title) }}</label>
                                             </div>
                                         </div>
                                     @endforeach
-
                                 </div>
                             </div>
                             <div class="col-12 text-center mt-2">
@@ -127,6 +123,16 @@
             e.preventDefault();
 
             console.log($(e.target).serialize())
+
+            $.ajax({
+                method: "POST",
+                url: "{{ route('roles.store') }}",
+                data: $(e.target).serialize(),
+                dataType: "json",
+                success: res => {
+                    console.log(res)
+                }
+            })
         }
     </script>
 @endsection

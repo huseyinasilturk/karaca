@@ -57,10 +57,16 @@ Route::group(['prefix' => 'dashboard'], function () {
 });
 /* Route Dashboards */
 
+Route::prefix("roles")->name("roles")->group(function () {
+    Route::get("roles", [RoleController::class, "index"])->name(".index");
+    Route::post("roles", [RoleController::class, "store"])->name(".store");
+});
+
 /* Route Apps */
 Route::group(['prefix' => 'app', "name" => "app"], function () {
 
-    Route::get("roles", [RoleController::class, "index"])->name(".roles");
+    Route::get("roles", [RoleController::class, "index"])->name(".index");
+    Route::post("roles", [RoleController::class, "store"])->name(".store");
 
     // ** TEMA
     Route::get('email', [AppsController::class, 'emailApp'])->name('app-email');
