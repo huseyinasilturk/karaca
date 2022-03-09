@@ -1,16 +1,16 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'App Calender')
+@section('title', 'Nesne')
 
 @section('vendor-style')
   <!-- Vendor css files -->
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/calendars/fullcalendar.min.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
-  <link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/flatpickr/flatpickr.min.css')) }}">
+  <link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/flatpickr/flatpickr.min.css')) }}"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 @endsection
 
-@section('page-style')
-<link rel="stylesheet" href="{{ asset('assets/css/plugins/sweetalert2.min.css') }}" />
+@section('page-style') 
 
 <style>
     #search-input {
@@ -40,10 +40,8 @@
 
     </div>
     @foreach ($objectivesTypes as $key => $objective)
-        <div class="col-12 col-lg-6 col-xl-4 objective-div" search-data="{{ $objective['name'] }}">
-            <div class="card mb-5">
-                <div class="card-body p-3">
-                    <div class="accordion">
+        <div class="col-12 col-lg-6 accordion col-xl-4 objective-div" search-data="{{ $objective['name'] }}">
+                    <div class=" mt-2">
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                               <a
@@ -61,7 +59,7 @@
                             <div
                          data-parent="#{{ $key }}"
                               id="{{ $key }}"
-                              class="accordion-collapse collapse show"
+                              class="accordion-collapse collapse"
                             >
                               <div class="accordion-body">
                                 <div class="table-responsive">
@@ -88,12 +86,10 @@
                                                                 onclick="editObjective(this)" href="#"
                                                                 data-toggle="modal" data-form="{{ $key }}"
                                                                 data-target="#objective-modal">
-                                                                <i
-                                                                    class="nav-icon i-Pen-2 font-weight-bold"></i></a>
+                                                               <i class="fa-solid fa-ban"></i></a>
                                                             <a class="text-danger m2 delete-objective"
                                                                 onclick="deleteObjective(this)"
-                                                                data-id={{ $item['id'] }} href="#"><i
-                                                                    class="nav-icon i-Close-Window font-weight-bold"></i></a>
+                                                                data-id={{ $item['id'] }} href="#"><i class="fa-solid fa-xmark ml-1"></i></a>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -105,7 +101,7 @@
                             </div>
                           </div>
                       </div>
-                      <div class="accordion">
+                      <div class="  ">
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                               <a
@@ -117,26 +113,15 @@
                                 aria-controls="{{ $key }}-add"
                                 data-title="{{ $objective['name'] }}"
                               >
-                              {{$objective['name']}}
+                              {{$objective['name']}}-Ekle
                               </a>
                             </h2>
                             <div
                          data-parent="#{{ $key }}-add"
                               id="{{ $key }}-add"
-                              class="accordion-collapse collapse  show"
+                              class="accordion-collapse collapse"
                             >
                               <div class="accordion-body">
-                                <div class="card-header header-elements-inline">
-                                    <h6 class="card-title ul-collapse__icon--size ul-collapse__right-icon mb-0"><a
-                                            class="text-default collapsed" data-toggle="collapse"
-                                            href="#{{ $key }}-add"
-                                            aria-expanded="false">{{ $objective['name'] }}
-                                            Ekle</a>
-                                    </h6>
-                                </div>
-                                <div class="collapse" id="{{ $key }}-add"
-                                    data-parent="#{{ $key }}" style="">
-                                    <div class="card-body">
                                         <form id="{{ $key }}-form">
                                             <input type="hidden" name="name" value="{{ $key }}">
                                             <div class="d-flex flex-column">
@@ -155,74 +140,13 @@
                                                         </div>
                                                     @endif
                                                 @endforeach
-                                                <button type="button" class="btn btn-primary pd-x-20"
+                                                <button type="button" class="btn btn-primary mt-1 pd-x-20"
                                                     id="{{ $key }}-add-button"
                                                     onclick="addObjective(this)">@lang("Ekle")</button>
                                             </div>
                                         </form>
-                                    </div>
-                                </div>
                               </div>
                             </div>
-                          </div>
-                      </div>
-
-
-                    <div class="accordion" >
-                        <div class="card">
-                            <div class="card-header header-elements-inline">
-                                <h6 class="card-title ul-collapse__icon--size ul-collapse__right-icon mb-0">
-                                    <a class="text-default collapsed objective-title"
-                                        data-title="{{ $objective['name'] }}" data-toggle="collapse"
-                                        href="#{{ $key }}" aria-expanded="false"</a>
-                                </h6>
-                            </div>
-                            <div class="collapse" id="{{ $key }}" data-parent="#{{ $key }}"
-                                style="">
-                                <div class="card-body">
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header header-elements-inline">
-                                <h6 class="card-title ul-collapse__icon--size ul-collapse__right-icon mb-0"><a
-                                        class="text-default collapsed" data-toggle="collapse"
-                                        href="#{{ $key }}-add"
-                                        aria-expanded="false">{{ $objective['name'] }}
-                                        Ekle</a>
-                                </h6>
-                            </div>
-                            <div class="collapse" id="{{ $key }}-add"
-                                data-parent="#{{ $key }}" style="">
-                                <div class="card-body">
-                                    <form id="{{ $key }}-form">
-                                        <input type="hidden" name="name" value="{{ $key }}">
-                                        <div class="d-flex flex-column">
-                                            @foreach ($objective['inputs'] as $inputKey => $input)
-                                                @if (Str::startsWith($inputKey, 'number'))
-                                                    <div class="form-group">
-                                                        <input class="form-control objective-input"
-                                                            name="{{ $inputKey }}" type="number"
-                                                            placeholder="@lang($input)">
-                                                    </div>
-                                                @elseif (Str::startsWith($inputKey, 'text'))
-                                                    <div class="form-group">
-                                                        <input class="form-control objective-input"
-                                                            name="{{ $inputKey }}" type="text"
-                                                            placeholder="@lang($input)">
-                                                    </div>
-                                                @endif
-                                            @endforeach
-                                            <button type="button" class="btn btn-primary pd-x-20"
-                                                id="{{ $key }}-add-button"
-                                                onclick="addObjective(this)">@lang("Ekle")</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -256,8 +180,10 @@
 </div>
 @endsection
 
-@section('vendor-script')
-<script src="{{ asset('assets/js/plugins/sweetalert2.min.js') }}"></script>
+@section('vendor-script') 
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="{{ asset(mix('vendors/js/extensions/sweetalert2.all.min.js')) }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 @endsection
 
 @section('page-script')
@@ -336,16 +262,14 @@
                     <td>
                         <a class="text-success mr-2 edit-objective" onclick="editObjective(this)" href="#"
                             data-toggle="modal" data-form="${data['name']}"
-                            data-target="#objective-modal"><i
-                                class="nav-icon i-Pen-2 font-weight-bold"></i></a><a
-                            class="text-danger m2 delete-objective" onclick="deleteObjective(this)" href="#"><i
-                                class="nav-icon i-Close-Window font-weight-bold"></i></a>
+                            data-target="#objective-modal"><i class="fa-solid fa-ban"></i></a><a
+                            class="text-danger m2 delete-objective" onclick="deleteObjective(this)" href="#"><i class="fa-solid fa-xmark ml-1"></i></a>
                     </td>
                     `));
 
                         tableBody.append(newRow);
                         toastr.success(res.message);
-
+                        
                         $(el).closest("form").find("input").each((key, val) => {
                             if ($(val).attr("type") !== "hidden") {
                                 $(val).val("");
@@ -404,7 +328,7 @@
 
     // Silme butonuna tıklanınca sil ...
     function deleteObjective(e) {
-        swal({
+        Swal.fire({
             title: "@lang('Nesneyi Silmek İstediğinize Emin Misiniz')?",
             text: "@lang('Silinen nesne geri alınamaz')!",
             type: "warning",
@@ -416,8 +340,9 @@
             confirmButtonClass: "btn btn-success mr-5",
             cancelButtonClass: "btn btn-danger",
             buttonsStyling: false
-        }).then(function() {
+        }).then(function(result) {
             // Tıklanan butonun id'sini al
+            if (result.isConfirmed) {
             const id = $(e).closest("tr").attr("data-id");
 
             $.ajaxSetup({
@@ -441,7 +366,7 @@
                     }
                 }
             });
-
+  }
         }, function(dismiss) {});
 
     }
@@ -488,10 +413,8 @@
                     <td>
                         <a class="text-success mr-2 edit-objective" onclick="editObjective(this)" href="#"
                             data-toggle="modal" data-form="${formData['name']}"
-                            data-target="#objective-modal"><i
-                                class="nav-icon i-Pen-2 font-weight-bold"></i></a><a
-                            class="text-danger m2 delete-objective" deleteObjective(this) href="#"><i
-                                class="nav-icon i-Close-Window font-weight-bold"></i></a>
+                            data-target="#objective-modal"><i class="fa-solid fa-ban"></i></a><a
+                            class="text-danger m2 delete-objective" deleteObjective(this) href="#"><i class="fa-solid fa-xmark ml-1"></i></a>
                     </td>
                     `));
 
