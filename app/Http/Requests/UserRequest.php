@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ObjectiveRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,20 +24,19 @@ class ObjectiveRequest extends FormRequest
     public function rules()
     {
         return [
-            'text1' => 'min:3|nullable',
-            'text2' => 'min:3|nullable',
-            'text3' => 'min:3|nullable',
-            'number1' => 'min:3|nullable',
-            'number2' => 'min:3|nullable',
-            'number3' => 'min:3|nullable',
-            'name' => 'required',
+            'name' => 'min:3|required',
+            'surname' => 'min:3|required',
+            'user_name' => 'min:3|required',
+            'email' => 'min:3|required',
         ];
     }
     public function attributes()
     {
         return [
-            'text1' => __("Metin 1"),
-            'text2' => __("Metin 2"),
+            'name' => __("Adı"),
+            'surname' => __("Soyadı"),
+            'user_name' => __("Kullanıcı Adı"),
+            'email' => __("Mail Adresi"),
         ];
     }
 }
