@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\FileData;
+use App\Models\Objective;
 use App\Models\Product;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +30,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $ProductObjectives=Objective::whereName("product")->get();
+        return view('live.product.add', compact('ProductObjectives'));
     }
 
     /**

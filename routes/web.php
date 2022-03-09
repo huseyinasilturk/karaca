@@ -17,6 +17,7 @@ use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ObjectiveController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Models\Objective;
 
@@ -35,11 +36,20 @@ Route::prefix("objective")->name("objective")->group(function () {
     Route::delete("/delete", [ObjectiveController::class, "delete"])->name(".delete");
 });
 
+
+Route::prefix("product")->name("product")->group(function () {
+    Route::get("/", [ProductController::class, "index"])->name(".index");
+    Route::get("/add", [ProductController::class, "create"])->name(".create");
+    Route::post("/add", [ProductController::class, "store"])->name(".store");
+    Route::put("/update", [ProductController::class, "update"])->name(".update");
+    Route::delete("/delete", [ProductController::class, "delete"])->name(".delete");
+
 Route::prefix("user")->name("user")->group(function () {
     Route::get("/list", [UserController::class, "list"])->name(".list");
     Route::post("/add", [UserController::class, "store"])->name(".store");
     Route::put("/update", [ObjectiveController::class, "update"])->name(".update");
     Route::delete("/delete", [ObjectiveController::class, "delete"])->name(".delete");
+
 });
 
 
