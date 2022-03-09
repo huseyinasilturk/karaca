@@ -239,8 +239,8 @@ $(function () {
           }
         },
         {
-          text: 'Add New User',
-          className: 'add-new btn btn-primary',
+          text: 'Yeni Personel Ekle',
+          className: 'add-new btn btn-primary new-personel-btn',
           attr: {
             'data-bs-toggle': 'modal',
             'data-bs-target': '#modals-slide-in'
