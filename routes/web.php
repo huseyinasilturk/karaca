@@ -43,6 +43,9 @@ Route::prefix("product")->name("product")->group(function () {
     Route::post("/add", [ProductController::class, "store"])->name(".store");
     Route::put("/update", [ProductController::class, "update"])->name(".update");
     Route::delete("/delete", [ProductController::class, "delete"])->name(".delete");
+});
+
+
 
 Route::prefix("user")->name("user")->group(function () {
     Route::get("/list", [UserController::class, "list"])->name(".list");
