@@ -1,6 +1,23 @@
 {
   "menu": [ 
     {
+      "navheader": "Canlı",
+      "slug": ""
+    },
+
+    {
+      "url": "app/roles",
+      "name": "Roller",
+      "icon": "mail",
+      "slug": ".index"
+    },
+
+    {
+      "navheader": "Development",
+      "slug": ""
+    },
+
+    {
       "name": "Dashboards",
       "badge": "2",
       "badgeClass": "badge badge-light-warning rounded-pill ms-auto me-1",

@@ -17,4 +17,9 @@ class RoleController extends Controller
 
         return view('live.roles.index', compact('pageConfigs', "roles", "permissions"));
     }
+
+    public function store(Request $request)
+    {
+        return response()->json($request->all(), 200);
+    }
 }
