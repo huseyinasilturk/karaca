@@ -88,9 +88,9 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $ProductObjectives=Objective::whereName("product")->get();
-        $Product=Product::find($id);
-        return view('live.product.edit', compact('ProductObjectives','Product'));
+        $Product=Product::with('productFileData','productType')->find($id)->first();
+        // dd($Product);
+        return view('live.product.edit', compact('Product'));
     }
 
     /**
