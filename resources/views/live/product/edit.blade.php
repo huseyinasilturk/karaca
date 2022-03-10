@@ -14,6 +14,7 @@
 @endsection
 
 @section('content')
+{{ dd($Product->productType->id) }}
     <form action="{{route('product.update')}}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="row">
@@ -34,8 +35,11 @@
                     <label class="form-label" for="productTypeID">Ürün Tipi</label>
                     <select class="select2 form-select" id="productTypeID" name="type_id" required>
                         <option value="0">Seçiniz</option>
-                        @foreach ($ProductObjectives as $probj)
-                            <option value="{{ $probj->id }}"  @if ($probj->id == $Product->type_id) {{ 'selected' }}  @endif >{{ $probj->text1 }}</option>
+                        @foreach ($Product->productType as $probj)
+                            <option value="{{ $probj->id }}"
+                                  @if ($probj->id == $Product->type_id) {{ 'selected' }}
+                                   @endif >{{ $probj->text1 }}
+                                </option>
                         @endforeach
                     </select>
                 </div>
@@ -54,16 +58,19 @@
             <div class="card-body">
                 <div class="swiper-responsive-breakpoints swiper-container px-4 py-2">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <a href="#">
-                                <div class="img-container w-50 mx-auto py-75">
-                                    <img src="{{asset('images/elements/apple-watch.png')}}" class="img-fluid" alt="image" />
-                                </div>
-                                <div class="item-meta text-center">
-                                    <span class="btn btn-danger btn-sm p-0" onclick="productDelete(this)" dataID="1"><i class="fa-solid fa-trash p-1"></i></span>
-                                </div>
-                            </a>
-                        </div>
+                        @foreach ($Product->productFileData as $objective )
+                            <div class="swiper-slide">
+                                <a href="#">
+                                    <div class="img-container w-50 mx-auto py-75">
+                                        <img src="{{asset($probj->file_name)}}" class="img-fluid" alt="image" />
+                                    </div>
+                                    <div class="item-meta text-center">
+                                        <span class="btn btn-danger btn-sm p-0" onclick="productDelete(this)" dataID="1"><i class="fa-solid fa-trash p-1"></i></span>
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach
+
                     </div>
                     <!-- Add Arrows -->
                     <div class="swiper-button-next"></div>

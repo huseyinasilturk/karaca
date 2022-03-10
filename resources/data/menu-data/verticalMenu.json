@@ -41,6 +41,12 @@
       "slug": "objective.index"
     },
     {
+        "url": "product",
+        "name": "Ürünler",
+        "icon": "shopping-cart",
+        "slug": "product.index"
+      },
+    {
       "navheader": "Development",
       "slug": ""
     },

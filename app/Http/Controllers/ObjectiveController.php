@@ -30,6 +30,12 @@ class ObjectiveController extends Controller
                     'text1' => __('Tip'),
                 ],
             ],
+            'productType' => [
+                'name' => __('Ürün Tipi'),
+                'inputs' => [
+                    'text1' => __('Tip'),
+                ],
+            ],
         ];
 
         $objectives = Objective::all()->groupBy("name");
