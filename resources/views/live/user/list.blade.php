@@ -114,12 +114,8 @@
     </div>
     <!-- Modal to add new user starts-->
 
-    @if ($errors->any())
-    <div class="modal modal-slide-in new-user-modal fade show" id="modals-slide-in" aria-modal="true" role="dialog" style="display: block;">
-    @else
-    <div class="modal modal-slide-in new-user-modal fade " id="modals-slide-in">
 
-    @endif
+    <div class="modal modal-slide-in new-user-modal fade " id="modals-slide-in">
       <div class="modal-dialog">
         <form class="add-new-user modal-content pt-0" action="{{route('user.store')}}" method="POST">
             @csrf
@@ -241,11 +237,11 @@
   <script src="{{ asset(mix('js/scripts/pages/app-user-list.js')) }}"></script>
   <script src="{{ asset(mix('js/scripts/forms/pickers/form-pickers.js')) }}"></script>
 
-  <script>
-function modalHide(ths) {
-    $(ths).closest("modal").removeAttr('style');
-    alert("");
-}
-
-</script>
+    @if ($errors->any())
+        <script>
+            $( document ).ready(function() {
+                $('#modals-slide-in').modal('toggle');
+            });
+        </script>
+    @endif
 @endsection

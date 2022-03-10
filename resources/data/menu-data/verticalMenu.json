@@ -11,10 +11,10 @@
       "slug": ""
     },
     {
-      "url": "app/roles",
+      "url": "roles",
       "name": "Roller",
       "icon": "mail",
-      "slug": ".index"
+      "slug": "roles.index"
     },
     {
       "url": "objective",

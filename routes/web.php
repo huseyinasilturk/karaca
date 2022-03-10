@@ -47,6 +47,10 @@ Route::prefix("product")->name("product")->group(function () {
     Route::post("/delete", [ProductController::class, "imageDestroy"])->name(".imageDestroy");
 
 });
+
+
+
+});
 Route::prefix("user")->name("user")->group(function () {
     Route::get("/list", [UserController::class, "list"])->name(".list");
     Route::post("/add", [UserController::class, "store"])->name(".store");
@@ -78,17 +82,19 @@ Route::group(['prefix' => 'dashboard'], function () {
 });
 /* Route Dashboards */
 
+// Rol prefix
 Route::prefix("roles")->name("roles")->group(function () {
-    Route::get("roles", [RoleController::class, "index"])->name(".index");
-    Route::post("roles", [RoleController::class, "store"])->name(".store");
+    Route::get("/", [RoleController::class, "index"])->name(".index");
+    Route::get("/{id}", [RoleController::class, "detail"])->name(".detail")->whereNumber("id");
+
+    Route::post("/", [RoleController::class, "store"])->name(".store");
+    Route::post("/{id}", [RoleController::class, "update"])->name(".update")->whereNumber("id");
+
+    Route::delete("/{id}", [RoleController::class, "delete"])->name(".delete")->whereNumber("id");
 });
 
 /* Route Apps */
 Route::group(['prefix' => 'app', "name" => "app"], function () {
-
-    Route::get("roles", [RoleController::class, "index"])->name(".index");
-    Route::post("roles", [RoleController::class, "store"])->name(".store");
-
     // ** TEMA
     Route::get('email', [AppsController::class, 'emailApp'])->name('app-email');
     Route::get('chat', [AppsController::class, 'chatApp'])->name('app-chat');
