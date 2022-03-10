@@ -67,7 +67,7 @@ $configData = Helper::applClasses();
          @if(isset($menu->submenu)){{'data-menu=dropdown'}}@endif>
           <a href="{{isset($menu->url)? url($menu->url):'javascript:void(0)'}}" class="nav-link d-flex align-items-center @if(isset($menu->submenu)){{'dropdown-toggle'}}@endif" target="{{isset($menu->newTab) ? '_blank':'_self'}}"  @if(isset($menu->submenu)){{'data-bs-toggle=dropdown'}}@endif>
             <i data-feather="{{ $menu->icon }}"></i>
-            <span>{{ __('locale.'.$menu->name) }}</span>
+            <span>{{ __($menu->name) }}</span>
           </a>
           @if(isset($menu->submenu))
           @include('panels/horizontalSubmenu', ['menu' => $menu->submenu])

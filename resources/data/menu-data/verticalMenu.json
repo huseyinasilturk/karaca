@@ -4,8 +4,26 @@
       "navheader": "Canlı",
       "slug": ""
     },
-
-
+    {
+        "url": "personal",
+        "name": "Personeller",
+        "icon": "mail",
+        "slug": "",
+        "submenu": [
+            {
+              "url": "user/list",
+              "name": "Listele",
+              "icon": "circle",
+              "slug": "user.list"
+            },
+            {
+              "url": "/",
+              "name": "eCommerce",
+              "icon": "circle",
+              "slug": "dashboard-ecommerce"
+            }
+        ]
+    },
     {
       "navheader": "Araçlar",
       "slug": ""
@@ -28,12 +46,10 @@
         "icon": "shopping-cart",
         "slug": "product.index"
       },
-
     {
       "navheader": "Development",
       "slug": ""
     },
-
     {
       "name": "Dashboards",
       "badge": "2",
@@ -55,7 +71,6 @@
         }
       ]
     },
-
     {
       "navheader": "Apps & Pages",
       "slug": ""

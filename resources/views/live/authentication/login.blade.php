@@ -2,10 +2,16 @@
 
 @section('title', 'Login Page')
 
+@section('vendor-style')
+    <!-- Vendor css files -->
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">
+@endsection
+
 @section('page-style')
     {{-- Page Css files --}}
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/form-validation.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('css/base/pages/authentication.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-toastr.css')) }}">
 @endsection
 
 @section('content')
@@ -61,7 +67,6 @@
                             <input type="text" class="form-control" id="login-username" name="user_name"
                                 placeholder="admin" aria-describedby="login-username" tabindex="1" autofocus />
                         </div>
-
                         <div class="mb-1">
                             <div class="d-flex justify-content-between">
                                 <label class="form-label" for="login-password">Password</label>
@@ -85,6 +90,7 @@
 
 @section('vendor-script')
     <script src="{{ asset(mix('vendors/js/forms/validation/jquery.validate.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
 @endsection
 
 @section('page-script')
@@ -97,18 +103,53 @@
 
             $.ajax({
                 method: "POST",
-                url: "/auth/login",
+                url: "{{ route('auth.loginUser') }}",
                 dataType: "json",
                 data: formData,
                 success: res => {
-                    console.log(res);
                     if (res.status === 200) {
                         console.log(res.message);
-                        window.location.href = "/";
+                        toastr["success"](
+                            res.message,
+                            "Giriş başarılı!", {
+                                closeButton: true,
+                                tapToDismiss: true,
+                                timeOut: 1500,
+                                progressBar: true
+                            }
+                        );
+                        setTimeout(() => {
+                            window.location.href = "/";
+                        }, 1550);
                     }
                 },
                 error: err => {
-                    console.log(err);
+                    if (err.responseJSON.errors !== undefined) {
+                        console.log()
+                        Object.values(err.responseJSON.errors).map((errMessage) => {
+                            toastr["error"](
+                                errMessage,
+                                "Hata!", {
+                                    closeButton: true,
+                                    tapToDismiss: true,
+                                    timeOut: 3000,
+                                    progressBar: true
+                                }
+                            );
+                        })
+                    } else {
+                        toastr["error"](
+                            err.responseJSON.error,
+                            "Hata!", {
+                                closeButton: true,
+                                tapToDismiss: true,
+                                timeOut: 3000,
+                                progressBar: true
+                            }
+                        );
+                    }
+
+
                 }
             });
         }
