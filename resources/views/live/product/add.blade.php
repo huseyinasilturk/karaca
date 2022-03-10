@@ -11,7 +11,8 @@
 @endsection
 
 @section('content')
-    <form action="">
+    <form action="{{route('product.store')}}" method="POST" enctype="multipart/form-data">
+        @csrf
         <div class="row">
             <div class="col-md-6 col-12">
                 <div class="mb-1">
@@ -27,7 +28,7 @@
             </div>
             <div class="col-md-6 col-12">
                 <div class="mb-1">
-                    <label class="form-label" for="productTypeID">Liste Fiyatı</label>
+                    <label class="form-label" for="productTypeID">Ürün Tipi</label>
                     <select class="select2 form-select" id="productTypeID" name="type_id" required>
                         <option value="0">Seçiniz</option>
                         @foreach ($ProductObjectives as $probj)
@@ -39,7 +40,7 @@
             <div class="col-md-6 col-12">
                 <div class="mb-1">
                     <label class="form-label" for="files">Ürün Görselleri</label>
-                    <input id="files" class="form-control" name="name" type="file"/>
+                    <input id="files" class="form-control" name="files[]" type="file" multiple/>
                 </div>
             </div>
             <div class="col-12 mt-50">

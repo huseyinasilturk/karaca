@@ -55,13 +55,15 @@ class ProductController extends Controller
                     $fileName = time() . "_netadim_" . $file->getClientOriginalName();
                     $extension = $file->getClientOriginalExtension();
                     if (in_array(Str::lower($extension), ["jpg", "png", "jpeg", "mpeg", "svg"])) {
-                        $request->file("files")[$key]->move(public_path('./resources/image-files'), $fileName);
+                        $file->move(public_path('images/product'), $fileName);
                         array_push($data, ["table_id" => $product->id, "table_name" => "products", "file_name" => $fileName, "type" => "images", "created_at" => date('Y-m-d H:i:s'), "updated_at" => date('Y-m-d H:i:s')]);
                     }
                 }
                 $insertImage = FileData::insert($data);
             }
-            return response()->json(['message'=>'Registration Successful :)'],201);
+            // return response()->json(['message'=>'Registration Successful :)'],201);
+            $ProductObjectives=Objective::whereName("product")->get();
+            return view('live.product.add', compact('ProductObjectives'));
         } else {
             return response()->json(['hata'=>'Registration Failed :/'],405);
         }
@@ -84,9 +86,11 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit($id)
     {
-        //
+        $ProductObjectives=Objective::whereName("product")->get();
+        $Product=Product::find($id);
+        return view('live.product.edit', compact('ProductObjectives','Product'));
     }
 
     /**
@@ -111,13 +115,16 @@ class ProductController extends Controller
                         $fileName = time() . "_netadim_" . $file->getClientOriginalName();
                         $extension = $file->getClientOriginalExtension();
                         if (in_array(Str::lower($extension), ["jpg", "png", "jpeg", "mpeg", "svg"])) {
-                            $request->file("files")[$key]->move(public_path('./resources/image-files'), $fileName);
+                            $request->file("files")[$key]->move(public_path('images/product'), $fileName);
                             array_push($data, ["table_id" => $product->id, "table_name" => "products", "file_name" => $fileName, "type" => "images", "created_at" => date('Y-m-d H:i:s'), "updated_at" => date('Y-m-d H:i:s')]);
                         }
                     }
                     $insertImage = FileData::insert($data);
                 }
-                return response()->json(['message'=>'Update Successful :)'],202);
+                $ProductObjectives=Objective::whereName("product")->get();
+                $Product=$product;
+                return view('live.product.edit', compact('ProductObjectives','Product'));
+                // return response()->json(['message'=>'Update Successful :)'],202);
             } else {
                 return response()->json(['hata'=>'Update Failed :/'],405);
             }
@@ -147,11 +154,11 @@ class ProductController extends Controller
         }
     }
 
-    public function imageDestroy($id)
+    public function imageDestroy(Request $request)
     {
-        $FileData = FileData::find($id);
-        $FileLocation='./resources/image-files/'.$FileData->file_name;
+        $FileData = FileData::find($request->id);
+        $FileLocation='images/product/'.$FileData->file_name;
         File::deleteDirectory(public_path($FileLocation));
-        return response()->json(['message'=>'Remove Successful :)'],202);
+        return response()->json(['message'=>'Remove Successful :)','status'=>202],202);
     }
 }
