@@ -55,14 +55,7 @@ Route::group(["middleware" => "auth"], function () {
         Route::post("/delete", [ProductController::class, "imageDestroy"])->name(".imageDestroy");
     });
 
-    Route::prefix("user")->name("user")->group(function () {
-         Route::get("/list", [UserController::class, "list"])->name(".list");
-        Route::post("/add", [UserController::class, "store"])->name(".store");
-        Route::get("/", [UserController::class, "index"])->name(".index");
 
-        Route::put("/update", [ObjectiveController::class, "update"])->name(".update");
-        Route::delete("/delete", [ObjectiveController::class, "delete"])->name(".delete");
-    });
 
     // Rol prefix
     Route::prefix("roles")->name("roles")->group(function () {
@@ -75,7 +68,14 @@ Route::group(["middleware" => "auth"], function () {
         Route::delete("/{id}", [RoleController::class, "delete"])->name(".delete")->whereNumber("id");
     });
 });
+Route::prefix("user")->name("user")->group(function () {
+    Route::get("/list", [UserController::class, "list"])->name(".list");
+   Route::post("/add", [UserController::class, "store"])->name(".store");
+   Route::get("/", [UserController::class, "index"])->name(".index");
 
+   Route::put("/update", [ObjectiveController::class, "update"])->name(".update");
+   Route::delete("/delete", [ObjectiveController::class, "delete"])->name(".delete");
+});
 /*
 |--------------------------------------------------------------------------
 | Web Routes
