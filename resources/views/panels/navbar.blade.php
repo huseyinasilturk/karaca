@@ -383,19 +383,13 @@
                     <i class="me-50" data-feather="settings"></i> Settings
                 </a>
 
-
                 @if (Auth::check())
-                    <a class="dropdown-item" href="#"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="me-50" data-feather="power"></i> Logout
+                    <a class="dropdown-item" href="{{ route('auth.logout') }}">
+                        <i class="me-50" data-feather="power"></i> Çıkış Yap
                     </a>
-                    <form method="POST" id="logout-form" action="#">
-                        @csrf
-                    </form>
                 @else
-                    <a class="dropdown-item"
-                        href="{{ Route::has('login') ? route('login') : 'javascript:void(0)' }}">
-                        <i class="me-50" data-feather="log-in"></i> Login
+                    <a class="dropdown-item" href="{{ route('auth.login') }}">
+                        <i class="me-50" data-feather="log-in"></i> Giriş Yap
                     </a>
                 @endif
             </div>

@@ -3,23 +3,35 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Validator;
 
 class AuthenticationController extends Controller
 {
     public function loginUser(Request $request)
     {
-        $validator = Validator::make($request->only("user_name", "password"), [
-            'user_name' => 'required|string|min:3',
-            'password' => 'required|string|min:6',
-        ]);
+        $validator = Validator::make(
+            $request->only("user_name", "password"),
+            [
+                'user_name' => 'required|string|min:3',
+                'password' => 'required|string|min:6',
+            ],
+            [
+                "user_name.required" => "Kullanıcı adı girmek zorundasınız",
+                "user_name.string" => "Kullanıcı adı yazı olmak zorunda",
+                "user_name.min" => "Kullanıcı adı 3 karakterden fazla olmalı",
+                "password.required" => "Şifre girmek zorundasınız",
+                "password.string" => "Şifre yazı olmak zorunda",
+                "password.min" => "Şifre 6 karakterden fazla olmalı"
+            ]
+        );
 
         if ($validator->fails()) {
             return response()->json(["errors" => $validator->errors()], 422);
         }
 
         if (!auth()->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Kullanıcı adı veya şifre hatalı'], 401);
         }
 
         return response()->json(['message' => 'Giriş Başarılı', "status" => 200]);
@@ -32,6 +44,14 @@ class AuthenticationController extends Controller
         return view('/live/authentication/login', ['pageConfigs' => $pageConfigs]);
     }
 
+    public function logout()
+    {
+        Session::flush();
+
+        auth()->logout();
+
+        return redirect('auth/login');
+    }
 
     // ** TEMA FONKSİYONLARI
 
