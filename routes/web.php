@@ -19,7 +19,6 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
-use App\Models\Objective;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,34 +28,51 @@ use App\Models\Objective;
 |
 */
 
-Route::prefix("objective")->name("objective")->group(function () {
-    Route::get("/", [ObjectiveController::class, "index"])->name(".index");
-    Route::post("/add", [ObjectiveController::class, "store"])->name(".store");
-    Route::put("/update", [ObjectiveController::class, "update"])->name(".update");
-    Route::delete("/delete", [ObjectiveController::class, "delete"])->name(".delete");
+// Auth prefix
+Route::prefix("auth")->name("auth")->group(function () {
+    Route::post("login", [AuthenticationController::class, 'loginUser'])->name(".loginUser");
+
+    Route::get("login", [AuthenticationController::class, 'login'])->name(".login");
+
+    Route::get("logout", [AuthenticationController::class, 'logout'])->name(".logout");
 });
 
+Route::group(["middleware" => "auth"], function () {
+    Route::prefix("objective")->name("objective")->group(function () {
+        Route::get("/", [ObjectiveController::class, "index"])->name(".index");
+        Route::post("/add", [ObjectiveController::class, "store"])->name(".store");
+        Route::put("/update", [ObjectiveController::class, "update"])->name(".update");
+        Route::delete("/delete", [ObjectiveController::class, "delete"])->name(".delete");
+    });
 
-Route::prefix("product")->name("product")->group(function () {
-    Route::get("/", [ProductController::class, "index"])->name(".index");
-    Route::get("/add", [ProductController::class, "create"])->name(".create");
-    Route::post("/add", [ProductController::class, "store"])->name(".store");
-    Route::get("/edit/{id}", [ProductController::class, "edit"])->name(".edit");
-    Route::post("/update", [ProductController::class, "update"])->name(".update");
-    Route::delete("/delete/{id}", [ProductController::class, "delete"])->name(".delete");
-    Route::post("/delete", [ProductController::class, "imageDestroy"])->name(".imageDestroy");
+    Route::prefix("product")->name("product")->group(function () {
+        Route::get("/", [ProductController::class, "index"])->name(".index");
+        Route::get("/add", [ProductController::class, "create"])->name(".create");
+        Route::post("/add", [ProductController::class, "store"])->name(".store");
+        Route::get("/edit/{id}", [ProductController::class, "edit"])->name(".edit");
+        Route::post("/update", [ProductController::class, "update"])->name(".update");
+        Route::delete("/delete/{id}", [ProductController::class, "delete"])->name(".delete");
+        Route::post("/delete", [ProductController::class, "imageDestroy"])->name(".imageDestroy");
+    });
 
+    Route::prefix("user")->name("user")->group(function () {
+        Route::get("/list", [UserController::class, "list"])->name(".list");
+        Route::post("/add", [UserController::class, "store"])->name(".store");
+        Route::put("/update", [ObjectiveController::class, "update"])->name(".update");
+        Route::delete("/delete", [ObjectiveController::class, "delete"])->name(".delete");
+    });
+
+    // Rol prefix
+    Route::prefix("roles")->name("roles")->group(function () {
+        Route::get("/", [RoleController::class, "index"])->name(".index");
+        Route::get("/{id}", [RoleController::class, "detail"])->name(".detail")->whereNumber("id");
+
+        Route::post("/", [RoleController::class, "store"])->name(".store");
+        Route::post("/{id}", [RoleController::class, "update"])->name(".update")->whereNumber("id");
+
+        Route::delete("/{id}", [RoleController::class, "delete"])->name(".delete")->whereNumber("id");
+    });
 });
-
-
-Route::prefix("user")->name("user")->group(function () {
-    Route::get("/list", [UserController::class, "list"])->name(".list");
-    Route::post("/add", [UserController::class, "store"])->name(".store");
-    Route::put("/update", [ObjectiveController::class, "update"])->name(".update");
-    Route::delete("/delete", [ObjectiveController::class, "delete"])->name(".delete");
-
-});
-
 
 /*
 |--------------------------------------------------------------------------
@@ -69,7 +85,6 @@ Route::prefix("user")->name("user")->group(function () {
 |
 */
 
-
 // Main Page Route
 Route::get('/', [DashboardController::class, 'dashboardEcommerce'])->name('dashboard-ecommerce');
 
@@ -79,17 +94,6 @@ Route::group(['prefix' => 'dashboard'], function () {
     Route::get('ecommerce', [DashboardController::class, 'dashboardEcommerce'])->name('dashboard-ecommerce');
 });
 /* Route Dashboards */
-
-// Rol prefix
-Route::prefix("roles")->name("roles")->group(function () {
-    Route::get("/", [RoleController::class, "index"])->name(".index");
-    Route::get("/{id}", [RoleController::class, "detail"])->name(".detail")->whereNumber("id");
-
-    Route::post("/", [RoleController::class, "store"])->name(".store");
-    Route::post("/{id}", [RoleController::class, "update"])->name(".update")->whereNumber("id");
-
-    Route::delete("/{id}", [RoleController::class, "delete"])->name(".delete")->whereNumber("id");
-});
 
 /* Route Apps */
 Route::group(['prefix' => 'app', "name" => "app"], function () {
@@ -261,10 +265,13 @@ Route::get('/modal-examples', [PagesController::class, 'modal_examples'])->name(
 Route::get('/error', [MiscellaneousController::class, 'error'])->name('error');
 
 /* Route Authentication Pages */
-Route::group(['prefix' => 'auth'], function () {
+Route::group(['prefix' => 'authDev', ["middleware" => "auth"]], function () {
 
     Route::post("login", [AuthenticationController::class, 'loginUser'])->name("login");
+
     Route::get("login", [AuthenticationController::class, 'login'])->name("login");
+
+    Route::get("logout", [AuthenticationController::class, 'logout'])->name("logout");
 
     // ** Tema
     Route::get('login-basic', [AuthenticationController::class, 'login_basic'])->name('auth-login-basic');
