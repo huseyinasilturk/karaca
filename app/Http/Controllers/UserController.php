@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Mail\Subscribe;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,7 +32,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $user = DB::table("users as u")->join("information as i","i.id","=","u.information_id")->get();
+        dd($user);
     }
 
     /**
@@ -53,12 +55,13 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
 
-       $information = Information::create($request->only("name","surname","birthday"));
-$password = $this->generatePassword(6,3);
-      $user= User::create(array_merge($request->only("user_name","email"),['password' => bcrypt($password),"information_id"=> $information->id] ));
+    $information = Information::create($request->only("name","surname","birthday"));
+    $password = $this->generatePassword(6,2);
+    $user= User::create(array_merge($request->only("user_name","email"),['password' => bcrypt($password),"information_id"=> $information->id] ));
+    $userName = $request->name." ".$request->surname;
+    $user_information = array(["name"=> $userName,"user_name"=>$request->user_name,"password"=>$password]);
 
-
-      Mail::to("huseyinkertik0@gmail.com")->send(new Subscribe($information));
+    Mail::to($request->only("email"))->send(new Subscribe($user_information));
 
 
         dd($user,$password);
