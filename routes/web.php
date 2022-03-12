@@ -15,6 +15,7 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\MiscellaneousController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartsController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
@@ -73,6 +74,17 @@ Route::group(["middleware" => "auth"], function () {
         Route::post("/{id}", [RoleController::class, "update"])->name(".update")->whereNumber("id");
 
         Route::delete("/{id}", [RoleController::class, "delete"])->name(".delete")->whereNumber("id");
+    });
+
+    // Firma prefix
+    Route::prefix("company")->name("company")->group(function () {
+        Route::get("/", [CompanyController::class, "index"])->name(".index");
+        Route::get("/company", [CompanyController::class, "companies"])->name(".company");
+        Route::get("/add", [CompanyController::class, "create"])->name(".create");
+
+        Route::delete("/{id}", [CompanyController::class, "delete"])->name(".delete")->whereNumber("id");
+
+        Route::post("/", [CompanyController::class, "store"])->name(".store");
     });
 });
 

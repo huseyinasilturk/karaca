@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             "password" => '$2a$12$sazfKZCa1bfABRrYCRRlk.VSkCxlppxSCTkwOzpIvQmM.Uqp.cdD6' // 123123123
         ]);
 
-        $user->givePermissionTo('*.create,update,view');
+        // $user->givePermissionTo('*.create,update,view');
 
         // Veritabanı SQL Seederları
         // $this->call([CountryCitySeeder::class, ObjectiveSeeder::class, ModuleSeeder::class, AddressSeeder::class, AddressAtCompanySeeder::class, CompanySeeder::class, ContactAtCompanySeeder::class]);

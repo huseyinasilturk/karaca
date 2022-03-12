@@ -25,6 +25,26 @@
         ]
     },
     {
+      "url": "company",
+      "name": "Firmalar",
+      "icon": "mail",
+      "slug": "",
+      "submenu": [
+          {
+            "url": "company/",
+            "name": "Firma Listele",
+            "icon": "circle",
+            "slug": "company.index"
+          },
+          {
+            "url": "company/add",
+            "name": "Firma Ekle",
+            "icon": "circle",
+            "slug": "company.create"
+          }
+      ]
+  },
+    {
       "navheader": "Araçlar",
       "slug": ""
     },
