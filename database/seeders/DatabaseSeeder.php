@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call([RolePermissionSeeder::class]);
+
         $information = Information::create([
             "name" => "Karaca",
             "surname" => "Admin",
@@ -28,6 +30,8 @@ class DatabaseSeeder extends Seeder
             "information_id" => $information->id,
             "password" => '$2a$12$sazfKZCa1bfABRrYCRRlk.VSkCxlppxSCTkwOzpIvQmM.Uqp.cdD6' // 123123123
         ]);
+
+        $user->assignRole("admin");
 
         // $user->givePermissionTo('*.create,update,view');
 
