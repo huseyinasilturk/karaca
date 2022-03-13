@@ -27,7 +27,8 @@
             <div class="col-md-6 col-12">
                 <div class="mb-1">
                     <label class="form-label" for="productListPrice">Liste Fiyatı</label>
-                    <input id="productListPrice" class="form-control" name="list_price" type="number" placeholder="Liste Fiyatını Giriniz" min="0" step=".01" autocomplete="off" value="{{ $Product->list_price }}" required/>
+                    <input id="productListPrice" class="form-control" name="listPrice[1]" type="number" placeholder="Liste Fiyatını Giriniz" min="0" step=".01" autocomplete="off" value="0" required/>
+                    <input id="productListPrice" class="form-control" name="listPrice[2]" type="number" placeholder="Liste Fiyatını Giriniz" min="0" step=".01" autocomplete="off" value="0" required/>
                 </div>
             </div>
             <div class="col-md-6 col-12">
@@ -35,7 +36,7 @@
                     <label class="form-label" for="productTypeID">Ürün Tipi</label>
                     <select class="select2 form-select" id="productTypeID" name="type_id" required>
                         <option value="0">Seçiniz</option>
-                        @foreach ($ProductObjectives as $probj)
+                        @foreach ($ProductTypeObjectives as $probj)
                             <option value="{{ $probj->id }}" @if ($probj->id == $Product->type_id) {{ 'selected' }} @endif >{{ $probj->text1 }}</option>
                         @endforeach
                     </select>

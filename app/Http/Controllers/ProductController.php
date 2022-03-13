@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\FileData;
+use App\Models\ListPrice;
 use App\Models\Objective;
 use App\Models\Product;
 use Illuminate\Support\Str;
@@ -63,9 +64,7 @@ class ProductController extends Controller
                 }
                 $insertImage = FileData::insert($data);
             }
-            // return response()->json(['message'=>'Registration Successful :)'],201);
-            $ProductObjectives=Objective::whereName("productType")->get();
-            return view('live.product.add', compact('ProductObjectives'));
+            return redirect()->route('product.edit',$product->id);
         } else {
             return response()->json(['hata'=>'Registration Failed :/'],405);
         }
@@ -91,8 +90,8 @@ class ProductController extends Controller
     public function edit($id)
     {
         $Product=Product::with('productFileData')->find($id)->first();
-        $ProductObjectives=Objective::whereName("productType")->get();
-        return view('live.product.edit', compact('Product','ProductObjectives'));
+        $ProductTypeObjectives=Objective::whereName("productType")->get();
+        return view('live.product.edit', compact('Product','ProductTypeObjectives'));
     }
 
     /**
@@ -107,7 +106,7 @@ class ProductController extends Controller
         if(!empty($request->id)){
             $product = Product::find($request->id);
             $product->name = $request->name;
-            $product->list_price = $request->list_price;
+            // $product->list_price = $request->list_price;
             $product->type_id = $request->type_id;
             $product->save();
             if($product){
@@ -123,6 +122,17 @@ class ProductController extends Controller
                     }
                     FileData::insert($data);
                 }
+
+                $priceArray = [];
+                $listPrices=$request->listPrice;
+                foreach ($listPrices as $companyId => $price) {
+                    // array_push($priceArray, ["company_id" => $companyId, "product_id" => $product->id, "list_price" => $price]);
+                    ListPrice::updateOrCreate(
+                        ['company_id' => $companyId, 'product_id' => $product->id],
+                        ['list_price' => $price]
+                    );
+                }
+                // ListPrice::upsert($priceArray, ['list_price'], ['company_id', 'product_id']);
                 return redirect()->route('product.edit',$request->id);
             } else {
                 return response()->json(['hata'=>'Update Failed :/'],405);

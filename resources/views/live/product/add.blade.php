@@ -20,12 +20,12 @@
                     <input id="productName" class="form-control" name="name" type="text" placeholder="Ürün Adını Giriniz" autocomplete="off" required/>
                 </div>
             </div>
-            <div class="col-md-6 col-12">
+            {{-- <div class="col-md-6 col-12">
                 <div class="mb-1">
                     <label class="form-label" for="productListPrice">Liste Fiyatı</label>
                     <input id="productListPrice" class="form-control" name="list_price" type="number" placeholder="Liste Fiyatını Giriniz" min="0" step=".01" autocomplete="off" required/>
                 </div>
-            </div>
+            </div> --}}
             <div class="col-md-6 col-12">
                 <div class="mb-1">
                     <label class="form-label" for="productTypeID">Ürün Tipi</label>
