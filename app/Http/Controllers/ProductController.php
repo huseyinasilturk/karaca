@@ -20,7 +20,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('live.product.list');
+        $Product=Product::all();
+        $ProductObjectives=Objective::whereName("productType")->get();
+        $ProductFileData=FileData::whereTableName("products")->get();
+        return view('live.product.list', compact('Product','ProductObjectives','ProductFileData'));
     }
 
     /**
