@@ -32,7 +32,7 @@ class UserController extends Controller
     {
         $user = User::join("information", "information.id", "=", "users.information_id")->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"), "users.*", "information.*", "users.id as user_id"])->get();
 
-        return  response()->json($user, 202);
+        return  response()->json(["data"=>$user], 202);
     }
 
     /**
@@ -43,7 +43,6 @@ class UserController extends Controller
     public function index()
     {
         $user = DB::table("users as u")->join("information as i", "i.id", "=", "u.information_id")->get();
-        dd($user);
     }
 
     /**
