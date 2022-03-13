@@ -20,10 +20,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $Product=Product::all();
-        $ProductObjectives=Objective::whereName("productType")->get();
-        $ProductFileData=FileData::whereTableName("products")->get();
-        return view('live.product.list', compact('Product','ProductObjectives','ProductFileData'));
+        $Product=Product::with('productFileData','productTypeGet')->get();
+        // return ($Product);
+        return view('live.product.list', compact('Product'));
     }
 
     /**
@@ -122,12 +121,9 @@ class ProductController extends Controller
                             array_push($data, ["table_id" => $product->id, "table_name" => "products", "file_name" => $fileName, "type" => "images", "created_at" => date('Y-m-d H:i:s'), "updated_at" => date('Y-m-d H:i:s')]);
                         }
                     }
-                    $insertImage = FileData::insert($data);
+                    FileData::insert($data);
                 }
-                $ProductObjectives=Objective::whereName("product")->get();
-                $Product=$product;
-                return view('live.product.edit', compact('ProductObjectives','Product'));
-                // return response()->json(['message'=>'Update Successful :)'],202);
+                return redirect()->route('product.edit',$request->id);
             } else {
                 return response()->json(['hata'=>'Update Failed :/'],405);
             }
@@ -148,12 +144,12 @@ class ProductController extends Controller
             $product = Product::find($id);
             if($product){
                 $product->delete();
-                return response()->json(['message'=>'Remove Successful :)'],202);
+                return response()->json(['message'=>'Remove Successful :)','status'=>202]);
             }else{
-                return response()->json(['hata'=>'Remove Failed :/'],405);
+                return response()->json(['hata'=>'Remove Failed :/','status'=>405]);
             }
         }else{
-            return response()->json(['hata'=>'Remove Failed :/'],400);
+            return response()->json(['hata'=>'Remove Failed :/','status'=>400]);
         }
     }
 

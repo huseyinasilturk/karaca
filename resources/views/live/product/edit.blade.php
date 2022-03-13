@@ -62,7 +62,7 @@
                                         <img src="{{asset('images/product/'.$probj->file_name)}}" class="img-fluid" alt="image" />
                                     </div>
                                     <div class="item-meta text-center">
-                                        <span class="btn btn-danger btn-sm p-0" onclick="productDelete(this)" dataID="1"><i class="fa-solid fa-trash p-1"></i></span>
+                                        <span class="btn btn-danger btn-sm p-0" onclick="productImageDelete(this)" dataID="1"><i class="fa-solid fa-trash p-1"></i></span>
                                     </div>
                                 </a>
                             </div>
@@ -86,8 +86,8 @@
     <script src="{{asset('vendors/js/extensions/swiper.min.js')}}"></script>
 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-  <script src="{{ asset(mix('vendors/js/extensions/sweetalert2.all.min.js')) }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{{ asset(mix('vendors/js/extensions/sweetalert2.all.min.js')) }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 @endsection
 
 @section('page-script')
@@ -99,7 +99,7 @@
                 }
             })
         })
-        function productDelete(ths){
+        function productImageDelete(ths){
             Swal.fire({
                 title: 'Silmek istediğinden emin misin?',
                 text: "Resim kalıcı olarak silinir!",
