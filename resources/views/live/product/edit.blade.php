@@ -14,7 +14,7 @@
 @endsection
 
 @section('content')
-{{ dd($Product->productType->id) }}
+{{-- {{ dd($Product->productType) }} --}}
     <form action="{{route('product.update')}}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="row">
@@ -35,11 +35,8 @@
                     <label class="form-label" for="productTypeID">Ürün Tipi</label>
                     <select class="select2 form-select" id="productTypeID" name="type_id" required>
                         <option value="0">Seçiniz</option>
-                        @foreach ($Product->productType as $probj)
-                            <option value="{{ $probj->id }}"
-                                  @if ($probj->id == $Product->type_id) {{ 'selected' }}
-                                   @endif >{{ $probj->text1 }}
-                                </option>
+                        @foreach ($ProductObjectives as $probj)
+                            <option value="{{ $probj->id }}" @if ($probj->id == $Product->type_id) {{ 'selected' }} @endif >{{ $probj->text1 }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -58,11 +55,11 @@
             <div class="card-body">
                 <div class="swiper-responsive-breakpoints swiper-container px-4 py-2">
                     <div class="swiper-wrapper">
-                        @foreach ($Product->productFileData as $objective )
+                        @foreach ($Product->productFileData as $probj )
                             <div class="swiper-slide">
                                 <a href="#">
                                     <div class="img-container w-50 mx-auto py-75">
-                                        <img src="{{asset($probj->file_name)}}" class="img-fluid" alt="image" />
+                                        <img src="{{asset('images/product/'.$probj->file_name)}}" class="img-fluid" alt="image" />
                                     </div>
                                     <div class="item-meta text-center">
                                         <span class="btn btn-danger btn-sm p-0" onclick="productDelete(this)" dataID="1"><i class="fa-solid fa-trash p-1"></i></span>
@@ -103,7 +100,6 @@
             })
         })
         function productDelete(ths){
-            alert("sa");
             Swal.fire({
                 title: 'Silmek istediğinden emin misin?',
                 text: "Resim kalıcı olarak silinir!",
@@ -122,6 +118,7 @@
                         data: {'id':dataID},
                         success: (res) => {
                             if (res.status === 202) {
+                                $(ths).closest(".swiper-slide").remove();
                                 Swal.fire(
                                     'Silindi!',
                                     'Resim başarıyla silindi.',
