@@ -13,4 +13,9 @@ class Information extends Model
         'surname',
         'birthday',
     ];
+
+    public function getFullNameAttribute()
+{
+    return "{$this->name} {$this->surname}";
+}
 }
