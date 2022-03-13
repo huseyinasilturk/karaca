@@ -11,25 +11,28 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use DB;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
 
-      /**
+    /**
      * e.
      Personelleri listelemek için kıllılan sayfa
      * @return \Illuminate\Http\Response
      */
     public function list()
     {
-        return view("live.user.list");
+        $roles = Role::all();
+        // dd($roles);
+        return view("live.user.list", compact("roles"));
     }
 
     public function userList()
     {
-        $user = User::join("information","information.id","=","users.information_id")->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"),"users.*","information.*","users.id as user_id"])->get();
+        $user = User::join("information", "information.id", "=", "users.information_id")->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"), "users.*", "information.*", "users.id as user_id"])->get();
 
-       return  response()->json($user,202);
+        return  response()->json($user, 202);
     }
 
     /**
@@ -39,7 +42,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = DB::table("users as u")->join("information as i","i.id","=","u.information_id")->get();
+        $user = DB::table("users as u")->join("information as i", "i.id", "=", "u.information_id")->get();
         dd($user);
     }
 
@@ -61,17 +64,17 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
+        $information = Information::create($request->only("name", "surname", "birthday"));
+        $password = $this->generatePassword(6, 2);
+        $user = User::create(array_merge($request->only("user_name", "email"), ['password' => bcrypt($password), "information_id" => $information->id]));
+        $userName = $request->name . " " . $request->surname;
+        $user_information = array(["name" => $userName, "user_name" => $request->user_name, "password" => $password]);
 
-    $information = Information::create($request->only("name","surname","birthday"));
-    $password = $this->generatePassword(6,2);
-    $user= User::create(array_merge($request->only("user_name","email"),['password' => bcrypt($password),"information_id"=> $information->id] ));
-    $userName = $request->name." ".$request->surname;
-    $user_information = array(["name"=> $userName,"user_name"=>$request->user_name,"password"=>$password]);
+        Mail::to($request->only("email"))->send(new Subscribe($user_information));
 
-    Mail::to($request->only("email"))->send(new Subscribe($user_information));
+        $assingRole = $user->assignRole($request->user_role);
 
-
-        dd($user,$password);
+        dd($user, $password);
     }
 
     /**
@@ -120,7 +123,8 @@ class UserController extends Controller
     }
 
 
-    function generatePassword($length=6,$level=2){
+    function generatePassword($length = 6, $level = 2)
+    {
 
         list($usec, $sec) = explode(' ', microtime());
         srand((float) $sec + ((float) $usec * 100000));
@@ -133,15 +137,15 @@ class UserController extends Controller
         $counter   = 0;
 
         while ($counter < $length) {
-          $actChar = substr($validchars[$level], rand(0, strlen($validchars[$level])-1), 1);
+            $actChar = substr($validchars[$level], rand(0, strlen($validchars[$level]) - 1), 1);
 
-          // All character must be different
-          if (!strstr($password, $actChar)) {
-             $password .= $actChar;
-             $counter++;
-          }
+            // All character must be different
+            if (!strstr($password, $actChar)) {
+                $password .= $actChar;
+                $counter++;
+            }
         }
 
         return $password;
-     }
+    }
 }

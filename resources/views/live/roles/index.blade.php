@@ -241,6 +241,8 @@
                         const inputEl = $(el).find("input");
                         if (rolePermissions.includes(inputEl.val())) {
                             inputEl.prop("checked", true)
+                        } else {
+                            inputEl.prop("checked", false)
                         }
                     })
 

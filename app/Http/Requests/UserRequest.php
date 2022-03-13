@@ -30,6 +30,21 @@ class UserRequest extends FormRequest
             'email' => 'min:3|required',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            "name.min" => "Ad en az 3 karakterden oluşmalıdır",
+            "name.required" => "Ad doldurmak zorundasınız",
+            "surname.min" => "Soyad en az 3 karakterden oluşmalıdır",
+            "surname.required" => "Soyad doldurmak zorundasınız",
+            "user_name.min" => "Kullanıcı adı en az 3 karakterden oluşmalıdır",
+            "user_name.required" => "Kullanıcı adı doldurmak zorundasınız",
+            "email.min" => "Email en az 3 karakterden oluşmalıdır",
+            "email.required" => "Email doldurmak zorundasınız",
+        ];
+    }
+
     public function attributes()
     {
         return [

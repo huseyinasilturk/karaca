@@ -158,12 +158,10 @@
                             </div>
                             <div class="mb-1">
                                 <label class="form-label" for="user-role">User Role</label>
-                                <select id="user-role" class="select2 form-select">
-                                    <option value="subscriber">Subscriber</option>
-                                    <option value="editor">Editor</option>
-                                    <option value="maintainer">Maintainer</option>
-                                    <option value="author">Author</option>
-                                    <option value="admin">Admin</option>
+                                <select id="user-role" class="select2 form-select" name="user_role">
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role->name }}">{{ $role->title }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="mb-2">
