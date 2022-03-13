@@ -20,7 +20,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        return view('live.product.list');
     }
 
     /**
@@ -30,7 +30,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $ProductObjectives=Objective::whereName("product")->get();
+        $ProductObjectives=Objective::whereName("productType")->get();
         return view('live.product.add', compact('ProductObjectives'));
     }
 
@@ -62,7 +62,7 @@ class ProductController extends Controller
                 $insertImage = FileData::insert($data);
             }
             // return response()->json(['message'=>'Registration Successful :)'],201);
-            $ProductObjectives=Objective::whereName("product")->get();
+            $ProductObjectives=Objective::whereName("productType")->get();
             return view('live.product.add', compact('ProductObjectives'));
         } else {
             return response()->json(['hata'=>'Registration Failed :/'],405);
@@ -88,9 +88,9 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $Product=Product::with('productFileData','productType')->find($id)->first();
-        // dd($Product);
-        return view('live.product.edit', compact('Product'));
+        $Product=Product::with('productFileData')->find($id)->first();
+        $ProductObjectives=Objective::whereName("productType")->get();
+        return view('live.product.edit', compact('Product','ProductObjectives'));
     }
 
     /**
@@ -158,6 +158,7 @@ class ProductController extends Controller
     {
         $FileData = FileData::find($request->id);
         $FileLocation='images/product/'.$FileData->file_name;
+        $FileData=$FileData->delete();
         File::deleteDirectory(public_path($FileLocation));
         return response()->json(['message'=>'Remove Successful :)','status'=>202],202);
     }

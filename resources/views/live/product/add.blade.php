@@ -53,8 +53,8 @@
 @endsection
 
 @section('vendor-script')
-    <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}""></script>
-    <script src="{{asset('js/scripts/forms/form-select2.js')}}""></script>
+    <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}"></script>
+    <script src="{{asset('js/scripts/forms/form-select2.js')}}"></script>
 @endsection
 
 @section('page-script')
