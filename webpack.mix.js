@@ -39,8 +39,9 @@ mixAssetsDir("scss/base/plugins/**/!(_)*.scss", (src, dest) =>
     mix.sass(
         src,
         dest
-        .replace(/(\\|\/)scss(\\|\/)/, "$1css$2")
-        .replace(/\.scss$/, ".css"), { sassOptions }
+            .replace(/(\\|\/)scss(\\|\/)/, "$1css$2")
+            .replace(/\.scss$/, ".css"),
+        { sassOptions }
     )
 );
 
@@ -49,8 +50,9 @@ mixAssetsDir("scss/base/pages/**/!(_)*.scss", (src, dest) =>
     mix.sass(
         src,
         dest
-        .replace(/(\\|\/)scss(\\|\/)/, "$1css$2")
-        .replace(/\.scss$/, ".css"), { sassOptions }
+            .replace(/(\\|\/)scss(\\|\/)/, "$1css$2")
+            .replace(/\.scss$/, ".css"),
+        { sassOptions }
     )
 );
 
@@ -59,8 +61,9 @@ mixAssetsDir("scss/base/core/**/!(_)*.scss", (src, dest) =>
     mix.sass(
         src,
         dest
-        .replace(/(\\|\/)scss(\\|\/)/, "$1css$2")
-        .replace(/\.scss$/, ".css"), { sassOptions }
+            .replace(/(\\|\/)scss(\\|\/)/, "$1css$2")
+            .replace(/\.scss$/, ".css"),
+        { sassOptions }
     )
 );
 
@@ -89,15 +92,18 @@ mix.js("resources/js/core/app-menu.js", "public/js/core")
     .js("resources/assets/js/scripts.js", "public/js/core")
     .sass(
         "resources/scss/base/themes/dark-layout.scss",
-        "public/css/base/themes", { sassOptions }
+        "public/css/base/themes",
+        { sassOptions }
     )
     .sass(
         "resources/scss/base/themes/bordered-layout.scss",
-        "public/css/base/themes", { sassOptions }
+        "public/css/base/themes",
+        { sassOptions }
     )
     .sass(
         "resources/scss/base/themes/semi-dark-layout.scss",
-        "public/css/base/themes", { sassOptions }
+        "public/css/base/themes",
+        { sassOptions }
     )
     .sass("resources/scss/core.scss", "public/css", { sassOptions })
     .sass("resources/scss/overrides.scss", "public/css", { sassOptions })
@@ -114,7 +120,7 @@ mix.then(() => {
         let command = `node ${path.resolve(
             "node_modules/rtlcss/bin/rtlcss.js"
         )} -d -e ".css" ./public/css/ ./public/css/`;
-        exec(command, function(err, stdout, stderr) {
+        exec(command, function (err, stdout, stderr) {
             if (err !== null) {
                 console.log(err);
             }

@@ -8,9 +8,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Mail\Subscribe;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use DB;
 
 class UserController extends Controller
 {
@@ -22,7 +22,14 @@ class UserController extends Controller
      */
     public function list()
     {
-       return view("live.user.list");
+        return view("live.user.list");
+    }
+
+    public function userList()
+    {
+        $user = User::join("information","information.id","=","users.information_id")->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"),"users.*","information.*","users.id as user_id"])->get();
+
+       return  response()->json($user,202);
     }
 
     /**

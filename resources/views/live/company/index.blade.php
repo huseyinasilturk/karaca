@@ -58,7 +58,7 @@
             $("#company-table").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('company.company') }}",
+                    url: route('company.company'),
                     method: "GET",
                     dataType: "json",
                     dataSrc: ""
