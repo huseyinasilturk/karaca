@@ -87,17 +87,10 @@
                 </div>
             </div>
         </div>
+
         <!-- list and filter start -->
         <div class="card">
-            <div class="card-body border-bottom">
-                <h4 class="card-title">Search & Filter</h4>
-                <div class="row">
-                    <div class="col-md-4 user_role"></div>
-                    <div class="col-md-4 user_plan"></div>
-                    <div class="col-md-4 user_status"></div>
-                </div>
-            </div>
-            <div class="card-datatable table-responsive pt-0">
+            <div class="card-datatable table-responsive p-3">
                 <table class="datatables-basic table">
                     <thead>
                         <tr>
@@ -105,21 +98,17 @@
                             <th></th>
                             <th>id</th>
                             <th>Name</th>
-                            <th>Email</th>
+                            <th>EMAIL</th>
                             <th>Date</th>
-                            <th>Salary</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                 </table>
             </div>
-            <!-- Modal to add new user starts-->
-
-
             <div class="modal modal-slide-in new-user-modal fade " id="modals-slide-in">
                 <div class="modal-dialog">
-                    <form class="add-new-user modal-content pt-0" action="{{ route('user.store') }}" method="POST">
+                    <form id="add-new-user" class="add-new-user modal-content pt-0" action="{{ route('user.store') }}" method="POST">
                         @csrf
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
                         <div class="modal-header mb-1">
@@ -169,15 +158,16 @@
                                 </select>
                             </div>
                             <div class="mb-2">
-                                <label class="form-label" for="user-plan">Birimi</label>
-                                <select id="user-plan" class="select2 form-select">
-                                    <option value="basic">Basic</option>
-                                    <option value="enterprise">Enterprise</option>
-                                    <option value="company">Company</option>
-                                    <option value="team">Team</option>
+                                <label class="form-label" for="user-plan">Firma</label>
+                                <select name="company_id" class="select2 form-select">
+
+                                    @foreach ($company as $value )
+                                        <option value="{{$value['id']}}">{{$value["name"]}}</option>
+                                    @endforeach
+
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary me-1 data-submit">Ekle</button>
+                            <button type="submit" class="btn btn-primary me-1 data-submit data-submit-btn">Ekle</button>
                             <button type="reset" onclick="modalHide(this)" class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal">İptal</button>
                         </div>
@@ -214,338 +204,296 @@
     <script src="{{ asset(mix('vendors/js/pickers/pickadate/picker.time.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/pickers/pickadate/legacy.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/pickers/flatpickr/flatpickr.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/extensions/moment.min.js')) }}"></script>
+
 @endsection
 
 @section('page-script')
     {{-- Page js files --}}
     <script>
 /**
- * DataTables Advanced
+ * DataTables Basic
  */
 
- "use strict";
+ $(function () {
+    "use strict";
 
-// Advanced Search Functions Starts
-// --------------------------------------------------------------------
-
-// Filter column wise function
-function filterColumn(i, val) {
-    if (i == 5) {
-        var startDate = $(".start_date").val(),
-            endDate = $(".end_date").val();
-        if (startDate !== "" && endDate !== "") {
-            filterByDate(i, startDate, endDate); // We call our filter function
-        }
-
-        $(".dt-advanced-search").dataTable().fnDraw();
-    } else {
-        $(".dt-advanced-search")
-            .DataTable()
-            .column(i)
-            .search(val, false, true)
-            .draw();
-    }
-}
-
-// Datepicker for advanced filter
-var separator = " - ",
-    rangePickr = $(".flatpickr-range"),
-    dateFormat = "MM/DD/YYYY";
-var options = {
-    autoUpdateInput: false,
-    autoApply: true,
-    locale: {
-        format: dateFormat,
-        separator: separator,
-    },
-    opens: $("html").attr("data-textdirection") === "rtl" ? "left" : "right",
-};
-
-//
-if (rangePickr.length) {
-    rangePickr.flatpickr({
-        mode: "range",
-        dateFormat: "m/d/Y",
-        onClose: function (selectedDates, dateStr, instance) {
-            var startDate = "",
-                endDate = new Date();
-            if (selectedDates[0] != undefined) {
-                startDate =
-                    selectedDates[0].getMonth() +
-                    1 +
-                    "/" +
-                    selectedDates[0].getDate() +
-                    "/" +
-                    selectedDates[0].getFullYear();
-                $(".start_date").val(startDate);
-            }
-            if (selectedDates[1] != undefined) {
-                endDate =
-                    selectedDates[1].getMonth() +
-                    1 +
-                    "/" +
-                    selectedDates[1].getDate() +
-                    "/" +
-                    selectedDates[1].getFullYear();
-                $(".end_date").val(endDate);
-            }
-            $(rangePickr).trigger("change").trigger("keyup");
-        },
-    });
-}
-
-// Advance filter function
-// We pass the column location, the start date, and the end date
-var filterByDate = function (column, startDate, endDate) {
-    // Custom filter syntax requires pushing the new filter to the global filter array
-    $.fn.dataTableExt.afnFiltering.push(function (
-        oSettings,
-        aData,
-        iDataIndex
-    ) {
-        var rowDate = normalizeDate(aData[column]),
-            start = normalizeDate(startDate),
-            end = normalizeDate(endDate);
-
-        // If our date from the row is between the start and end
-        if (start <= rowDate && rowDate <= end) {
-            return true;
-        } else if (rowDate >= start && end === "" && start !== "") {
-            return true;
-        } else if (rowDate <= end && start === "" && end !== "") {
-            return true;
-        } else {
-            return false;
-        }
-    });
-};
-
-// converts date strings to a Date object, then normalized into a YYYYMMMDD format (ex: 20131220). Makes comparing dates easier. ex: 20131220 > 20121220
-var normalizeDate = function (dateString) {
-    var date = new Date(dateString);
-    var normalized =
-        date.getFullYear() +
-        "" +
-        ("0" + (date.getMonth() + 1)).slice(-2) +
-        "" +
-        ("0" + date.getDate()).slice(-2);
-    return normalized;
-};
-// Advanced Search Functions Ends
-
-$(function () {
-    var isRtl = $("html").attr("data-textdirection") === "rtl";
-
-    var dt_ajax_table = $(".datatables-ajax"),
-        dt_filter_table = $(".dt-column-search"),
-        dt_adv_filter_table = $(".dt-advanced-search"),
-        dt_responsive_table = $(".dt-responsive"),
+    var dt_basic_table = $(".datatables-basic"),
         assetPath = "../../../app-assets/";
 
     if ($("body").attr("data-framework") === "laravel") {
         assetPath = $("body").attr("data-asset-path");
     }
 
-    // Ajax Sourced Server-side
-    // --------------------------------------------------------------------
-
-    if (dt_ajax_table.length) {
-        var dt_ajax = dt_ajax_table.dataTable({
-            processing: true,
-            dom: '<"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-            ajax: assetPath + "data/ajax.php",
-            language: {
-                paginate: {
-                    // remove previous & next text from pagination
-                    previous: "&nbsp;",
-                    next: "&nbsp;",
-                },
-            },
-        });
-    }
-
-    // Column Search
-    // --------------------------------------------------------------------
-
-    if (dt_filter_table.length) {
-        // Setup - add a text input to each footer cell
-        $(".dt-column-search thead tr")
-            .clone(true)
-            .appendTo(".dt-column-search thead");
-        $(".dt-column-search thead tr:eq(1) th").each(function (i) {
-            var title = $(this).text();
-            $(this).html(
-                '<input type="text" class="form-control form-control-sm" placeholder="Search ' +
-                    title +
-                    '" />'
-            );
-
-            $("input", this).on("keyup change", function () {
-                if (dt_filter.column(i).search() !== this.value) {
-                    dt_filter.column(i).search(this.value).draw();
-                }
-            });
-        });
-
-        var dt_filter = dt_filter_table.DataTable({
-            ajax: assetPath + "data/table-datatable.json",
+    if (dt_basic_table.length) {
+        var dt_basic = dt_basic_table.DataTable({
+            ajax: route("user.userList"),
             columns: [
-                { data: "full_name" },
+                { data: "user_id" },
+                { data: "id" },
+                { data: "id" }, // used for sorting so will hide this column
+                { data: "name_surname" },
                 { data: "email" },
-                { data: "post" },
-                { data: "city" },
-                { data: "start_date" },
-                { data: "salary" },
+                { data: "birthday" },
+                { data: "role_title" },
+                { data: "" },
             ],
-            dom: '<"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-            orderCellsTop: true,
-            language: {
-                paginate: {
-                    // remove previous & next text from pagination
-                    previous: "&nbsp;",
-                    next: "&nbsp;",
-                },
-            },
-        });
-    }
-
-    // Advanced Search
-    // --------------------------------------------------------------------
-
-    // Advanced Filter table
-    if (dt_adv_filter_table.length) {
-        var dt_adv_filter = dt_adv_filter_table.DataTable({
-            ajax: assetPath + "data/table-datatable.json",
-            columns: [
-                { data: "responsive_id" },
-                { data: "full_name" },
-                { data: "email" },
-                { data: "post" },
-                { data: "city" },
-                { data: "start_date" },
-                { data: "salary" },
-            ],
-
             columnDefs: [
+
                 {
+                    // For Responsive
                     className: "control",
                     orderable: false,
+                    responsivePriority: 2,
                     targets: 0,
                 },
-            ],
-            dom: '<"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-            orderCellsTop: true,
-            responsive: {
-                details: {
-                    display: $.fn.dataTable.Responsive.display.modal({
-                        header: function (row) {
-                            var data = row.data();
-                            return "Details of " + data["full_name"];
-                        },
-                    }),
-                    type: "column",
-                    renderer: function (api, rowIdx, columns) {
-                        var data = $.map(columns, function (col, i) {
-                            return col.title !== "" // ? Do not show row in modal popup if title is blank (for check box)
-                                ? '<tr data-dt-row="' +
-                                      col.rowIndex +
-                                      '" data-dt-column="' +
-                                      col.columnIndex +
-                                      '">' +
-                                      "<td>" +
-                                      col.title +
-                                      ":" +
-                                      "</td> " +
-                                      "<td>" +
-                                      col.data +
-                                      "</td>" +
-                                      "</tr>"
-                                : "";
-                        }).join("");
-
-                        return data
-                            ? $('<table class="table"/><tbody />').append(data)
-                            : false;
+                {
+                    // For Checkboxes
+                    targets: 1,
+                    orderable: false,
+                    responsivePriority: 3,
+                    render: function (data, type, full, meta) {
+                        return (
+                            '<div class="form-check"> <input class="form-check-input dt-checkboxes" type="checkbox" value="" id="checkbox' +
+                            data +
+                            '" /><label class="form-check-label" for="checkbox' +
+                            data +
+                            '"></label></div>'
+                        );
+                    },
+                    checkboxes: {
+                        selectAllRender:
+                            '<div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="checkboxSelectAll" /><label class="form-check-label" for="checkboxSelectAll"></label></div>',
                     },
                 },
-            },
-            language: {
-                paginate: {
-                    // remove previous & next text from pagination
-                    previous: "&nbsp;",
-                    next: "&nbsp;",
-                },
-            },
-        });
-    }
-
-    // on key up from input field
-    $("input.dt-input").on("keyup", function () {
-        filterColumn($(this).attr("data-column"), $(this).val());
-    });
-
-    // Responsive Table
-    // --------------------------------------------------------------------
-
-    if (dt_responsive_table.length) {
-        var dt_responsive = dt_responsive_table.DataTable({
-            ajax: assetPath + "data/table-datatable.json",
-            columns: [
-                { data: "responsive_id" },
-                { data: "full_name" },
-                { data: "email" },
-                { data: "post" },
-                { data: "city" },
-                { data: "start_date" },
-                { data: "salary" },
-                { data: "age" },
-                { data: "experience" },
-                { data: "status" },
-            ],
-            columnDefs: [
                 {
-                    className: "control",
-                    orderable: false,
-                    targets: 0,
+                    targets: 2,
+                    visible: false,
+                },
+                {
+                    // Avatar image/badge, Name and post
+                    targets: 3,
+                    responsivePriority: 4,
+                    render: function (data, type, full, meta) {
+                        let  $post = full["user_name"];
+                        // For Avatar badge
+                        var stateNum = full["status"];
+                        var states = [
+                            "success",
+                            "danger",
+                            "warning",
+                            "info",
+                            "dark",
+                            "primary",
+                            "secondary",
+                        ];
+                        var $state = states[stateNum],
+                            $name = full["name_surname"],
+                            $initials = $name.match(/\b\w/g) || [];
+
+                        $initials = (
+                            ($initials.shift() || "") +
+                            ($initials.pop() || "")
+                        ).toUpperCase();
+
+                        let $output =
+                            '<span class="avatar-content">' +
+                            $initials +
+                            "</span>";
+
+                        var colorClass = " bg-light-" + $state + " " ;
+                        // Creates full output for row
+                        var $row_output =
+                            '<div class="d-flex justify-content-left align-items-center">' +
+                            '<div class="avatar ' +
+                            colorClass +
+                            ' me-1">' +
+                            $output +
+                            "</div>" +
+                            '<div class="d-flex flex-column">' +
+                            '<span class="emp_name text-truncate fw-bold">' +
+                            $name +
+                            "</span><span class='tr-companyId d-none'>"+ full["company_id"]+"</span> <span class='tr-name d-none'>"+full["name"]+"</span> <span class='tr-surname d-none'>"+full["surname"]+"</span>" +
+                            "<small class='emp_post text-truncate text-muted'> <span class='tr-user-name'>"+ $post+"</span></small>" +
+                            "</div>" +
+                            "</div>";
+                        return $row_output;
+                    },
+                },
+                {
+                    targets: -4,
+                    render: function (data, type, full, meta) {
+                         return "<span class='tr-email'>"+ data+"</span>";
+
+                    },
+                },
+                {
+                    targets: -3,
+                    render: function (data, type, full, meta) {
+                        return "<span class='tr-birthday'>"+ moment(data).format("DD.MM.YYYY")+"</span>";
+                    },
                 },
                 {
                     // Label
-                    targets: -1,
+                    targets: -2,
                     render: function (data, type, full, meta) {
-                        var $status_number = full["status"];
+                        var $status_number = full["role_name"];
                         var $status = {
-                            1: {
+                            admin: {
                                 title: "Current",
                                 class: "badge-light-primary",
                             },
-                            2: {
+                            user: {
                                 title: "Professional",
                                 class: " badge-light-success",
-                            },
-                            3: {
-                                title: "Rejected",
-                                class: " badge-light-danger",
-                            },
-                            4: {
-                                title: "Resigned",
-                                class: " badge-light-warning",
-                            },
-                            5: { title: "Applied", class: " badge-light-info" },
+                            }
                         };
                         if (typeof $status[$status_number] === "undefined") {
-                            return data;
+                            return (
+                            '<span class="badge rounded-pill badge-light-danger">' +
+                            data +
+                            "</span><span class='tr-role d-none'>"+ full["role_name"]+"</span>"
+                        );
                         }
                         return (
                             '<span class="badge rounded-pill ' +
                             $status[$status_number].class +
                             '">' +
-                            $status[$status_number].title +
-                            "</span>"
+                            data +
+                            "</span><span class='tr-role d-none'>"+ full["role_name"]+"</span>"
+                        );
+                    },
+                },
+                {
+                    // Actions
+                    targets: -1,
+                    title: "Actions",
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        console.log(full);
+                        return (
+                            '<div class="d-inline-flex">' +
+                            '<a class="pe-1 dropdown-toggle hide-arrow text-primary" data-bs-toggle="dropdown">' +
+                            feather.icons["more-vertical"].toSvg({
+                                class: "font-small-4",
+                            }) +
+                            "</a>" +
+                            '<div class="dropdown-menu dropdown-menu-end">' +
+                            '<a href="javascript:;" class="dropdown-item">' +
+                            feather.icons["file-text"].toSvg({
+                                class: "font-small-4 me-50",
+                            }) +
+                            "Details</a>" +
+                            '<a href="javascript:;" class="dropdown-item">' +
+                            feather.icons["archive"].toSvg({
+                                class: "font-small-4 me-50",
+                            }) +
+                            "Archive</a>" +
+                            '<a href="javascript:;" class="dropdown-item delete-record">' +
+                            feather.icons["trash-2"].toSvg({
+                                class: "font-small-4 me-50",
+                            }) +
+                            `Delete</a>
+                            </div>
+                            </div>
+                            <a onclick="fun_userEdit(this)"   user_id="${full["user_id"]}" class="item-edit">` +
+                            feather.icons["edit"].toSvg({
+                                class: "font-small-4",
+                            }) +
+                            "</a>"
                         );
                     },
                 },
             ],
-            dom: '<"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+            createdRow: function( row, data, dataIndex ) {
+                $(row).attr('user_id', data["user_id"]);
+            },
+            order: [[2, "desc"]],
+            dom: '<"card-header border-bottom p-1"<"head-label"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+            displayLength: 7,
+            lengthMenu: [7, 10, 25, 50, 75, 100],
+            buttons: [
+                {
+                    extend: "collection",
+                    className: "btn btn-outline-secondary dropdown-toggle me-2",
+                    text:
+                        feather.icons["share"].toSvg({
+                            class: "font-small-4 me-50",
+                        }) + "Çıktı Al",
+                    buttons: [
+                        {
+                            extend: "print",
+                            text:
+                                feather.icons["printer"].toSvg({
+                                    class: "font-small-4 me-50",
+                                }) + "Yazdır",
+                            className: "dropdown-item",
+                            exportOptions: { columns: [3, 4, 5, 6, 7] },
+                        },
+                        {
+                            extend: "csv",
+                            text:
+                                feather.icons["file-text"].toSvg({
+                                    class: "font-small-4 me-50",
+                                }) + "Csv",
+                            className: "dropdown-item",
+                            exportOptions: { columns: [3, 4, 5, 6, 7] },
+                        },
+                        {
+                            extend: "excel",
+                            text:
+                                feather.icons["file"].toSvg({
+                                    class: "font-small-4 me-50",
+                                }) + "Excel",
+                            className: "dropdown-item",
+                            exportOptions: { columns: [3, 4, 5, 6, 7] },
+                        },
+                        {
+                            extend: "pdf",
+                            text:
+                                feather.icons["clipboard"].toSvg({
+                                    class: "font-small-4 me-50",
+                                }) + "Pdf",
+                            className: "dropdown-item",
+                            exportOptions: { columns: [3, 4, 5, 6, 7] },
+                        },
+                        {
+                            extend: "copy",
+                            text:
+                                feather.icons["copy"].toSvg({
+                                    class: "font-small-4 me-50",
+                                }) + "Copy",
+                            className: "dropdown-item",
+                            exportOptions: { columns: [3, 4, 5, 6, 7] },
+                        },
+                    ],
+                    init: function (api, node, config) {
+                        $(node).removeClass("btn-secondary");
+                        $(node).parent().removeClass("btn-group");
+                        setTimeout(function () {
+                            $(node)
+                                .closest(".dt-buttons")
+                                .removeClass("btn-group")
+                                .addClass("d-inline-flex");
+                        }, 50);
+                    },
+                },
+                {
+                    text:
+                        feather.icons["plus"].toSvg({
+                            class: "me-50 font-small-4",
+                        }) + "Yeni Personel Ekle",
+                    className: "create-new btn btn-primary",
+                    attr: {
+                        "data-bs-toggle": "modal",
+                        "data-bs-target": "#modals-slide-in",
+                        "id":"personal-add-update",
+                    },
+                    init: function (api, node, config) {
+                        $(node).removeClass("btn-secondary");
+                    },
+                },
+            ],
             responsive: {
                 details: {
                     display: $.fn.dataTable.Responsive.display.modal({
@@ -590,15 +538,77 @@ $(function () {
                 },
             },
         });
+        $("div.head-label").html(
+            '<h3 class="mb-0">Personeller</h3>'
+        );
     }
 
-    // Filter form control to default size for all tables
-    $(".dataTables_filter .form-control").removeClass("form-control-sm");
-    $(".dataTables_length .form-select")
-        .removeClass("form-select-sm")
-        .removeClass("form-control-sm");
+
+
+
+    // Delete Record
+    $(".datatables-basic tbody").on("click", ".delete-record", function () {
+        dt_basic.row($(this).parents("tr")).remove().draw();
+        $.ajax({
+                url: "{{ route('objective.store') }}",
+                method: "POST",
+                data: formData,
+                beforeSend: function() {
+                    $(el).attr('disabled', true);
+                },
+                success: (res) => {
+
+                },
+                error: (err) => {
+
+                },
+                complete: function() {
+
+                },
+            });
+
+
+
+
+
+    });
+
 });
 
+
+$("body").on("click", "#personal-add-update", function () {
+
+    $("input[name='name']").val("");
+    $("input[name='surname']").val("");
+    $("input[name='birthday']").val("");
+    $("input[name='email']").val("");
+    $("input[name='user_name']").val("");
+    $("select[name='user_role']").val("");
+    $("select[name='company_id']").val("");
+    document.getElementById("add-new-user").setAttribute("action", route('user.store'));
+
+});
+
+
+
+function fun_userEdit(params) {
+
+    const tr = $(params).closest("tr");
+    $("input[name='name']").val($(tr).find(".tr-name").html());
+    $("input[name='surname']").val($(tr).find(".tr-surname").html());
+    $("input[name='birthday']").val($(tr).find(".tr-birthday").html());
+    $("input[name='email']").val($(tr).find(".tr-email").html());
+    $("input[name='user_name']").val($(tr).find(".tr-user-name").html());
+    $("select[name='user_role']").val($(tr).find(".tr-role").html());
+    $("select[name='company_id']").val($(tr).find(".tr-companyId").html());
+
+    const userId = $(params).attr("user_id");
+
+    document.getElementById("add-new-user").setAttribute("action", route("user.update", { id:userId  }));
+    $('#modals-slide-in').modal('toggle');
+
+    console.log($(tr).find(".tr-name").html());
+}
 
     </script>
     <script src="{{ asset(mix('js/scripts/forms/pickers/form-pickers.js')) }}"></script>
