@@ -7,6 +7,7 @@ use App\Models\Information;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Mail\Subscribe;
+use App\Models\Company;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -24,15 +25,19 @@ class UserController extends Controller
     public function list()
     {
         $roles = Role::all();
-        // dd($roles);
-        return view("live.user.list", compact("roles"));
+        $company = Company::all();
+
+        return view("live.user.list", compact("roles","company"));
     }
 
     public function userList()
     {
-        $user = User::join("information", "information.id", "=", "users.information_id")->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"), "users.*", "information.*", "users.id as user_id"])->get();
+        $user = User::join("information", "information.id", "=", "users.information_id")->join("model_has_roles as mhr","mhr.model_id","=","users.id")
+        ->join("roles as r","r.id","=","mhr.role_id")
+        ->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"), "users.*", "information.*", "users.id as user_id","r.title as role_title","r.name as role_name"])->get();
 
-        return  response()->json($user, 202);
+
+        return  response()->json(["data"=>$user], 202);
     }
 
     /**
@@ -43,7 +48,6 @@ class UserController extends Controller
     public function index()
     {
         $user = DB::table("users as u")->join("information as i", "i.id", "=", "u.information_id")->get();
-        dd($user);
     }
 
     /**
@@ -65,16 +69,24 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         $information = Information::create($request->only("name", "surname", "birthday"));
+
         $password = $this->generatePassword(6, 2);
-        $user = User::create(array_merge($request->only("user_name", "email"), ['password' => bcrypt($password), "information_id" => $information->id]));
+
+        $user = User::create(array_merge($request->only("user_name", "email","company_id"), ['password' => bcrypt($password), "information_id" => $information->id]));
+
         $userName = $request->name . " " . $request->surname;
+
         $user_information = array(["name" => $userName, "user_name" => $request->user_name, "password" => $password]);
 
         Mail::to($request->only("email"))->send(new Subscribe($user_information));
 
         $assingRole = $user->assignRole($request->user_role);
 
-        dd($user, $password);
+        $roles = Role::all();
+
+        $company = Company::all();
+
+        return view("live.user.list", compact("roles","company"));
     }
 
     /**
@@ -108,7 +120,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd($request);
     }
 
     /**
@@ -119,7 +131,14 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+
+        try {
+            User::find($id)->delete();
+            return response()->json(["message"=>"Personel Silindi."],202);
+        } catch (\Throwable $th) {
+            return response()->json(["message"=>"Personel Silinemedi."],404);
+        }
+
     }
 
 
