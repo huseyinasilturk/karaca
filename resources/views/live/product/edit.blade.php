@@ -26,13 +26,6 @@
             </div>
             <div class="col-md-6 col-12">
                 <div class="mb-1">
-                    <label class="form-label" for="productListPrice">Liste Fiyatı</label>
-                    <input id="productListPrice" class="form-control" name="listPrice[1]" type="number" placeholder="Liste Fiyatını Giriniz" min="0" step=".01" autocomplete="off" value="0" required/>
-                    <input id="productListPrice" class="form-control" name="listPrice[2]" type="number" placeholder="Liste Fiyatını Giriniz" min="0" step=".01" autocomplete="off" value="0" required/>
-                </div>
-            </div>
-            <div class="col-md-6 col-12">
-                <div class="mb-1">
                     <label class="form-label" for="productTypeID">Ürün Tipi</label>
                     <select class="select2 form-select" id="productTypeID" name="type_id" required>
                         <option value="0">Seçiniz</option>
@@ -42,12 +35,21 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-6 col-12">
+            @foreach ($Company as $firm)
+                <div class="col-md-6 col-12">
+                    <div class="mb-1">
+                        <label class="col-form-label" for="productListPrice{{ $firm->id }}">{{ $firm->name }} Liste Fiyatı</label>
+                        <input id="productListPrice{{ $firm->id }}" class="form-control" name="listPrice[{{ $firm->id }}]" type="number" placeholder="Liste Fiyatını Giriniz" min="0" step=".01" autocomplete="off" value="{{ isset($Product->productCompanyGet[$firm->id]->list_price) ? $Product->productCompanyGet[$firm->id]->list_price : 0 }}" required/>
+                    </div>
+                </div>
+            @endforeach
+            <div class="col-md-12 col-12">
                 <div class="mb-1">
                     <label class="form-label" for="files">Ürün Görselleri</label>
                     <input id="files" class="form-control" name="files[]" type="file" multiple/>
                 </div>
             </div>
+
             <div class="col-12 mt-50">
                 <input type="hidden" name="id" value="{{ $Product->id }}">
                 <button type="submit" class="btn btn-primary me-1 waves-effect waves-float waves-light">Kaydet</button>
