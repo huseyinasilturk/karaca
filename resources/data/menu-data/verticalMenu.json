@@ -43,7 +43,27 @@
             "slug": "company.create"
           }
       ]
-  },
+    },
+    {
+        "url": "product",
+        "name": "Ürünler",
+        "icon": "shopping-cart",
+        "slug": "",
+        "submenu": [
+            {
+                "url": "product/",
+                "name": "Ürün Listele",
+                "icon": "circle",
+                "slug": "product.index"
+            },
+            {
+                "url": "product/add",
+                "name": "Ürün Ekle",
+                "icon": "circle",
+                "slug": "product.create"
+            }
+        ]
+    },
     {
       "navheader": "Araçlar",
       "slug": ""
@@ -59,26 +79,6 @@
       "name": "Nesneler",
       "icon": "command",
       "slug": "objective.index"
-    },
-    {
-        "url": "product",
-        "name": "Ürünler",
-        "icon": "shopping-cart",
-        "slug": "",
-        "submenu": [
-            {
-              "url": "product/",
-              "name": "Ürün Listele",
-              "icon": "circle",
-              "slug": "product.index"
-            },
-            {
-              "url": "product/add",
-              "name": "Ürün Ekle",
-              "icon": "circle",
-              "slug": "product.create"
-            }
-        ]
     },
     {
       "navheader": "Development",

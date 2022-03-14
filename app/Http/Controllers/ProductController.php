@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Company;
 use App\Models\FileData;
 use App\Models\ListPrice;
 use App\Models\Objective;
@@ -21,9 +22,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $Product=Product::with('productFileData','productTypeGet')->get();
-        // return ($Product);
-        return view('live.product.list', compact('Product'));
+        $Product=Product::with('productFileData','productTypeGet','productCompanyGet')->get();
+        // dd($Product);
+        $Company=Company::all();
+        return view('live.product.list', compact('Product','Company'));
     }
 
     /**
@@ -34,7 +36,8 @@ class ProductController extends Controller
     public function create()
     {
         $ProductObjectives=Objective::whereName("productType")->get();
-        return view('live.product.add', compact('ProductObjectives'));
+        $Company=Company::all();
+        return view('live.product.add', compact('ProductObjectives','Company'));
     }
 
     /**
@@ -64,6 +67,13 @@ class ProductController extends Controller
                 }
                 $insertImage = FileData::insert($data);
             }
+            $listPrices=$request->listPrice;
+            foreach ($listPrices as $companyId => $price) {
+                ListPrice::updateOrCreate(
+                    ['company_id' => $companyId, 'product_id' => $product->id],
+                    ['list_price' => $price]
+                );
+            }
             return redirect()->route('product.edit',$product->id);
         } else {
             return response()->json(['hata'=>'Registration Failed :/'],405);
@@ -89,9 +99,11 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $Product=Product::with('productFileData')->find($id)->first();
+        $Product=Product::whereId($id)->with('productFileData','productCompanyGet')->first();
+        $Product->productCompanyGet=$Product->productCompanyGet->keyBy('company_id');
         $ProductTypeObjectives=Objective::whereName("productType")->get();
-        return view('live.product.edit', compact('Product','ProductTypeObjectives'));
+        $Company=Company::all();
+        return view('live.product.edit', compact('Product','ProductTypeObjectives','Company'));
     }
 
     /**

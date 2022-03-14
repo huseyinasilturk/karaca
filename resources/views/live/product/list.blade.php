@@ -18,28 +18,31 @@
 <table class="table">
   <thead>
     <tr>
-      <th scope="col">Ürün Adı</th>
-      <th scope="col">Ürün Tipi</th>
-      <th scope="col">Liste Fiyatı</th>
-      <th scope="col">İşlemler</th>
+        <th scope="col">ÜRÜN ADI</th>
+        <th scope="col">ÜRÜN TİPİ</th>
+        @foreach ($Company as $firm)
+            <th scope="col">{{ mb_strtoupper($firm->name, "UTF-8") }} LİSTE FİYATI</th>
+        @endforeach
+        <th scope="col">İŞLEMLER</th>
     </tr>
   </thead>
   <tbody>
     @foreach ($Product as $pro)
         <tr>
             <td>{{ $pro->name }}</td>
-            <td>{{ $pro->productTypeGet->text1 }}</td>
-            <td>{{ $pro->list_price }}</td>
+            <td>{{ isset($pro->productTypeGet->text1) ? $pro->productTypeGet->text1 : '' }}</td>
+            @foreach ($pro->productCompanyGet as $productPrice)
+                <td>{{ $productPrice->list_price }}</td>
+            @endforeach
             <td>
                 <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    İşlemler
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    {{-- <li><a class="dropdown-item" href="?s=urun&a=detay&id=id"><i class="fa-solid fa-circle-info me-1"></i>Detay</a></li> --}}
-                    <li><a class="dropdown-item" href="{{ route('product.edit',$pro->id) }}"><i class="fa-solid fa-pen-to-square me-1"></i></i>Düzenle</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="productDelete(this)" dataID="{{ $pro->id }}"><i class="fa-solid fa-trash-can me-1"></i>Sil</a></li>
-                </ul>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        İşlemler
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="{{ route('product.edit',$pro->id) }}"><i class="fa-solid fa-pen-to-square me-1"></i></i>Düzenle</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="productDelete(this)" dataID="{{ $pro->id }}"><i class="fa-solid fa-trash-can me-1"></i>Sil</a></li>
+                    </ul>
                 </div>
             </td>
         </tr>
