@@ -64,8 +64,22 @@
         "url": "product",
         "name": "Ürünler",
         "icon": "shopping-cart",
-        "slug": "product.index"
-      },
+        "slug": "",
+        "submenu": [
+            {
+              "url": "product/",
+              "name": "Ürün Listele",
+              "icon": "circle",
+              "slug": "product.index"
+            },
+            {
+              "url": "product/add",
+              "name": "Ürün Ekle",
+              "icon": "circle",
+              "slug": "product.create"
+            }
+        ]
+    },
     {
       "navheader": "Development",
       "slug": ""

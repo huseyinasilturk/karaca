@@ -25,24 +25,25 @@
     </tr>
   </thead>
   <tbody>
-      {{ dd($Product) }}
-    <tr>
-      <td>Pasta</td>
-      <td>Tatlı</td>
-      <td>12.50</td>
-      <td>
-        <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-            İşlemler
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            {{-- <li><a class="dropdown-item" href="?s=urun&a=detay&id=id"><i class="fa-solid fa-circle-info me-1"></i>Detay</a></li> --}}
-            <li><a class="dropdown-item" href="?s=urun&a=duzenle&id=id"><i class="fa-solid fa-pen-to-square me-1"></i></i>Düzenle</a></li>
-            <li><a class="dropdown-item" href="?s=urun&a=listele&idx=id"><i class="fa-solid fa-trash-can me-1"></i>Sil</a></li>
-          </ul>
-        </div>
-      </td>
-    </tr>
+    @foreach ($Product as $pro)
+        <tr>
+            <td>{{ $pro->name }}</td>
+            <td>{{ $pro->productTypeGet->text1 }}</td>
+            <td>{{ $pro->list_price }}</td>
+            <td>
+                <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    İşlemler
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    {{-- <li><a class="dropdown-item" href="?s=urun&a=detay&id=id"><i class="fa-solid fa-circle-info me-1"></i>Detay</a></li> --}}
+                    <li><a class="dropdown-item" href="{{ route('product.edit',$pro->id) }}"><i class="fa-solid fa-pen-to-square me-1"></i></i>Düzenle</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="productDelete(this)" dataID="{{ $pro->id }}"><i class="fa-solid fa-trash-can me-1"></i>Sil</a></li>
+                </ul>
+                </div>
+            </td>
+        </tr>
+    @endforeach
   </tbody>
 </table>
 
@@ -91,8 +92,54 @@
     <script src="{{asset('vendors/js/tables/datatable/dataTables.responsive.min.js')}}"></script>
     <script src="{{asset('vendors/js/tables/datatable/responsive.bootstrap5.js')}}"></script>
     <script src="{{asset('js/scripts/tables/table-datatables-advanced.js')}}"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="{{ asset(mix('vendors/js/extensions/sweetalert2.all.min.js')) }}"></script>
 @endsection
 
 @section('page-script')
-
+<script>
+    $(document).ready(() => {
+       $.ajaxSetup({
+           headers: {
+               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+           }
+       })
+   })
+   function productDelete(ths){
+       Swal.fire({
+           title: 'Silmek istediğinden emin misin?',
+           text: "Ürün kalıcı olarak silinir!",
+           icon: 'question',
+           showCancelButton: true,
+           confirmButtonColor: '#3085d6',
+           cancelButtonColor: '#d33',
+           cancelButtonText: 'Vazgeç',
+           confirmButtonText: 'Evet sil.'
+       }).then((result) => {
+           if (result.isConfirmed) {
+               dataID=$(ths).attr("dataID");
+               $.ajax({
+                   url: route('product.delete',dataID),
+                   method: "delete",
+                   success: (res) => {
+                       if (res.status === 202) {
+                           $(ths).closest("tr").remove();
+                           Swal.fire(
+                               'Silindi!',
+                               'Ürün başarıyla silindi.',
+                               'success'
+                           )
+                       } else {
+                           Swal.fire(
+                               'Silinemedi!',
+                               'Ürün silinmesinde bir sorun oluştu yazılımcı ile iletişime geçin',
+                               'error'
+                           )
+                       }
+                   }
+                })
+           }
+       })
+   }
+</script>
 @endsection
