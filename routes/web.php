@@ -19,6 +19,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -87,6 +88,11 @@ Route::group(["middleware" => "auth"], function () {
         Route::delete("/{id}", [CompanyController::class, "delete"])->name(".delete")->whereNumber("id");
 
         Route::post("/", [CompanyController::class, "store"])->name(".store");
+    });
+
+    // Stock prefix
+    Route::prefix("stock")->name("stock")->group(function () {
+        Route::get("/", [StockController::class, "index"])->name(".index");
     });
 });
 
