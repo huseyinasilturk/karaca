@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/rowGroup.bootstrap5.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/pickadate/pickadate.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/flatpickr/flatpickr.min.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/animate/animate.min.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/sweetalert2.min.css')) }}">
 @endsection
 
 @section('page-style')
@@ -25,72 +27,11 @@
     <!-- users list start -->
 
     <section class="app-user-list">
-        <div class="row">
-            <div class="col-lg-3 col-sm-6">
-                <div class="card">
-                    <div class="card-body d-flex align-items-center justify-content-between">
-                        <div>
-                            <h3 class="fw-bolder mb-75">21,459</h3>
-                            <span>Total Users</span>
-                        </div>
-                        <div class="avatar bg-light-primary p-50">
-                            <span class="avatar-content">
-                                <i data-feather="user" class="font-medium-4"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card">
-                    <div class="card-body d-flex align-items-center justify-content-between">
-                        <div>
-                            <h3 class="fw-bolder mb-75">4,567</h3>
-                            <span>Paid Users</span>
-                        </div>
-                        <div class="avatar bg-light-danger p-50">
-                            <span class="avatar-content">
-                                <i data-feather="user-plus" class="font-medium-4"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card">
-                    <div class="card-body d-flex align-items-center justify-content-between">
-                        <div>
-                            <h3 class="fw-bolder mb-75">19,860</h3>
-                            <span>Active Users</span>
-                        </div>
-                        <div class="avatar bg-light-success p-50">
-                            <span class="avatar-content">
-                                <i data-feather="user-check" class="font-medium-4"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card">
-                    <div class="card-body d-flex align-items-center justify-content-between">
-                        <div>
-                            <h3 class="fw-bolder mb-75">237</h3>
-                            <span>Pending Users</span>
-                        </div>
-                        <div class="avatar bg-light-warning p-50">
-                            <span class="avatar-content">
-                                <i data-feather="user-x" class="font-medium-4"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
         <!-- list and filter start -->
         <div class="card">
-            <div class="card-datatable table-responsive p-3">
+            <div class="card-datatable table-responsive p-0">
                 <table class="datatables-basic table">
                     <thead>
                         <tr>
@@ -110,6 +51,8 @@
                 <div class="modal-dialog">
                     <form id="add-new-user" class="add-new-user modal-content pt-0" action="{{ route('user.store') }}" method="POST">
                         @csrf
+                        @method("put")
+
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
                         <div class="modal-header mb-1">
                             <h5 class="modal-title" id="exampleModalLabel">Yeni personel kaydet.</h5>
@@ -160,14 +103,20 @@
                             <div class="mb-2">
                                 <label class="form-label" for="user-plan">Firma</label>
                                 <select name="company_id" class="select2 form-select">
-
                                     @foreach ($company as $value )
                                         <option value="{{$value['id']}}">{{$value["name"]}}</option>
                                     @endforeach
 
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary me-1 data-submit data-submit-btn">Ekle</button>
+                            @if (auth()->user()->roles[0]->name == "owner")
+                            <div class="mb-1">
+                                <label class="form-label" for="basic-icon-default-email">Maaş</label>
+                                <input type="number" class="form-control dt-email"
+                                    name="wage" value="{{ old('wage') }}" />
+                            </div>
+                            @endif
+                            <button type="submit" class="btn btn-primary me-1 data-submit data-submit-btn insert-or-update">Ekle</button>
                             <button type="reset" onclick="modalHide(this)" class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal">İptal</button>
                         </div>
@@ -205,6 +154,8 @@
     <script src="{{ asset(mix('vendors/js/pickers/pickadate/legacy.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/pickers/flatpickr/flatpickr.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/extensions/moment.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/extensions/sweetalert2.all.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/extensions/polyfill.min.js')) }}"></script>
 
 @endsection
 
@@ -273,7 +224,7 @@
                 {
                     // Avatar image/badge, Name and post
                     targets: 3,
-                    responsivePriority: 4,
+                    responsivePriority: 1,
                     render: function (data, type, full, meta) {
                         let  $post = full["user_name"];
                         // For Avatar badge
@@ -369,8 +320,8 @@
                     targets: -1,
                     title: "Actions",
                     orderable: false,
+                    responsivePriority:0,
                     render: function (data, type, full, meta) {
-                        console.log(full);
                         return (
                             '<div class="d-inline-flex">' +
                             '<a class="pe-1 dropdown-toggle hide-arrow text-primary" data-bs-toggle="dropdown">' +
@@ -379,28 +330,23 @@
                             }) +
                             "</a>" +
                             '<div class="dropdown-menu dropdown-menu-end">' +
-                            '<a href="javascript:;" class="dropdown-item">' +
+                                `<a onclick="fun_userDetail(this)"   user_id="${full["user_id"]}" class="dropdown-item">` +
                             feather.icons["file-text"].toSvg({
                                 class: "font-small-4 me-50",
                             }) +
                             "Details</a>" +
-                            '<a href="javascript:;" class="dropdown-item">' +
-                            feather.icons["archive"].toSvg({
-                                class: "font-small-4 me-50",
-                            }) +
-                            "Archive</a>" +
-                            '<a href="javascript:;" class="dropdown-item delete-record">' +
+                            `<a  user_id="${full["user_id"]}" class="dropdown-item delete-record">` +
                             feather.icons["trash-2"].toSvg({
                                 class: "font-small-4 me-50",
                             }) +
-                            `Delete</a>
-                            </div>
-                            </div>
-                            <a onclick="fun_userEdit(this)"   user_id="${full["user_id"]}" class="item-edit">` +
+                            `Sil</a><a onclick="fun_userEdit(this)"  class="dropdown-item"   user_id="${full["user_id"]}" class="item-edit">` +
                             feather.icons["edit"].toSvg({
                                 class: "font-small-4",
-                            }) +
-                            "</a>"
+                            })+`
+                            Düzenle</a>
+                            </div>
+                            </div>`
+
                         );
                     },
                 },
@@ -499,13 +445,13 @@
                     display: $.fn.dataTable.Responsive.display.modal({
                         header: function (row) {
                             var data = row.data();
-                            return "Details of " + data["full_name"];
+                            return "Details of " + data["name_surname"];
                         },
                     }),
                     type: "column",
                     renderer: function (api, rowIdx, columns) {
                         var data = $.map(columns, function (col, i) {
-                            return col.title !== "" // ? Do not show row in modal popup if title is blank (for check box)
+                            return col.title !== "Actions" // ? Do not show row in modal popup if title is blank (for check box)
                                 ? '<tr data-dt-row="' +
                                       col.rowIdx +
                                       '" data-dt-column="' +
@@ -548,24 +494,53 @@
 
     // Delete Record
     $(".datatables-basic tbody").on("click", ".delete-record", function () {
-        dt_basic.row($(this).parents("tr")).remove().draw();
-        $.ajax({
-                url: "{{ route('objective.store') }}",
-                method: "POST",
-                data: formData,
+
+
+
+
+        var timerInterval;
+            Swal.fire({
+
+                title: "Emin misin?",
+                text: "Bu kullanıcı silinecek!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Evet, sil!",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                    cancelButton: "btn btn-outline-danger ms-1",
+                },
+                buttonsStyling: false,
+                showLoaderOnConfirm: true,
+                timer: 4000,
+                timerProgressBar: true,
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.value) {
+                    $.ajax({
+                url: route('user.delete',{id:$(this).parents("tr").attr("user_id")}),
+                method: "DELETE",
                 beforeSend: function() {
-                    $(el).attr('disabled', true);
+                    $(this).attr('disabled', true);
                 },
                 success: (res) => {
+                    dt_basic.row($(this).parents("tr")).remove().draw();
 
                 },
                 error: (err) => {
-
+                    $(this).attr('disabled', false);
                 },
                 complete: function() {
 
                 },
             });
+                }
+            });
+
+
+
+
+
 
 
 
@@ -585,6 +560,9 @@ $("body").on("click", "#personal-add-update", function () {
     $("input[name='user_name']").val("");
     $("select[name='user_role']").val("");
     $("select[name='company_id']").val("");
+
+    document.getElementsByName("_method")[0].value = "post"
+    document.getElementsByClassName("insert-or-update")[0].textContent = "Ekle";
     document.getElementById("add-new-user").setAttribute("action", route('user.store'));
 
 });
@@ -601,13 +579,15 @@ function fun_userEdit(params) {
     $("input[name='user_name']").val($(tr).find(".tr-user-name").html());
     $("select[name='user_role']").val($(tr).find(".tr-role").html());
     $("select[name='company_id']").val($(tr).find(".tr-companyId").html());
+    document.getElementsByClassName("insert-or-update")[0].textContent = "Düzenle";
 
+
+    document.getElementsByName("_method")[0].value = "put"
     const userId = $(params).attr("user_id");
-
     document.getElementById("add-new-user").setAttribute("action", route("user.update", { id:userId  }));
+
     $('#modals-slide-in').modal('toggle');
 
-    console.log($(tr).find(".tr-name").html());
 }
 
     </script>
