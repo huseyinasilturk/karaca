@@ -58,6 +58,7 @@
           }
       ]
      },
+     {
         "url": "product",
         "name": "Ürünler",
         "icon": "shopping-cart",
