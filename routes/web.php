@@ -64,8 +64,6 @@ Route::group(["middleware" => "auth"], function () {
         Route::get("/", [UserController::class, "index"])->name(".index");
         Route::delete("/delete/{id}", [UserController::class, "destroy"])->name(".destroy");
         Route::put("/edit/{id}", [UserController::class, "update"])->name(".update");
-
-
     });
 
     // Rol prefix
@@ -90,9 +88,16 @@ Route::group(["middleware" => "auth"], function () {
         Route::post("/", [CompanyController::class, "store"])->name(".store");
     });
 
-    // Stock prefix
+    // Stok prefix
     Route::prefix("stock")->name("stock")->group(function () {
+        // Stok anasayfa
         Route::get("/", [StockController::class, "index"])->name(".index");
+
+        // Stok ekle
+        Route::post("/", [StockController::class, "store"])->name(".store");
+
+        // Stok ürünleri filtrele
+        Route::post("/filter-products", [StockController::class, "filterProducts"])->name(".filterProducts");
     });
 });
 
