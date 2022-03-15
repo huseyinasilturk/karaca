@@ -22,10 +22,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $Product=Product::with('productFileData','productTypeGet','productCompanyGet')->get();
+        $Product = Product::with('productFileData', 'productTypeGet', 'productCompanyGet')->get();
         // dd($Product);
-        $Company=Company::all();
-        return view('live.product.list', compact('Product','Company'));
+        $Company = Company::all();
+        return view('live.product.list', compact('Product', 'Company'));
     }
 
     /**
@@ -35,9 +35,9 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $ProductObjectives=Objective::whereName("productType")->get();
-        $Company=Company::all();
-        return view('live.product.add', compact('ProductObjectives','Company'));
+        $ProductObjectives = Objective::whereName("productType")->get();
+        $Company = Company::all();
+        return view('live.product.add', compact('ProductObjectives', 'Company'));
     }
 
     /**
@@ -54,7 +54,7 @@ class ProductController extends Controller
             'type_id' => $request->type_id
         ]);
 
-        if($product){
+        if ($product) {
             $data = [];
             if ($request->hasFile("files")) {
                 foreach ($request->file("files") as $key => $file) {
@@ -67,16 +67,17 @@ class ProductController extends Controller
                 }
                 $insertImage = FileData::insert($data);
             }
-            $listPrices=$request->listPrice;
+
+            $listPrices = $request->listPrice;
             foreach ($listPrices as $companyId => $price) {
                 ListPrice::updateOrCreate(
                     ['company_id' => $companyId, 'product_id' => $product->id],
                     ['list_price' => $price]
                 );
             }
-            return redirect()->route('product.edit',$product->id);
+            return redirect()->route('product.edit', $product->id);
         } else {
-            return response()->json(['hata'=>'Registration Failed :/'],405);
+            return response()->json(['hata' => 'Registration Failed :/'], 405);
         }
     }
 
@@ -99,11 +100,11 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $Product=Product::whereId($id)->with('productFileData','productCompanyGet')->first();
-        $Product->productCompanyGet=$Product->productCompanyGet->keyBy('company_id');
-        $ProductTypeObjectives=Objective::whereName("productType")->get();
-        $Company=Company::all();
-        return view('live.product.edit', compact('Product','ProductTypeObjectives','Company'));
+        $Product = Product::whereId($id)->with('productFileData', 'productCompanyGet')->first();
+        $Product->productCompanyGet = $Product->productCompanyGet->keyBy('company_id');
+        $ProductTypeObjectives = Objective::whereName("productType")->get();
+        $Company = Company::all();
+        return view('live.product.edit', compact('Product', 'ProductTypeObjectives', 'Company'));
     }
 
     /**
@@ -115,13 +116,13 @@ class ProductController extends Controller
      */
     public function update(Request $request)
     {
-        if(!empty($request->id)){
+        if (!empty($request->id)) {
             $product = Product::find($request->id);
             $product->name = $request->name;
             // $product->list_price = $request->list_price;
             $product->type_id = $request->type_id;
             $product->save();
-            if($product){
+            if ($product) {
                 $data = [];
                 if ($request->hasFile("files")) {
                     foreach ($request->file("files") as $key => $file) {
@@ -136,7 +137,7 @@ class ProductController extends Controller
                 }
 
                 $priceArray = [];
-                $listPrices=$request->listPrice;
+                $listPrices = $request->listPrice;
                 foreach ($listPrices as $companyId => $price) {
                     // array_push($priceArray, ["company_id" => $companyId, "product_id" => $product->id, "list_price" => $price]);
                     ListPrice::updateOrCreate(
@@ -145,12 +146,12 @@ class ProductController extends Controller
                     );
                 }
                 // ListPrice::upsert($priceArray, ['list_price'], ['company_id', 'product_id']);
-                return redirect()->route('product.edit',$request->id);
+                return redirect()->route('product.edit', $request->id);
             } else {
-                return response()->json(['hata'=>'Update Failed :/'],405);
+                return response()->json(['hata' => 'Update Failed :/'], 405);
             }
-        }else{
-            return response()->json(['hata'=>'Update Failed :/'],400);
+        } else {
+            return response()->json(['hata' => 'Update Failed :/'], 400);
         }
     }
 
@@ -162,25 +163,25 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        if(!empty($id)){
+        if (!empty($id)) {
             $product = Product::find($id);
-            if($product){
+            if ($product) {
                 $product->delete();
-                return response()->json(['message'=>'Remove Successful :)','status'=>202]);
-            }else{
-                return response()->json(['hata'=>'Remove Failed :/','status'=>405]);
+                return response()->json(['message' => 'Remove Successful :)', 'status' => 202]);
+            } else {
+                return response()->json(['hata' => 'Remove Failed :/', 'status' => 405]);
             }
-        }else{
-            return response()->json(['hata'=>'Remove Failed :/','status'=>400]);
+        } else {
+            return response()->json(['hata' => 'Remove Failed :/', 'status' => 400]);
         }
     }
 
     public function imageDestroy(Request $request)
     {
         $FileData = FileData::find($request->id);
-        $FileLocation='images/product/'.$FileData->file_name;
-        $FileData=$FileData->delete();
+        $FileLocation = 'images/product/' . $FileData->file_name;
+        $FileData = $FileData->delete();
         File::deleteDirectory(public_path($FileLocation));
-        return response()->json(['message'=>'Remove Successful :)','status'=>202],202);
+        return response()->json(['message' => 'Remove Successful :)', 'status' => 202], 202);
     }
 }

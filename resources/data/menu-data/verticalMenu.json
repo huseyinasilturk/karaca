@@ -27,24 +27,38 @@
     {
       "url": "company",
       "name": "Firmalar",
-      "icon": "mail",
-      "slug": "",
+      "icon": "home",
+      "slug": "#",
       "submenu": [
           {
             "url": "company/",
             "name": "Firma Listele",
-            "icon": "circle",
+            "icon": "list",
             "slug": "company.index"
           },
           {
             "url": "company/add",
             "name": "Firma Ekle",
-            "icon": "circle",
+            "icon": "plus",
             "slug": "company.create"
           }
       ]
     },
     {
+      "url": "stock",
+      "name": "Stok",
+      "icon": "layers",
+      "slug": "#",
+      "submenu": [
+          {
+            "url": "stock/",
+            "name": "Stok",
+            "icon": "list",
+            "slug": "stock.index"
+          }
+      ]
+     },
+     {
         "url": "product",
         "name": "Ürünler",
         "icon": "shopping-cart",
