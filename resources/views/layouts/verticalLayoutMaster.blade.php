@@ -57,8 +57,6 @@
         <!-- BEGIN: Customizer-->
         @include('content/pages/customizer')
         <!-- End: Customizer-->
-        <!-- Buynow Button-->
-        @include('content/pages/buy-now')
     @endif
 
     <div class="sidenav-overlay"></div>

@@ -81,7 +81,7 @@ class ObjectiveController extends Controller
                 'status' => 201,
                 'message' => __('Nesne Başarıyla Eklendi!'),
                 'data' => $request->validated(),
-                'id' =>$objectiveTranslation->id
+                'id' => $objectiveTranslation->id
             ]);
         } else {
             return response()->json([
@@ -89,7 +89,6 @@ class ObjectiveController extends Controller
                 'message' => __('Nesne Eklenirken Hata Oluştu!'),
             ]);
         }
-
     }
 
     /**
@@ -126,14 +125,13 @@ class ObjectiveController extends Controller
 
         $update = Objective::find($request->id)->update($data);
 
-        if($update) {
+        if ($update) {
             return response()->json([
                 'status' => 200,
                 'message' => __('Nesne Başarıyla Güncellendi!'),
                 'data' => $request->validated(),
             ]);
-        }
-        else {
+        } else {
             return response()->json([
                 'status' => 404,
                 'message' => __('Nesne Güncellenirken Hata Oluştu!'),
@@ -141,23 +139,20 @@ class ObjectiveController extends Controller
         }
     }
 
-    public function delete(Request $request){
+    public function delete(Request $request)
+    {
         $delete = Objective::findOrFail($request->id)->delete();
 
-        if($delete) {
+        if ($delete) {
             return response()->json([
                 'status' => 200,
                 'message' => __('Nesne Başarıyla Silindi!'),
             ]);
-        }
-        else {
+        } else {
             return response()->json([
                 'status' => 404,
                 'message' => __('Nesne Silinirken Hata Oluştu!'),
             ]);
         }
-
     }
-
-
 }
