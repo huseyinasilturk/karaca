@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Mail\Subscribe;
 use App\Models\Company;
+use App\Models\Wage;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -29,11 +31,25 @@ class UserController extends Controller
 
         return view("live.user.list", compact("roles","company"));
     }
+  public function detail($id = false)
+    {
+        if ($id) {
+            $user = User::join("information", "information.id", "=", "users.information_id")->join("model_has_roles as mhr","mhr.model_id","=","users.id")
+            ->join("roles as r","r.id","=","mhr.role_id")->where("users.id","=",$id)->join("wages","wages.user_id","users.id")->where("wages.status","=","1")
+            ->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"), "users.*", "information.*", "users.id as user_id","r.title as role_title","r.name as role_name","wages.wage_price as wage_price"])->get()->first();
+
+            return view("live.user.detail",compact("user"));
+        }
+        else {
+            return view("live.user.list");
+        }
+    }
 
     public function userList()
     {
         $user = User::join("information", "information.id", "=", "users.information_id")->join("model_has_roles as mhr","mhr.model_id","=","users.id")
         ->join("roles as r","r.id","=","mhr.role_id")
+        ->join("wages","wages.user_id","users.id")->where("wages.status","=","1")
         ->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"), "users.*", "information.*", "users.id as user_id","r.title as role_title","r.name as role_name"])->get();
 
 
@@ -68,11 +84,14 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
+
+
         $information = Information::create($request->only("name", "surname", "birthday"));
 
         $password = $this->generatePassword(6, 2);
 
         $user = User::create(array_merge($request->only("user_name", "email","company_id"), ['password' => bcrypt($password), "information_id" => $information->id]));
+        $wage = Wage::create(['wage_price'=>$request->wage,'wage_date'=> Carbon::now(),'status'=>1,"user_id"=> $user->id]);
 
         $userName = $request->name . " " . $request->surname;
 
@@ -85,9 +104,9 @@ class UserController extends Controller
         $roles = Role::all();
 
         $company = Company::all();
+        return redirect()->back()->with(['company'=>$company,'roles'=>$roles]);
 
-        return view("live.user.list", compact("roles","company"));
-    }
+     }
 
     /**
      * Display the specified resource.
@@ -120,7 +139,26 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request);
+
+
+        $information = Information::create($request->only("name", "surname", "birthday"));
+
+        $user = User::find($id);
+
+        $user->update($request->only("user_name", "email","company_id"));
+
+        $information = Information::find($user->information_id)->update($request->only("name", "surname", "birthday"));
+
+        Wage::where("user_id","=",$user->id)->update(["status"=>0]);
+        $wage = Wage::create(['wage_price'=>$request->wage,'wage_date'=> Carbon::now(),'status'=>1,"user_id"=> $user->id]);
+
+        $assingRole = $user->syncRoles($request->user_role);
+
+        $roles = Role::all();
+
+        $company = Company::all();
+
+        return redirect()->back()->with(['company'=>$company,'roles'=>$roles]);
     }
 
     /**

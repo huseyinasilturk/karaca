@@ -58,12 +58,14 @@ Route::group(["middleware" => "auth"], function () {
     });
 
     Route::prefix("user")->name("user")->group(function () {
+
         Route::get("/list", [UserController::class, "list"])->name(".list");
         Route::get("/userList", [UserController::class, "userList"])->name(".userList");
         Route::post("/add", [UserController::class, "store"])->name(".store");
         Route::get("/", [UserController::class, "index"])->name(".index");
-        Route::delete("/delete/{id}", [UserController::class, "destroy"])->name(".destroy");
-        Route::put("/edit/{id}", [UserController::class, "update"])->name(".update");
+        Route::delete("/delete/{id}", [UserController::class, "destroy"])->name(".delete");
+        Route::put("/edit/{id}", [UserController::class, "update"])->name(".update");  
+        Route::get("/detail/{id?}", [UserController::class, "detail"])->name(".detail"); 
     });
 
     // Rol prefix
