@@ -120,25 +120,32 @@
 
     <!-- E-commerce Products Starts -->
     <section id="ecommerce-products" class="grid-view">
-        @empty($products)
+        @if (count($products) == 0)
             <div class="card col-12">
                 <div class="card-body">
                     <p>Önce ürün eklemelisiniz</p>
                     <p class="mb-0">
-                        <a href="{{ route('product.create') }}" class="text-primary" style="font-weight: bold">Buradan</a>
+                        <a href="{{ route('product.create') }}" class="text-primary"
+                            style="font-weight: bold">Buradan</a>
                         gidebilirsiniz
                     </p>
-
                 </div>
             </div>
-        @endempty
+        @endif
         @foreach ($products as $product)
             <div class="card ecommerce-card">
                 <div class="item-img text-center">
                     <a href="{{ url('app/ecommerce/details') }}">
-                        <img class="img-fluid card-img-top"
-                            src="{{ asset('images/product/' . $product->productFileData[0]->file_name) }}"
-                            alt="img-placeholder" /></a>
+                        @if (count($product->productFileData) > 0)
+                            <img class="img-fluid card-img-top"
+                                src="{{ asset('images/product/' . $product->productFileData[0]->file_name) }}"
+                                alt="img-placeholder" />
+                        @else
+                            <img class="img-fluid card-img-top" src="http://via.placeholder.com/600x350"
+                                alt="img-placeholder" />
+                        @endif
+
+                    </a>
                 </div>
                 <div class="card-body">
                     <div class="item-wrapper justify-content-end">

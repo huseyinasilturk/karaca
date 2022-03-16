@@ -19,6 +19,7 @@ class CreateCompaniesTable extends Migration
             $table->string("phone")->nullable();
             $table->string("address")->nullable();
             $table->string("note")->nullable();
+            $table->integer("company_type")->nullable();
             $table->timestamps();
         });
     }

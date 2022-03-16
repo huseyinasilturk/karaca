@@ -52,7 +52,7 @@
       "submenu": [
           {
             "url": "stock/",
-            "name": "Stok",
+            "name": "Stoğa Ekle",
             "icon": "list",
             "slug": "stock.index"
           }

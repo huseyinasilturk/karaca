@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Company extends Model
+class ExpenseStatement extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["name", "phone", "address", "note", "company_type"];
+    protected $fillable = ["price", "detail", "table_name", "table_id", "company_id"];
 }

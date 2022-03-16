@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StockRequest;
 use App\Models\Company;
+use App\Models\ExpenseStatement;
 use App\Models\Objective;
 use App\Models\Product;
 use App\Models\Stock;
@@ -39,6 +40,23 @@ class StockController extends Controller
 
         if (!$createStock) {
             return response()->json(["message" => "Stok oluştururken hata oluştu"], 404);
+        }
+
+        $product = Product::find($request->product_id);
+
+        $price = $request->amount * $request->purchase_price;
+
+        $createExpense = ExpenseStatement::create([
+            "price" => $price,
+            "detail" => $product->name . " ürününden " . $request->amount . " adet eklendi.",
+            "table_name" => "stocks",
+            "table_id" => $createStock->id,
+            "company_id" => $request->company_id,
+            "expense_date" => date('Y-m-d')
+        ]);
+
+        if (!$createExpense) {
+            return response()->json(["message" => "Gider oluşturulurken hata oluştu"], 200);
         }
 
         return response()->json(["message" => "Stoğa başarıyla eklendi"], 201);

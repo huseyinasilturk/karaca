@@ -23,48 +23,51 @@
                 </div>
                 <div class="card-body">
                     <form class="form" onsubmit="submitHandler(event)">
+                        <input type="hidden" name="id" value={{ $company->id }} />
                         <div class="row">
                             <div class="col-md-6 col-12">
                                 <div class="mb-1">
                                     <label class="form-label" for="company-name">Firma Adı</label>
                                     <input type="text" id="company-name" class="form-control" placeholder="Firma Adı"
-                                        autocomplete="off" name="name" />
+                                        autocomplete="off" name="name" value="{{ $company->name }}" />
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
                                 <div class="mb-1">
                                     <label class="form-label" for="company-phone">Telefon Numarası</label>
                                     <input type="text" id="company-phone" class="form-control" autocomplete="off"
-                                        placeholder="Telefon Numarası" name="phone" />
+                                        placeholder="Telefon Numarası" name="phone" value="{{ $company->phone }}" />
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
                                 <div class="mb-1">
                                     <label class="form-label" for="company-address">Firma Adresi</label>
                                     <input type="text" id="company-address" class="form-control" autocomplete="off"
-                                        placeholder="Firma Adresi" name="address" />
+                                        placeholder="Firma Adresi" name="address" value="{{ $company->address }}" />
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
                                 <div class="mb-1">
                                     <label class="form-label" for="company-note">Firma Notu</label>
                                     <input type="text" id="company-note" class="form-control" placeholder="Firma Notu"
-                                        autocomplete="off" name="note" />
+                                        autocomplete="off" name="note" value="{{ $company->note }}" />
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
                                 <div class="mb-1">
                                     <label class="form-label" for="company-type">Firma Tipi</label>
-                                    <select class="form-select" id="company-type" name="company_type">
+                                    <select class="select2 form-select" id="company-type" name="company_type" required>
                                         <option value="-1">Firma tipi seçiniz</option>
                                         @foreach ($companyTypes as $companyType)
-                                            <option value="{{ $companyType->id }}">{{ $companyType->text1 }}</option>
+                                            <option value="{{ $companyType->id }}"
+                                                {{ $companyType->id == $company->company_type ? 'selected' : '' }}>
+                                                {{ $companyType->text1 }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="col-12 text-end">
-                                <button type="submit" class="btn btn-success px-3">Ekle</button>
+                                <button type="submit" class="btn btn-success px-3">Güncelle</button>
                             </div>
                         </div>
                     </form>
