@@ -19,6 +19,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
 
@@ -92,6 +93,10 @@ Route::group(["middleware" => "auth"], function () {
         Route::get("/", [StockController::class, "index"])->name(".index");
         Route::post("/", [StockController::class, "store"])->name(".store");
         Route::post("/filter-products", [StockController::class, "filterProducts"])->name(".filterProducts");
+    });
+
+    Route::prefix("reminder")->name("reminder")->group(function () {
+        Route::get("/", [ReminderController::class, "index"])->name(".index");
     });
 });
 
