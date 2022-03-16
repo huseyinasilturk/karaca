@@ -24,7 +24,7 @@ class StockController extends Controller
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Stok"], ['name' => "Stok"]
         ];
 
-        $products = Product::with("productFileData", "productTypeGet", "productCompanyGet")->get();
+        $products = Product::with("productFileData", "productTypeGet", "productCompanyGet", "productStock")->get();
         $companies = Company::all();
 
         $productCategories = Objective::where("name", "productType")->get();
