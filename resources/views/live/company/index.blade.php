@@ -132,7 +132,7 @@
                         targets: 5,
                         render: function(data, type, full, meta) {
                             return `<div class="btn-tooltip">
-                                <a href="#" class="btn bg-transparent p-0">${feather.icons["edit-2"].toSvg({
+                                <a href="/company/${full['id']}" class="btn bg-transparent p-0">${feather.icons["edit-2"].toSvg({
                                 class: "font-small-4 text-primary",
                             })}</a>
                             <button class="btn bg-transparent p-0" onclick="deleteHandler(this,${full["id"]})">${feather.icons["trash"].toSvg({

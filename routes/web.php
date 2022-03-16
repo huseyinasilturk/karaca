@@ -33,9 +33,7 @@ use App\Http\Controllers\UserController;
 // Auth prefix
 Route::prefix("auth")->name("auth")->group(function () {
     Route::post("login", [AuthenticationController::class, 'loginUser'])->name(".loginUser");
-
     Route::get("login", [AuthenticationController::class, 'login'])->name(".login");
-
     Route::get("logout", [AuthenticationController::class, 'logout'])->name(".logout");
 });
 
@@ -58,24 +56,21 @@ Route::group(["middleware" => "auth"], function () {
     });
 
     Route::prefix("user")->name("user")->group(function () {
-
         Route::get("/list", [UserController::class, "list"])->name(".list");
         Route::get("/userList", [UserController::class, "userList"])->name(".userList");
         Route::post("/add", [UserController::class, "store"])->name(".store");
         Route::get("/", [UserController::class, "index"])->name(".index");
         Route::delete("/delete/{id}", [UserController::class, "destroy"])->name(".delete");
-        Route::put("/edit/{id}", [UserController::class, "update"])->name(".update");  
-        Route::get("/detail/{id?}", [UserController::class, "detail"])->name(".detail"); 
+        Route::put("/edit/{id}", [UserController::class, "update"])->name(".update");
+        Route::get("/detail/{id?}", [UserController::class, "detail"])->name(".detail");
     });
 
     // Rol prefix
     Route::prefix("roles")->name("roles")->group(function () {
         Route::get("/", [RoleController::class, "index"])->name(".index");
         Route::get("/{id}", [RoleController::class, "detail"])->name(".detail")->whereNumber("id");
-
         Route::post("/", [RoleController::class, "store"])->name(".store");
         Route::post("/{id}", [RoleController::class, "update"])->name(".update")->whereNumber("id");
-
         Route::delete("/{id}", [RoleController::class, "delete"])->name(".delete")->whereNumber("id");
     });
 
@@ -84,21 +79,18 @@ Route::group(["middleware" => "auth"], function () {
         Route::get("/", [CompanyController::class, "index"])->name(".index");
         Route::get("/company", [CompanyController::class, "companies"])->name(".company");
         Route::get("/add", [CompanyController::class, "create"])->name(".create");
-
-        Route::delete("/{id}", [CompanyController::class, "delete"])->name(".delete")->whereNumber("id");
+        Route::get("/{id}", [CompanyController::class, "edit"])->name(".edit")->whereNumber("id");
 
         Route::post("/", [CompanyController::class, "store"])->name(".store");
+        Route::post("/update", [CompanyController::class, "update"])->name(".update");
+
+        Route::delete("/{id}", [CompanyController::class, "delete"])->name(".delete")->whereNumber("id");
     });
 
     // Stok prefix
     Route::prefix("stock")->name("stock")->group(function () {
-        // Stok anasayfa
         Route::get("/", [StockController::class, "index"])->name(".index");
-
-        // Stok ekle
         Route::post("/", [StockController::class, "store"])->name(".store");
-
-        // Stok ürünleri filtrele
         Route::post("/filter-products", [StockController::class, "filterProducts"])->name(".filterProducts");
     });
 });
