@@ -106,6 +106,8 @@
     "/js/scripts/pages/app-access-permission.js": "/js/scripts/pages/app-access-permission.js",
     "/js/scripts/pages/app-access-roles.js": "/js/scripts/pages/app-access-roles.js",
     "/js/scripts/pages/app-calendar-events.js": "/js/scripts/pages/app-calendar-events.js",
+    "/js/scripts/pages/app-calendar-reminder-events.js": "/js/scripts/pages/app-calendar-reminder-events.js",
+    "/js/scripts/pages/app-calendar-reminder.js": "/js/scripts/pages/app-calendar-reminder.js",
     "/js/scripts/pages/app-calendar.js": "/js/scripts/pages/app-calendar.js",
     "/js/scripts/pages/app-chat.js": "/js/scripts/pages/app-chat.js",
     "/js/scripts/pages/app-ecommerce-checkout.js": "/js/scripts/pages/app-ecommerce-checkout.js",

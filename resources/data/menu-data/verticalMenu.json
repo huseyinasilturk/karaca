@@ -79,6 +79,12 @@
         ]
     },
     {
+        "url": "reminder",
+        "name": "Hatırlatıcı",
+        "icon": "calendar",
+        "slug": "reminder.index"
+    },
+    {
       "navheader": "Araçlar",
       "slug": ""
     },

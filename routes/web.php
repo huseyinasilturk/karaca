@@ -19,6 +19,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
 
@@ -64,8 +65,8 @@ Route::group(["middleware" => "auth"], function () {
         Route::post("/add", [UserController::class, "store"])->name(".store");
         Route::get("/", [UserController::class, "index"])->name(".index");
         Route::delete("/delete/{id}", [UserController::class, "destroy"])->name(".delete");
-        Route::put("/edit/{id}", [UserController::class, "update"])->name(".update");  
-        Route::get("/detail/{id?}", [UserController::class, "detail"])->name(".detail"); 
+        Route::put("/edit/{id}", [UserController::class, "update"])->name(".update");
+        Route::get("/detail/{id?}", [UserController::class, "detail"])->name(".detail");
     });
 
     // Rol prefix
@@ -100,6 +101,10 @@ Route::group(["middleware" => "auth"], function () {
 
         // Stok ürünleri filtrele
         Route::post("/filter-products", [StockController::class, "filterProducts"])->name(".filterProducts");
+    });
+
+    Route::prefix("reminder")->name("reminder")->group(function () {
+        Route::get("/", [ReminderController::class, "index"])->name(".index");
     });
 });
 

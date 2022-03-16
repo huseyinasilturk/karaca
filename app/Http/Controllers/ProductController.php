@@ -69,12 +69,15 @@ class ProductController extends Controller
             }
 
             $listPrices = $request->listPrice;
-            foreach ($listPrices as $companyId => $price) {
-                ListPrice::updateOrCreate(
-                    ['company_id' => $companyId, 'product_id' => $product->id],
-                    ['list_price' => $price]
-                );
+            if(!empty($listPrices)){
+                foreach ($listPrices as $companyId => $price) {
+                    ListPrice::updateOrCreate(
+                        ['company_id' => $companyId, 'product_id' => $product->id],
+                        ['list_price' => $price]
+                    );
+                }
             }
+
             return redirect()->route('product.edit', $product->id);
         } else {
             return response()->json(['hata' => 'Registration Failed :/'], 405);
