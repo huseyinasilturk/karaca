@@ -165,8 +165,17 @@
                             </h4>
                         </div>
                     </div>
-                    <button data-bs-toggle="modal" data-bs-target="#stockModal" data-product="{{ $product->id }}"
-                        onclick="modalDataHandler(this)" class="btn btn-primary btn-cart">
+                    @php
+                        $count = 0;
+                        if (count($product->productStock) > 0) {
+                            foreach ($product->productStock as $productStock) {
+                                $count += $productStock->amount;
+                            }
+                        }
+                    @endphp
+                    <button data-bs-toggle="modal" data-bs-target="#stockModal" data-stock="{{ $count }}"
+                        data-product="{{ $product->id }}" onclick="modalDataHandler(this)"
+                        class="btn btn-primary btn-cart">
                         <i data-feather="layers"></i>
                         <span class="add-to-cart">Stoğa Ekle</span>
                     </button>
@@ -216,8 +225,8 @@
                                 @endforeach
                             </select>
                         </div>
-
-                        <p class="text-muted" id="total-buy-price">Toplam Alış Fiyatı: <span>15</span> ₺</p>
+                        <p>Bu üründen stokta <span style="font-weight: bold">7</span> adet bulunmakta</p>
+                        <p class="text-muted" id="total-buy-price">Toplam Alış Fiyatı: <span>0</span> ₺</p>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Ekle</button>
@@ -328,14 +337,17 @@
         function onAmountChange(el) {
             const price = $("input[name='price']").val();
             const amount = $(el).val();
-            $("#total-buy-price").find("span").text((Math.round(price * amount * 100) / 100).toFixed(2))
+            if (price !== undefined && amount !== undefined) {
+                $("#total-buy-price").find("span").text((Math.round(price * amount * 100) / 100).toFixed(2))
+            }
         }
 
         function onPriceChange(el) {
             const amount = $("input[name='amount']").val();
             const price = $(el).val();
-
-            $("#total-buy-price").find("span").text((Math.round(price * amount * 100) / 100).toFixed(2))
+            if (price !== undefined && amount !== undefined) {
+                $("#total-buy-price").find("span").text((Math.round(price * amount * 100) / 100).toFixed(2))
+            }
         }
 
         function filterHandler(e) {
