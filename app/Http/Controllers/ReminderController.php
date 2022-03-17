@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreReminderRequest;
 use App\Http\Requests\UpdateReminderRequest;
 use App\Models\Reminder;
+use Symfony\Component\HttpFoundation\Request;
 
 class ReminderController extends Controller
 {
@@ -34,9 +35,21 @@ class ReminderController extends Controller
      * @param  \App\Http\Requests\StoreReminderRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreReminderRequest $request)
+    public function store(Request $request)
     {
-        //
+        $reminder = Reminder::create([
+            'title' => $request->title,
+            'detail' => $request->detail,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date
+        ]);
+        if($reminder){
+            return response()->json([
+                'status' => 201,
+                'message' => __('Hatırlatıcı başarıyla eklendi.'),
+                'id' => $reminder->id
+            ]);
+        }
     }
 
     /**
