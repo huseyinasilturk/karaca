@@ -409,13 +409,30 @@
            description: calendarEditor.val()
          }
        };
-       if (eventUrl.val().length) {
-         newEvent.url = eventUrl.val();
-       }
        if (allDaySwitch.prop('checked')) {
          newEvent.allDay = true;
        }
-       addEvent(newEvent);
+       $.ajax({
+            url: route('reminder.store'),
+            method: "POST",
+            data: $('.event-form').serialize(),
+            success: (res) => {
+                if (res.status === 201) {
+                    addEvent(newEvent,res.id);
+                    Swal.fire(
+                        'Başarılı!',
+                        'Belirtilen tarihe hatırlatıcı eklendi.',
+                        'success'
+                    )
+                } else {
+                    Swal.fire(
+                        'Eklenemedi!',
+                        'Hatırlatıcı eklenmesinde sorun oluştu yazılım destek ekibi ile iletişime geçin.',
+                        'error'
+                    )
+                }
+            }
+        })
      }
    });
 

@@ -73,15 +73,15 @@
                 </div>
                 <div class="mb-1 position-relative">
                     <label for="start-date" class="form-label">Başlangıç Tarihi</label>
-                    <input type="text" class="form-control" id="start-date" name="start-date" placeholder="Başlangıç Tarihi" />
+                    <input type="text" class="form-control" id="start-date" name="start_date" placeholder="Başlangıç Tarihi" />
                 </div>
                 <div class="mb-1 position-relative">
                     <label for="end-date" class="form-label">Bitiş Tarihi</label>
-                    <input type="text" class="form-control" id="end-date" name="end-date" placeholder="Bitiş Tarihi" />
+                    <input type="text" class="form-control" id="end-date" name="end_date" placeholder="Bitiş Tarihi" />
                 </div>
                 <div class="mb-1">
                     <label class="form-label">Açıklama</label>
-                    <textarea name="event-description-editor" id="event-description-editor" class="form-control"></textarea>
+                    <textarea name="detail" id="event-description-editor" class="form-control"></textarea>
                 </div>
                 <div class="mb-1 d-flex">
                     <button type="submit" class="btn btn-primary add-event-btn me-1">Ekle</button>
@@ -109,9 +109,19 @@
     <!-- Page js files -->
     <script src="{{ asset(mix('js/scripts/pages/app-calendar-reminder-events.js')) }}"></script>
     <script src="{{ asset(mix('js/scripts/pages/app-calendar-reminder.js')) }}"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="{{ asset(mix('vendors/js/extensions/sweetalert2.all.min.js')) }}"></script>
 
 @endsection
 
 @section('page-script')
-
+    <script>
+        $(document).ready(() => {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            })
+        })
+    </script>
 @endsection
