@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'Firma Ekle')
+@section('title', 'İzin Ekle')
 
 @section('vendor-style')
     <!-- Vendor css files -->
@@ -19,48 +19,42 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Firma Bilgileri</h4>
+                    <h4 class="card-title"></h4>
                 </div>
                 <div class="card-body">
                     <form class="form" onsubmit="submitHandler(event)">
                         <div class="row">
                             <div class="col-md-6 col-12">
                                 <div class="mb-1">
-                                    <label class="form-label" for="company-name">Firma Adı</label>
-                                    <input type="text" id="company-name" class="form-control" placeholder="Firma Adı"
-                                        autocomplete="off" name="name" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="mb-1">
-                                    <label class="form-label" for="company-phone">Telefon Numarası</label>
-                                    <input type="text" id="company-phone" class="form-control" autocomplete="off"
-                                        placeholder="Telefon Numarası" name="phone" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="mb-1">
-                                    <label class="form-label" for="company-address">Firma Adresi</label>
-                                    <input type="text" id="company-address" class="form-control" autocomplete="off"
-                                        placeholder="Firma Adresi" name="address" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="mb-1">
-                                    <label class="form-label" for="company-note">Firma Notu</label>
-                                    <input type="text" id="company-note" class="form-control" placeholder="Firma Notu"
-                                        autocomplete="off" name="note" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="mb-1">
-                                    <label class="form-label" for="company-type">Firma Tipi</label>
-                                    <select class="form-select" id="company-type" name="company_type">
-                                        <option value="-1">Firma tipi seçiniz</option>
-                                        @foreach ($companyTypes as $companyType)
-                                            <option value="{{ $companyType->id }}">{{ $companyType->text1 }}</option>
-                                        @endforeach
+                                    <label class="form-label" for="personal">Personel</label>
+                                    <select class="form-select" id="personal" name="personal_id">
+                                        <option value="-1">Personel seçiniz</option>
+                                        @if (count($personals) > 0)
+                                            @foreach ($personals as $personal)
+                                                <option value="{{ $personal->id }}">
+                                                    {{ $personal->information->name . ' ' . $personal->information->surname }}
+                                                </option>
+                                            @endforeach
+                                        @endif
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="mb-1">
+                                    <label class="form-label" for="start-date">İzin Başlangıç Tarihi</label>
+                                    <input type="date" id="start-date" class="form-control" name="start_date" />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="mb-1">
+                                    <label class="form-label" for="end-date">İzin Bitiş Tarihi</label>
+                                    <input type="date" id="end-date" class="form-control" name="end_date" />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="mb-1">
+                                    <label class="form-label" for="detail">İzin Detayı</label>
+                                    <input type="text" id="detail" class="form-control" name="detail" />
                                 </div>
                             </div>
                             <div class="col-12 text-end">
@@ -87,7 +81,7 @@
 
             $.ajax({
                 method: "POST",
-                url: "{{ route('company.update') }}",
+                url: "{{ route('dayoff.store') }}",
                 data: $(e.target).serialize(),
                 dataType: "json",
                 success: (res, textStatus, xhr) => {
@@ -106,15 +100,19 @@
                     }
                 },
                 error: err => {
-                    toastr["error"](
-                        err.responseJSON.message,
-                        "Hata!", {
-                            closeButton: true,
-                            tapToDismiss: true,
-                            timeOut: 3000,
-                            progressBar: true
-                        }
-                    );
+                    const errors = err.responseJSON.errors
+                    Object.values(errors).map((error) => {
+                        toastr["error"](
+                            error,
+                            "Hata!", {
+                                closeButton: true,
+                                tapToDismiss: true,
+                                timeOut: 5000,
+                                progressBar: true
+                            }
+                        );
+                    })
+
                 }
             })
 

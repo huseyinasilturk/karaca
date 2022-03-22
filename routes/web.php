@@ -16,12 +16,14 @@ use App\Http\Controllers\MiscellaneousController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\DayOffController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
+use App\Models\DayOff;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,11 +97,28 @@ Route::group(["middleware" => "auth"], function () {
         Route::post("/filter-products", [StockController::class, "filterProducts"])->name(".filterProducts");
     });
 
+    // Hatırlatıcı prefix
     Route::prefix("reminder")->name("reminder")->group(function () {
         Route::get("/", [ReminderController::class, "index"])->name(".index");
         Route::post("/add", [ReminderController::class, "store"])->name(".store");
         Route::post("/update", [ReminderController::class, "update"])->name(".update");
         Route::delete("/delete/{id}", [ReminderController::class, "destroy"])->name(".delete");
+    });
+
+    // İzinler prefix
+    Route::prefix("dayoff")->name("dayoff")->group(function () {
+        // İzin ekleme ekranı
+        Route::get("/add", [DayOffController::class, "create"])->name(".create");
+        // İzinler listeleme ekranı
+        Route::get("/", [DayOffController::class, "index"])->name(".index");
+        // İzinleri döndür
+        Route::get("/dayoff", [DayOffController::class, "dayOffs"])->name(".dayOffs");
+        // İzin güncelle
+        Route::get("/{id}", [DayOffController::class, "edit"])->name(".edit")->whereNumber("id");
+
+
+        // İzin ekle
+        Route::post("/", [DayOffController::class, "store"])->name(".store");
     });
 });
 
