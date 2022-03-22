@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'Firma Listele')
+@section('title', 'İzinler')
 
 @section('vendor-style')
     <!-- Vendor css files -->
@@ -21,15 +21,29 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
+                    <form>
+                        <div class="card-header justify-content-between align-items-end">
+                            <div class="col-md-3 col-6">
+                                <label class="form-label" for="personal">Personel</label>
+                                <select class="form-select" id="personal" name="personal_id">
+                                    <option value="-1">Personel seçiniz</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 col-6 text-end">
+                                <button class="btn btn-primary w-100" type="button">Filtrele</button>
+                            </div>
+                        </div>
+                    </form>
                     <div class="card-body">
                         <table class="table" id="company-table">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Ad</th>
-                                    <th>Telefon</th>
-                                    <th>Adres</th>
-                                    <th>Not</th>
+                                    <th>Soyad</th>
+                                    <th>Başlangıç Tarihi</th>
+                                    <th>Bitiş Tarihi</th>
+                                    <th>Gün Sayısı</th>
                                     <th>İşlemler</th>
                                 </tr>
                             </thead>
@@ -45,6 +59,7 @@
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap5.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/extensions/sweetalert2.all.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/extensions/moment.min.js')) }}"></script>
 @endsection
 
 @section('page-script')
@@ -55,7 +70,7 @@
             $("#company-table").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: route('company.company'),
+                    url: route("dayoff.dayOffs"),
                     method: "GET",
                     dataType: "json",
                     dataSrc: ""
@@ -65,16 +80,19 @@
                         width: "5%"
                     },
                     {
-                        data: "name"
+                        data: "person.information.name"
                     },
                     {
-                        data: "phone"
+                        data: "person.information.surname"
                     },
                     {
-                        data: "address"
+                        data: "start_date"
                     },
                     {
-                        data: "note"
+                        data: "end_date"
+                    },
+                    {
+                        data: "day"
                     },
                     {
                         data: "",
@@ -84,6 +102,7 @@
                 columnDefs: [{
                         targets: 0,
                         render: function(data, type, full, meta) {
+                            console.log(meta)
                             return `<p style="font-weight: bold">${meta.row + 1}</p>`
                         }
                     },
@@ -111,7 +130,7 @@
                         targets: 3,
                         render: function(data, type, full, meta) {
                             if (data !== null) {
-                                return `<p>${data}</p>`
+                                return `<p>${moment(data).format("DD.MM.YYYY")}</p>`
                             } else {
                                 return "---"
                             }
@@ -121,7 +140,7 @@
                         targets: 4,
                         render: function(data, type, full, meta) {
                             if (data !== null) {
-                                return `<p>${data}</p>`
+                                return `<p>${moment(data).format("DD.MM.YYYY")}</p>`
                             } else {
                                 return "---"
                             }
@@ -130,8 +149,18 @@
                     {
                         targets: 5,
                         render: function(data, type, full, meta) {
+                            if (data !== null) {
+                                return `<p>${data} gün</p>`
+                            } else {
+                                return "---"
+                            }
+                        }
+                    },
+                    {
+                        targets: 6,
+                        render: function(data, type, full, meta) {
                             return `<div class="btn-tooltip">
-                                <a href="/company/${full['id']}" class="btn bg-transparent p-0">${feather.icons["edit-2"].toSvg({
+                                <a href="/dayoff/${full['id']}" class="btn bg-transparent p-0">${feather.icons["edit-2"].toSvg({
                                 class: "font-small-4 text-primary",
                             })}</a>
                             <button class="btn bg-transparent p-0" onclick="deleteHandler(this,${full["id"]})">${feather.icons["trash"].toSvg({

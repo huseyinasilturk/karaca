@@ -10,7 +10,10 @@ class CompanyController extends Controller
 {
     public function index()
     {
-        return view("live.company.index");
+        $breadcrumbs = [
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Firmalar"], ['name' => "Firma Listele"]
+        ];
+        return view("live.company.index", compact("breadcrumbs"));
     }
 
     public function companies()
@@ -21,8 +24,11 @@ class CompanyController extends Controller
 
     public function create()
     {
+        $breadcrumbs = [
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Firmalar"], ['name' => "Firma Ekle"]
+        ];
         $companyTypes = Objective::where("name", "=", "companyType")->get();
-        return view("live.company.add", compact("companyTypes"));
+        return view("live.company.add", compact("companyTypes", "breadcrumbs"));
     }
 
     public function store(Request $request)
@@ -58,12 +64,15 @@ class CompanyController extends Controller
 
     public function edit($id)
     {
+        $breadcrumbs = [
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Firmalar"], ['name' => "Firma Güncelle"]
+        ];
         $company = Company::find($id);
         $companyTypes = Objective::where("name", "=", "companyType")->get();
         if ($company == null) {
             return view("live.company.add", compact("companyTypes"));
         }
-        return view("live.company.edit", compact("companyTypes", "company"));
+        return view("live.company.edit", compact("companyTypes", "company", "breadcrumbs"));
     }
 
     public function update(Request $request)
