@@ -161,7 +161,7 @@
      eventToUpdate = info.event;
      if (eventToUpdate.url) {
        info.jsEvent.preventDefault();
-       window.open(eventToUpdate.url, '_blank');
+       //window.open(eventToUpdate.url, '_blank');
      }
 
      sidebar.modal('show');
@@ -178,20 +178,39 @@
        : end.setDate(eventToUpdate.start, true, 'Y-m-d');
      sidebar.find(eventLabel).val(eventToUpdate.extendedProps.calendar).trigger('change');
      eventToUpdate.extendedProps.location !== undefined ? eventLocation.val(eventToUpdate.extendedProps.location) : null;
-     eventToUpdate.extendedProps.guests !== undefined
-       ? eventGuests.val(eventToUpdate.extendedProps.guests).trigger('change')
-       : null;
-     eventToUpdate.extendedProps.guests !== undefined
-       ? calendarEditor.val(eventToUpdate.extendedProps.description)
-       : null;
+     calendarEditor.val(eventToUpdate.extendedProps.detail);
+
 
      //  Delete Event
      btnDeleteEvent.on('click', function () {
-       eventToUpdate.remove();
-       // removeEvent(eventToUpdate.id);
-       sidebar.modal('hide');
-       $('.event-sidebar').removeClass('show');
-       $('.app-calendar .body-content-overlay').removeClass('show');
+        var eventData2={
+            id: eventToUpdate.id,
+        }
+        $.ajax({
+            url: route('reminder.delete'),
+            method: "POST",
+            data: eventData2,
+            success: (res) => {
+                if (res.status === 201) {
+                    removeEvent(eventToUpdate.id);
+                    eventToUpdate.remove();
+                    sidebar.modal('hide');
+                    $('.event-sidebar').removeClass('show');
+                    $('.app-calendar .body-content-overlay').removeClass('show');
+                    Swal.fire(
+                        'Başarılı!',
+                        'Belirtilen tarihteki hatırlatıcı silindi.',
+                        'success'
+                    )
+                } else {
+                    Swal.fire(
+                        'Güncellenemedi!',
+                        'Hatırlatıcı silinemedi sorun oluştu yazılım destek ekibi ile iletişime geçin.',
+                        'error'
+                    )
+                }
+            }
+        })
      });
    }
 
@@ -342,8 +361,8 @@
    // updateEvent
    // ------------------------------------------------
    function updateEvent(eventData) {
-     var propsToUpdate = ['id', 'title', 'url'];
-     var extendedPropsToUpdate = ['calendar', 'guests', 'location', 'description'];
+     var propsToUpdate = ['id', 'title'];
+     var extendedPropsToUpdate = ['detail'];
 
      updateEventInCalendar(eventData, propsToUpdate, extendedPropsToUpdate);
    }
@@ -393,7 +412,7 @@
    // Add new event
    $(addEventBtn).on('click', function () {
      if (eventForm.valid()) {
-         console.log(calendar);
+
        var newEvent = {
          id: calendar.getEvents().length + 1,
          title: eventTitle.val(),
@@ -406,7 +425,7 @@
            location: eventLocation.val(),
            guests: eventGuests.val(),
            calendar: eventLabel.val(),
-           description: calendarEditor.val()
+           detail: calendarEditor.val()
          }
        };
        if (allDaySwitch.prop('checked')) {
@@ -418,7 +437,8 @@
             data: $('.event-form').serialize(),
             success: (res) => {
                 if (res.status === 201) {
-                    addEvent(newEvent,res.id);
+                    newEvent.id = res.id;
+                    addEvent(newEvent);
                     Swal.fire(
                         'Başarılı!',
                         'Belirtilen tarihe hatırlatıcı eklendi.',
@@ -439,24 +459,51 @@
    // Update new event
    updateEventBtn.on('click', function () {
      if (eventForm.valid()) {
-       var eventData = {
-         id: eventToUpdate.id,
-         title: sidebar.find(eventTitle).val(),
-         start: sidebar.find(startDate).val(),
-         end: sidebar.find(endDate).val(),
-         url: eventUrl.val(),
-         extendedProps: {
-           location: eventLocation.val(),
-           guests: eventGuests.val(),
-           calendar: eventLabel.val(),
-           description: calendarEditor.val()
-         },
-         display: 'block',
-         allDay: allDaySwitch.prop('checked') ? true : false
-       };
+        var eventData = {
+            id: eventToUpdate.id,
+            title: sidebar.find(eventTitle).val(),
+            start: sidebar.find(startDate).val(),
+            end: sidebar.find(endDate).val(),
+            extendedProps: {
+                location: eventLocation.val(),
+                guests: eventGuests.val(),
+                calendar: eventLabel.val(),
+                detail: calendarEditor.val(),
+            },
+            display: 'block',
+            allDay: allDaySwitch.prop('checked') ? true : false
+        };
+        var eventData2={
+            id: eventToUpdate.id,
+            title: sidebar.find(eventTitle).val(),
+            start_date: sidebar.find(startDate).val(),
+            end_date: sidebar.find(endDate).val(),
+            detail: calendarEditor.val(),
+        }
+       $.ajax({
+            url: route('reminder.update'),
+            method: "POST",
+            data: eventData2,
+            success: (res) => {
+                if (res.status === 201) {
+                    updateEvent(eventData);
+                    sidebar.modal('hide');
+                    Swal.fire(
+                        'Başarılı!',
+                        'Belirtilen tarihteki hatırlatıcı güncellendi.',
+                        'success'
+                    )
+                } else {
+                    Swal.fire(
+                        'Güncellenemedi!',
+                        'Hatırlatıcı güncellemesinde sorun oluştu yazılım destek ekibi ile iletişime geçin.',
+                        'error'
+                    )
+                }
+            }
+        })
 
-       updateEvent(eventData);
-       sidebar.modal('hide');
+
      }
    });
 
