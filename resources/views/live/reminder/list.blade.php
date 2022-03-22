@@ -63,7 +63,7 @@
         <div class="modal-content p-0">
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
             <div class="modal-header mb-1">
-            <h5 class="modal-title">Hatırlatıcı Ekle</h5>
+            <h5 class="modal-title">Hatırlatıcı</h5>
             </div>
             <div class="modal-body flex-grow-1 pb-sm-0 pb-3">
             <form class="event-form needs-validation" data-ajax="false" novalidate>
@@ -85,7 +85,7 @@
                 </div>
                 <div class="mb-1 d-flex">
                     <button type="submit" class="btn btn-primary add-event-btn me-1">Ekle</button>
-                    <button type="button" class="btn btn-outline-secondary btn-cancel" data-bs-dismiss="modal">Vazgç</button>
+                    <button type="button" class="btn btn-outline-secondary btn-cancel" data-bs-dismiss="modal">Vazgeç</button>
                     <button type="submit" class="btn btn-primary update-event-btn d-none me-1">Güncelle</button>
                     <button class="btn btn-outline-danger btn-delete-event d-none">Sil</button>
                 </div>

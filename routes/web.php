@@ -102,7 +102,7 @@ Route::group(["middleware" => "auth"], function () {
         Route::get("/", [ReminderController::class, "index"])->name(".index");
         Route::post("/add", [ReminderController::class, "store"])->name(".store");
         Route::post("/update", [ReminderController::class, "update"])->name(".update");
-        Route::delete("/delete/{id}", [ReminderController::class, "destroy"])->name(".delete");
+        Route::post("/delete", [ReminderController::class, "destroy"])->name(".delete");
     });
 
     // İzinler prefix

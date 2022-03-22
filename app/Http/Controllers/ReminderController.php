@@ -81,9 +81,23 @@ class ReminderController extends Controller
      * @param  \App\Models\Reminder  $reminder
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateReminderRequest $request, Reminder $reminder)
+    public function update(Request $request)
     {
-        //
+        if (!empty($request->id)) {
+            $reminder = Reminder::find($request->id);
+            $reminder->title = $request->title;
+            $reminder->detail = $request->detail;
+            $reminder->start_date = $request->start_date;
+            $reminder->end_date = $request->end_date;
+            $reminder->save();
+            if($reminder){
+                return response()->json([
+                    'status' => 201,
+                    'message' => __('Hatırlatıcı başarıyla güncellendi.'),
+                    'id' => $reminder->id
+                ]);
+            }
+        }
     }
 
     /**
@@ -92,8 +106,18 @@ class ReminderController extends Controller
      * @param  \App\Models\Reminder  $reminder
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Reminder $reminder)
+    public function destroy(Request $request)
     {
-        //
+        if (!empty($request->id)) {
+            $reminder = Reminder::find($request->id);
+            if ($reminder) {
+                $reminder->delete();
+                return response()->json(['message' => 'Remove Successful :)', 'status' => 201]);
+            } else {
+                return response()->json(['hata' => 'Remove Failed :/', 'status' => 405]);
+            }
+        } else {
+            return response()->json(['hata' => 'Remove Failed :/', 'status' => 400]);
+        }
     }
 }
