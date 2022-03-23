@@ -87,7 +87,7 @@
 
             $.ajax({
                 method: "POST",
-                url: "{{ route('company.update') }}",
+                url: "{{ route('company.store') }}",
                 data: $(e.target).serialize(),
                 dataType: "json",
                 success: (res, textStatus, xhr) => {

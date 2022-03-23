@@ -106,7 +106,6 @@
                             }
                         );
 
-                        $(e.target).trigger("reset");
                     }
                 },
                 error: err => {
