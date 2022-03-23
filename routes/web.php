@@ -119,6 +119,11 @@ Route::group(["middleware" => "auth"], function () {
 
         // İzin ekle
         Route::post("/", [DayOffController::class, "store"])->name(".store");
+        // İzin güncelle
+        Route::post("/{id}", [DayOffController::class, "update"])->name(".update");
+
+        // İzin sil
+        Route::delete("/{id}", [DayOffController::class, "delete"])->name(".delete");
     });
 });
 

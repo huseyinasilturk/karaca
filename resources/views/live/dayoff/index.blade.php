@@ -198,12 +198,10 @@
                 buttonsStyling: false,
             }).then(result => {
                 if (result.isConfirmed) {
-                    let url = "{{ route('company.delete', ':id') }}";
-                    url = url.replace(":id", id);
 
                     $.ajax({
                         method: "DELETE",
-                        url: url,
+                        url: route('dayoff.delete', id),
                         success: (res, textStatus, xhr) => {
                             if (xhr.status === 200) {
                                 Swal.fire({
