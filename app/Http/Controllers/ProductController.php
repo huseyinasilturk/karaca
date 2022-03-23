@@ -22,10 +22,18 @@ class ProductController extends Controller
      */
     public function index()
     {
+        $breadcrumbs = [
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Ürün"], ['name' => "Ürün Listeleme"]
+        ];
         $Product = Product::with('productFileData', 'productTypeGet', 'productCompanyGet')->get();
-        // dd($Product);
         $Company = Company::all();
-        return view('live.product.list', compact('Product', 'Company'));
+        return view('live.product.list', compact('Product', 'Company', "breadcrumbs"));
+    }
+
+    public function products()
+    {
+        $Product = Product::with('productFileData', 'productTypeGet', 'productCompanyGet')->get();
+        return response()->json($Product, 200);
     }
 
     /**
@@ -35,9 +43,12 @@ class ProductController extends Controller
      */
     public function create()
     {
+        $breadcrumbs = [
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Ürün"], ['name' => "Ürün Ekle"]
+        ];
         $ProductObjectives = Objective::whereName("productType")->get();
         $Company = Company::all();
-        return view('live.product.add', compact('ProductObjectives', 'Company'));
+        return view('live.product.add', compact('ProductObjectives', 'Company', "breadcrumbs"));
     }
 
     /**
@@ -69,7 +80,7 @@ class ProductController extends Controller
             }
 
             $listPrices = $request->listPrice;
-            if(!empty($listPrices)){
+            if (!empty($listPrices)) {
                 foreach ($listPrices as $companyId => $price) {
                     ListPrice::updateOrCreate(
                         ['company_id' => $companyId, 'product_id' => $product->id],

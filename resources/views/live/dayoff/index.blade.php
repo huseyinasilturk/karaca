@@ -35,7 +35,7 @@
                         </div>
                     </form>
                     <div class="card-body">
-                        <table class="table" id="company-table">
+                        <table class="table" id="dayoff-table">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -67,7 +67,7 @@
         $(function() {
             "use strict";
 
-            $("#company-table").DataTable({
+            $("#dayoff-table").DataTable({
                 serverSide: true,
                 ajax: {
                     url: route("dayoff.dayOffs"),
