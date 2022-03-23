@@ -10,116 +10,41 @@
  var nextMonth = date.getMonth() === 11 ? new Date(date.getFullYear() + 1, 0, 1) : new Date(date.getFullYear(), date.getMonth() + 1, 1);
  // prettier-ignore
  var prevMonth = date.getMonth() === 11 ? new Date(date.getFullYear() - 1, 0, 1) : new Date(date.getFullYear(), date.getMonth() - 1, 1);
-
- var events = [
-   {
-     id: 1,
-     url: '',
-     title: 'Design Review',
-     start: date,
-     end: nextDay,
-     allDay: false,
-     extendedProps: {
-       calendar: 'Business'
-     }
-   },
-   {
-     id: 2,
-     url: '',
-     title: 'Meeting With Client',
-     start: new Date(date.getFullYear(), date.getMonth() + 1, -11),
-     end: new Date(date.getFullYear(), date.getMonth() + 1, -10),
-     allDay: true,
-     extendedProps: {
-       calendar: 'Business'
-     }
-   },
-   {
-     id: 3,
-     url: '',
-     title: 'Family Trip',
-     allDay: true,
-     start: new Date(date.getFullYear(), date.getMonth() + 1, -9),
-     end: new Date(date.getFullYear(), date.getMonth() + 1, -7),
-     extendedProps: {
-       calendar: 'Holiday'
-     }
-   },
-   {
-     id: 4,
-     url: '',
-     title: "Doctor's Appointment",
-     start: new Date(date.getFullYear(), date.getMonth() + 1, -11),
-     end: new Date(date.getFullYear(), date.getMonth() + 1, -10),
-     allDay: true,
-     extendedProps: {
-       calendar: 'Personal'
-     }
-   },
-   {
-     id: 5,
-     url: '',
-     title: 'Dart Game?',
-     start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
-     end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
-     allDay: true,
-     extendedProps: {
-       calendar: 'ETC'
-     }
-   },
-   {
-     id: 6,
-     url: '',
-     title: 'Meditation',
-     start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
-     end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
-     allDay: true,
-     extendedProps: {
-       calendar: 'Personal'
-     }
-   },
-   {
-     id: 7,
-     url: '',
-     title: 'Dinner',
-     start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
-     end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
-     allDay: true,
-     extendedProps: {
-       calendar: 'Family'
-     }
-   },
-   {
-     id: 8,
-     url: '',
-     title: 'Product Review',
-     start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
-     end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
-     allDay: true,
-     extendedProps: {
-       calendar: 'Business'
-     }
-   },
-   {
-     id: 9,
-     url: '',
-     title: 'Monthly Meeting',
-     start: nextMonth,
-     end: nextMonth,
-     allDay: true,
-     extendedProps: {
-       calendar: 'Business'
-     }
-   },
-   {
-     id: 10,
-     url: '',
-     title: 'Monthly Checkup',
-     start: prevMonth,
-     end: prevMonth,
-     allDay: true,
-     extendedProps: {
-       calendar: 'Personal'
-     }
-   }
- ];
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+})
+ var events = [];
+ $.ajax({
+    url: route('reminder.events'),
+    method: "POST",
+    success: (res) => {
+        if (res.status === 201) {
+            var resEvents=res.events;
+            $.each( resEvents, function( key, value ) {
+                value.start = new Date(value.start);
+                value.end = new Date(value.end);
+                value.url='';
+                value.allDay=false;
+                value.extendedProps={ calendar: 'business',detail: value.detail};
+                resEvents[key]=value;
+            });
+            events = resEvents;
+            $('.input-filter').click();
+        }
+    }
+})
+//  var events = [
+//    {
+//      id: 2,
+//      url: '',
+//      title: 'Meeting With Client',
+//      start: new Date(date.getFullYear(), date.getMonth() + 1, -11),
+//      end: new Date(date.getFullYear(), date.getMonth() + 1, -10),
+//      allDay: true,
+//      extendedProps: {
+//        calendar: 'Business'
+//      }
+//    },
+//  ];
