@@ -120,4 +120,10 @@ class ReminderController extends Controller
             return response()->json(['hata' => 'Remove Failed :/', 'status' => 400]);
         }
     }
+
+    function events(Request $request)
+    {
+        $Reminder = Reminder::select('id','title','start_date as start','end_date as end','detail')->get();
+        return response()->json(['message' => 'Successful :)', 'events'=>$Reminder, 'status' => 201]);
+    }
 }

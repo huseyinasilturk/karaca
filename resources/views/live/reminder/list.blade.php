@@ -14,7 +14,11 @@
 @endsection
 
 @section('page-style')
-
+<style>
+    .fc-daygrid-block-event{
+        color:white !important;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -35,6 +39,26 @@
                     </button>
                 </div>
             </div>
+            <div class="card-body pb-0 d-none">
+                <h5 class="section-label mb-1">
+                  <span class="align-middle">Filter</span>
+                </h5>
+                <div class="form-check mb-1">
+                  <input type="checkbox" class="form-check-input select-all" id="select-all" checked />
+                  <label class="form-check-label" for="select-all">View All</label>
+                </div>
+                <div class="calendar-events-filter">
+                  <div class="form-check form-check-primary mb-1">
+                    <input
+                      type="checkbox"
+                      class="form-check-input input-filter"
+                      id="business"
+                      data-value="business"
+                    />
+                    <label class="form-check-label" for="business">Business</label>
+                  </div>
+                </div>
+              </div>
             <div class="mt-auto">
             <img
                 src="{{asset('images/pages/calendar-illustration.png')}}"
@@ -101,6 +125,7 @@
 
 @section('vendor-script')
     <!-- Vendor js files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/locale/tr.min.js" integrity="sha512-h20P500+UqnOi8J2CGQ+dE4zLnILAz1D6nZ9BkW830RAQC5bEDuZ1SIY5GBHVmIihLV2kctUk6Gnk1v34R614w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{{ asset(mix('vendors/js/calendar/fullcalendar.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/extensions/moment.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/forms/select/select2.full.min.js')) }}"></script>

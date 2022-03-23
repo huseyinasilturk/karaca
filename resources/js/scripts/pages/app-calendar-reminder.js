@@ -203,11 +203,7 @@
                         'success'
                     )
                 } else {
-                    Swal.fire(
-                        'Güncellenemedi!',
-                        'Hatırlatıcı silinemedi sorun oluştu yazılım destek ekibi ile iletişime geçin.',
-                        'error'
-                    )
+
                 }
             }
         })
@@ -270,7 +266,18 @@
      events: fetchEvents,
      editable: true,
      dragScroll: true,
+     locale: 'tr',
      dayMaxEvents: 2,
+     buttonText: {
+        today:    'Bugün',
+        month:    'Ay',
+        week:     'Hafta',
+        day:      'Gün',
+        list:     'Liste'
+     },
+     moreLinkContent:function(args){
+        return '+'+args.num+' Daha Fazla';
+     },
      eventResizableFromStart: true,
      customButtons: {
        sidebarToggle: {
