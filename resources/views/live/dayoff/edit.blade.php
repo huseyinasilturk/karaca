@@ -23,6 +23,7 @@
                 </div>
                 <div class="card-body">
                     <form class="form" onsubmit="submitHandler(event)">
+                        <input type="hidden" name="id" value={{ $dayOff->id }}>
                         <div class="row">
                             <div class="col-md-6 col-12">
                                 <div class="mb-1">
@@ -88,9 +89,11 @@
         function submitHandler(e) {
             e.preventDefault();
 
+            const id = $("input[name='id']").val()
+
             $.ajax({
                 method: "POST",
-                url: "{{ route('dayoff.store') }}",
+                url: route('dayoff.update', id),
                 data: $(e.target).serialize(),
                 dataType: "json",
                 success: (res, textStatus, xhr) => {
@@ -104,8 +107,6 @@
                                 progressBar: true
                             }
                         );
-
-                        $(e.target).trigger("reset");
                     }
                 },
                 error: err => {

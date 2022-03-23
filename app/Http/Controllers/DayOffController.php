@@ -60,10 +60,6 @@ class DayOffController extends Controller
         return response()->json($dayOffs, 200);
     }
 
-    public function update(DayOffRequest $request)
-    {
-    }
-
     public function edit($id)
     {
         $dayOff = DayOff::find($id);
@@ -71,5 +67,41 @@ class DayOffController extends Controller
         $personals = User::with("information")->get();
 
         return view("live.dayoff.edit", compact("personals", "dayOff"));
+    }
+
+    public function update(DayOffRequest $request, $id)
+    {
+        $data = $request->validated();
+
+        $calculateDay = round((strtotime($data["end_date"]) - strtotime($data["start_date"])) / (60 * 60 *  24));
+
+        if ($calculateDay < 0) {
+            return response()->json(["errors" => ["date" => "İzin bitiş tarihi, başlangıç tarihinden önce olamaz"]], 404);
+        }
+
+        $data["day"] = $calculateDay;
+
+        if ($data["personal_id"] == "-1") {
+            return response()->json(["errors" => ["personal_id" => "Personel seçmelisiniz"]], 404);
+        }
+
+        $updateDayOff = DayOff::find($id)->update($data);
+
+        if (!$updateDayOff) {
+            return response()->json(["errors" => ["day_off" => "İzin oluşturulurken hata oluştu"]], 404);
+        }
+
+        return response()->json(["message" => "İzin başarıyla güncellendi"], 201);
+    }
+
+    public function delete($id)
+    {
+        $removeDayOff = DayOff::find($id)->delete();
+
+        if (!$removeDayOff) {
+            return response()->json(["errors" => ["dayoff" => "İzin silinirken bir hata oluştu"]], 404);
+        }
+
+        return response()->json(["message" => "İzin başarıyla silindi"], 200);
     }
 }
