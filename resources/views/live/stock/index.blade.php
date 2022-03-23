@@ -367,12 +367,20 @@
 
                         if (res.length > 0) {
                             res.forEach((product, key) => {
-                                const newProducts = `
+                                let imagePath = ''
+                                if (product.product_file_data.length > 0) {
+                                    imagePath = "{{ asset('images/product/:path') }}"
+                                    imagePath = imagePath.replace(":path", product.product_file_data[0]
+                                        .file_name)
+                                } else {
+                                    imagePath = 'http://via.placeholder.com/600x350'
+                                }
+                                const newProduct = `
                                 <div class="card ecommerce-card">
                                     <div class="item-img text-center">
                                         <a href="{{ url('app/ecommerce/details') }}">
                                             <img class="img-fluid card-img-top"
-                                                src="images/product/${product.product_file_data[0].file_name}"
+                                                src="${imagePath}"
                                                 alt="img-placeholder" /></a>
                                     </div>
                                     <div class="card-body">
@@ -401,7 +409,7 @@
                                     </div>
                                 </div>
                             `;
-                                products.append(newProducts);
+                                products.append(newProduct);
                             });
 
                             feather.replace()
