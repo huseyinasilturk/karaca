@@ -14,6 +14,7 @@
 
 @section('page-style')
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-sweet-alerts.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">
 @endsection
 
 @section('content')
@@ -21,16 +22,22 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <form>
+                    <form onsubmit="filterHandler(event)">
                         <div class="card-header justify-content-between align-items-end">
                             <div class="col-md-3 col-6">
                                 <label class="form-label" for="personal">Personel</label>
                                 <select class="form-select" id="personal" name="personal_id">
                                     <option value="-1">Personel seçiniz</option>
+                                    @if (count($personals) > 0)
+                                        @foreach ($personals as $person)
+                                            <option value="{{ $person->id }}">{{ $person->information->name }}
+                                                {{ $person->information->surname }}</option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </div>
                             <div class="col-md-3 col-6 text-end">
-                                <button class="btn btn-primary w-100" type="button">Filtrele</button>
+                                <button class="btn btn-primary w-100" type="submit">Filtrele</button>
                             </div>
                         </div>
                     </form>
@@ -60,6 +67,9 @@
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap5.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/extensions/sweetalert2.all.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/extensions/moment.min.js')) }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+        integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 @endsection
 
 @section('page-script')
@@ -67,99 +77,100 @@
         $(function() {
             "use strict";
 
-            $("#dayoff-table").DataTable({
-                serverSide: true,
-                ajax: {
-                    url: route("dayoff.dayOffs"),
-                    method: "GET",
-                    dataType: "json",
-                    dataSrc: ""
+        })
+
+        $("#dayoff-table").DataTable({
+            serverSide: true,
+            ajax: {
+                url: route("dayoff.dayOffs"),
+                method: "GET",
+                dataType: "json",
+                dataSrc: ""
+            },
+            columns: [{
+                    data: "",
+                    width: "5%"
                 },
-                columns: [{
-                        data: "",
-                        width: "5%"
-                    },
-                    {
-                        data: "person.information.name"
-                    },
-                    {
-                        data: "person.information.surname"
-                    },
-                    {
-                        data: "start_date"
-                    },
-                    {
-                        data: "end_date"
-                    },
-                    {
-                        data: "day"
-                    },
-                    {
-                        data: "",
-                        width: "5%"
+                {
+                    data: "person.information.name"
+                },
+                {
+                    data: "person.information.surname"
+                },
+                {
+                    data: "start_date"
+                },
+                {
+                    data: "end_date"
+                },
+                {
+                    data: "day"
+                },
+                {
+                    data: "",
+                    width: "5%"
+                }
+            ],
+            columnDefs: [{
+                    targets: 0,
+                    render: function(data, type, full, meta) {
+                        return `<p style="font-weight: bold">${meta.row + 1}</p>`
                     }
-                ],
-                columnDefs: [{
-                        targets: 0,
-                        render: function(data, type, full, meta) {
-                            console.log(meta)
-                            return `<p style="font-weight: bold">${meta.row + 1}</p>`
+                },
+                {
+                    targets: 1,
+                    render: function(data, type, full, meta) {
+                        if (data !== null) {
+                            return `<p>${data}</p>`
+                        } else {
+                            return "---"
                         }
-                    },
-                    {
-                        targets: 1,
-                        render: function(data, type, full, meta) {
-                            if (data !== null) {
-                                return `<p>${data}</p>`
-                            } else {
-                                return "---"
-                            }
+                    }
+                },
+                {
+                    targets: 2,
+                    render: function(data, type, full, meta) {
+                        if (data !== null) {
+                            return `<p>${data}</p>`
+                        } else {
+                            return "---"
                         }
-                    },
-                    {
-                        targets: 2,
-                        render: function(data, type, full, meta) {
-                            if (data !== null) {
-                                return `<p>${data}</p>`
-                            } else {
-                                return "---"
-                            }
+                    }
+                },
+                {
+                    targets: 3,
+                    render: function(data, type, full, meta) {
+                        if (data !== null) {
+                            return `<p>${moment(data).format("DD.MM.YYYY")}</p>`
+                        } else {
+                            return "---"
                         }
-                    },
-                    {
-                        targets: 3,
-                        render: function(data, type, full, meta) {
-                            if (data !== null) {
-                                return `<p>${moment(data).format("DD.MM.YYYY")}</p>`
-                            } else {
-                                return "---"
-                            }
+                    }
+                },
+                {
+                    targets: 4,
+                    render: function(data, type, full, meta) {
+                        if (data !== null) {
+                            return `<p>${moment(data).format("DD.MM.YYYY")}</p>`
+                        } else {
+                            return "---"
                         }
-                    },
-                    {
-                        targets: 4,
-                        render: function(data, type, full, meta) {
-                            if (data !== null) {
-                                return `<p>${moment(data).format("DD.MM.YYYY")}</p>`
-                            } else {
-                                return "---"
-                            }
+                    }
+                },
+                {
+                    targets: 5,
+                    render: function(data, type, full, meta) {
+                        if (data !== null) {
+                            return `<p>${data} gün</p>`
+                        } else {
+                            return "---"
                         }
-                    },
-                    {
-                        targets: 5,
-                        render: function(data, type, full, meta) {
-                            if (data !== null) {
-                                return `<p>${data} gün</p>`
-                            } else {
-                                return "---"
-                            }
-                        }
-                    },
-                    {
-                        targets: 6,
-                        render: function(data, type, full, meta) {
-                            return `<div class="btn-tooltip">
+                    }
+                },
+                {
+                    targets: 6,
+                    render: function(data, type, full, meta) {
+                        return `<div class="btn-tooltip">
                                 <a href="/dayoff/${full['id']}" class="btn bg-transparent p-0">${feather.icons["edit-2"].toSvg({
                                 class: "font-small-4 text-primary",
                             })}</a>
@@ -167,21 +178,66 @@
                                 class: "font-small-4 text-danger",
                             })}</button>
                             </div>`;
-                        }
                     }
-                ],
-                searching: false,
-                info: false,
-                paginate: false,
-                language: {
-                    paginate: {
-                        // remove previous & next text from pagination
-                        previous: "&nbsp;",
-                        next: "&nbsp;",
-                    },
+                }
+            ],
+            searching: false,
+            info: false,
+            paginate: false,
+            language: {
+                paginate: {
+                    // remove previous & next text from pagination
+                    previous: "&nbsp;",
+                    next: "&nbsp;",
                 },
-            })
+            },
         })
+
+        function filterHandler(e) {
+            e.preventDefault();
+            console.log("sex")
+
+            $('#dayoff-table').DataTable().clear().draw()
+            return;
+
+            $.ajax({
+                method: "POST",
+                url: route('dayoff.filter'),
+                data: $(e.target).serialize(),
+                dataType: "json",
+                success: (res, textStatus, xhr) => {
+                    console.log(res)
+                    if (xhr.status === 200) {
+                        toastr["success"](
+                            res.message,
+                            "Başarılı!", {
+                                closeButton: true,
+                                tapToDismiss: true,
+                                timeOut: 2000,
+                                progressBar: true
+                            }
+                        );
+                    }
+                },
+                error: err => {
+                    const errors = err.responseJSON.errors
+                    Object.values(errors).map((error) => {
+                        toastr["error"](
+                            error,
+                            "Hata!", {
+                                closeButton: true,
+                                tapToDismiss: true,
+                                timeOut: 5000,
+                                progressBar: true
+                            }
+                        );
+                    })
+
+                }
+            })
+
+            console.log("waow");
+        }
 
         function deleteHandler(el, id) {
             Swal.fire({
