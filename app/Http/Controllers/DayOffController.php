@@ -109,7 +109,19 @@ class DayOffController extends Controller
 
     public function filter(Request $request)
     {
-        $dayOffs = DayOff::with("person", "person.information")->whereRelation("person", "id", "=", $request->personal_id)->get();
+        $dayOffs = DayOff::query();
+
+        if ($request->filled("date")) {
+            $month = explode("-", $request->date)[1];
+            $dayOffs = $dayOffs->whereMonth("start_date", $month)->orWhereMonth("end_date", $month);
+        }
+
+        if ($request->filled("personal_id")) {
+            $dayOffs = $dayOffs->whereRelation("person", "id", "=", $request->personal_id);
+        }
+
+        $dayOffs = $dayOffs->get()->load("person", "person.information");
+
         return response()->json($dayOffs, 200);
     }
 }

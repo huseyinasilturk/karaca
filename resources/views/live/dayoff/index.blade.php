@@ -27,7 +27,7 @@
                             <div class="col-md-3 col-6">
                                 <label class="form-label" for="personal">Personel</label>
                                 <select class="form-select" id="personal" name="personal_id">
-                                    <option value="-1">Personel seçiniz</option>
+                                    <option value="-1" disabled>Personel seçiniz</option>
                                     @if (count($personals) > 0)
                                         @foreach ($personals as $person)
                                             <option value="{{ $person->id }}">{{ $person->information->name }}
@@ -36,8 +36,14 @@
                                     @endif
                                 </select>
                             </div>
+                            <div class="col-md-3 col-6">
+                                <label class="form-label" for="date">Tarih</label>
+                                <input class="form-control" type="month" name="date" id="date" />
+                            </div>
                             <div class="col-md-3 col-6 text-end">
-                                <button class="btn btn-primary w-100" type="submit">Filtrele</button>
+                                <button class="btn btn-primary" type="button" onclick="clearFilters()">Filtreleri
+                                    Temizle</button>
+                                <button class="btn btn-primary" type="submit">Filtrele</button>
                             </div>
                         </div>
                     </form>
@@ -76,11 +82,10 @@
     <script>
         $(function() {
             "use strict";
-
         })
 
-        $("#dayoff-table").DataTable({
-            serverSide: true,
+        var datatable = $("#dayoff-table").DataTable({
+            serverSide: false,
             ajax: {
                 url: route("dayoff.dayOffs"),
                 method: "GET",
@@ -183,8 +188,11 @@
             ],
             searching: false,
             info: false,
-            paginate: false,
+            paginate: true,
             language: {
+                lengthMenu: "_MENU_ adet izin göster",
+                emptyTable: "Filtreye uygun veri bulunmamakta",
+                zeroRecords: "Eşleşen veri bulunamadı",
                 paginate: {
                     // remove previous & next text from pagination
                     previous: "&nbsp;",
@@ -195,10 +203,6 @@
 
         function filterHandler(e) {
             e.preventDefault();
-            console.log("sex")
-
-            $('#dayoff-table').DataTable().clear().draw()
-            return;
 
             $.ajax({
                 method: "POST",
@@ -206,8 +210,9 @@
                 data: $(e.target).serialize(),
                 dataType: "json",
                 success: (res, textStatus, xhr) => {
-                    console.log(res)
                     if (xhr.status === 200) {
+                        datatable.clear()
+                        datatable.rows.add(res).draw();
                         toastr["success"](
                             res.message,
                             "Başarılı!", {
@@ -235,8 +240,6 @@
 
                 }
             })
-
-            console.log("waow");
         }
 
         function deleteHandler(el, id) {
@@ -288,6 +291,20 @@
             });
 
 
+        }
+
+        function clearFilters() {
+            $.ajax({
+                method: "GET",
+                url: route('dayoff.dayOffs'),
+                dataType: "json",
+                success: res => {
+                    $("#personal").val("-1")
+                    $("#date").val("")
+                    datatable.clear()
+                    datatable.rows.add(res).draw();
+                }
+            })
         }
     </script>
 @endsection

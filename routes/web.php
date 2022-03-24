@@ -57,6 +57,7 @@ Route::group(["middleware" => "auth"], function () {
         Route::post("/update", [ProductController::class, "update"])->name(".update");
         Route::delete("/delete/{id}", [ProductController::class, "destroy"])->name(".delete");
         Route::post("/delete", [ProductController::class, "imageDestroy"])->name(".imageDestroy");
+        Route::post("/filter", [ProductController::class, "filter"])->name(".filter");
     });
 
     Route::prefix("user")->name("user")->group(function () {
