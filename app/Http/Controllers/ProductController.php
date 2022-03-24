@@ -3,23 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
 use App\Models\Company;
 use App\Models\FileData;
 use App\Models\ListPrice;
 use App\Models\Objective;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $breadcrumbs = [
@@ -27,7 +21,8 @@ class ProductController extends Controller
         ];
         $Product = Product::with('productFileData', 'productTypeGet', 'productCompanyGet')->get();
         $Company = Company::all();
-        return view('live.product.list', compact('Product', 'Company', "breadcrumbs"));
+        $productTypes = Objective::where("name", "productType")->get();
+        return view('live.product.list', compact('Product', 'Company', "breadcrumbs", "productTypes"));
     }
 
     public function products()
@@ -36,11 +31,6 @@ class ProductController extends Controller
         return response()->json($Product, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $breadcrumbs = [
@@ -51,12 +41,6 @@ class ProductController extends Controller
         return view('live.product.add', compact('ProductObjectives', 'Company', "breadcrumbs"));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreProductRequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreProductRequest $request)
     {
         $product = Product::create([
@@ -95,23 +79,6 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Product $product)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $Product = Product::whereId($id)->with('productFileData', 'productCompanyGet')->first();
@@ -121,13 +88,6 @@ class ProductController extends Controller
         return view('live.product.edit', compact('Product', 'ProductTypeObjectives', 'Company'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateProductRequest  $request
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request)
     {
         if (!empty($request->id)) {
@@ -169,12 +129,6 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         if (!empty($id)) {
@@ -197,5 +151,22 @@ class ProductController extends Controller
         $FileData = $FileData->delete();
         File::deleteDirectory(public_path($FileLocation));
         return response()->json(['message' => 'Remove Successful :)', 'status' => 202], 202);
+    }
+
+    public function filter(Request $request)
+    {
+        $products = Product::query();
+
+        if ($request->filled("product")) {
+            $products = $products->where("name", "LIKE", '%' . $request->product . '%');
+        }
+
+        if ($request->filled("product_type_id")) {
+            $products = $products->whereRelation("productTypeGet", "id", "=", $request->product_type_id);
+        }
+
+        $products = $products->get()->load('productFileData', 'productTypeGet', 'productCompanyGet');
+
+        return response()->json($products, 200);
     }
 }

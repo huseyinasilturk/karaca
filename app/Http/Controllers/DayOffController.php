@@ -15,7 +15,9 @@ class DayOffController extends Controller
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "İzin"], ['name' => "İzinler"]
         ];
-        return view("live.dayoff.index", compact("breadcrumbs"));
+        $personals = User::with("information")->get();
+
+        return view("live.dayoff.index", compact("breadcrumbs", "personals"));
     }
 
     public function create()
@@ -103,5 +105,23 @@ class DayOffController extends Controller
         }
 
         return response()->json(["message" => "İzin başarıyla silindi"], 200);
+    }
+
+    public function filter(Request $request)
+    {
+        $dayOffs = DayOff::query();
+
+        if ($request->filled("date")) {
+            $month = explode("-", $request->date)[1];
+            $dayOffs = $dayOffs->whereMonth("start_date", $month)->orWhereMonth("end_date", $month);
+        }
+
+        if ($request->filled("personal_id")) {
+            $dayOffs = $dayOffs->whereRelation("person", "id", "=", $request->personal_id);
+        }
+
+        $dayOffs = $dayOffs->get()->load("person", "person.information");
+
+        return response()->json($dayOffs, 200);
     }
 }

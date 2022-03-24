@@ -57,6 +57,7 @@ Route::group(["middleware" => "auth"], function () {
         Route::post("/update", [ProductController::class, "update"])->name(".update");
         Route::delete("/delete/{id}", [ProductController::class, "destroy"])->name(".delete");
         Route::post("/delete", [ProductController::class, "imageDestroy"])->name(".imageDestroy");
+        Route::post("/filter", [ProductController::class, "filter"])->name(".filter");
     });
 
     Route::prefix("user")->name("user")->group(function () {
@@ -118,9 +119,10 @@ Route::group(["middleware" => "auth"], function () {
         // İzin güncelle
         Route::get("/{id}", [DayOffController::class, "edit"])->name(".edit")->whereNumber("id");
 
-
         // İzin ekle
         Route::post("/", [DayOffController::class, "store"])->name(".store");
+        // İzin filtrele
+        Route::post("/filter", [DayOffController::class, "filter"])->name(".filter");
         // İzin güncelle
         Route::post("/{id}", [DayOffController::class, "update"])->name(".update");
 
