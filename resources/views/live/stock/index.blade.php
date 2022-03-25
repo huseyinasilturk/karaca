@@ -120,25 +120,32 @@
 
     <!-- E-commerce Products Starts -->
     <section id="ecommerce-products" class="grid-view">
-        @empty($products)
+        @if (count($products) == 0)
             <div class="card col-12">
                 <div class="card-body">
                     <p>Önce ürün eklemelisiniz</p>
                     <p class="mb-0">
-                        <a href="{{ route('product.create') }}" class="text-primary" style="font-weight: bold">Buradan</a>
+                        <a href="{{ route('product.create') }}" class="text-primary"
+                            style="font-weight: bold">Buradan</a>
                         gidebilirsiniz
                     </p>
-
                 </div>
             </div>
-        @endempty
+        @endif
         @foreach ($products as $product)
             <div class="card ecommerce-card">
                 <div class="item-img text-center">
                     <a href="{{ url('app/ecommerce/details') }}">
-                        <img class="img-fluid card-img-top"
-                            src="{{ asset('images/product/' . $product->productFileData[0]->file_name) }}"
-                            alt="img-placeholder" /></a>
+                        @if (count($product->productFileData) > 0)
+                            <img class="img-fluid card-img-top"
+                                src="{{ asset('images/product/' . $product->productFileData[0]->file_name) }}"
+                                alt="img-placeholder" />
+                        @else
+                            <img class="img-fluid card-img-top" src="http://via.placeholder.com/600x350"
+                                alt="img-placeholder" />
+                        @endif
+
+                    </a>
                 </div>
                 <div class="card-body">
                     <div class="item-wrapper justify-content-end">
@@ -158,8 +165,17 @@
                             </h4>
                         </div>
                     </div>
-                    <button data-bs-toggle="modal" data-bs-target="#stockModal" data-product="{{ $product->id }}"
-                        onclick="modalDataHandler(this)" class="btn btn-primary btn-cart">
+                    @php
+                        $count = 0;
+                        if (count($product->productStock) > 0) {
+                            foreach ($product->productStock as $productStock) {
+                                $count += $productStock->amount;
+                            }
+                        }
+                    @endphp
+                    <button data-bs-toggle="modal" data-bs-target="#stockModal" data-stock="{{ $count }}"
+                        data-product="{{ $product->id }}" onclick="modalDataHandler(this)"
+                        class="btn btn-primary btn-cart">
                         <i data-feather="layers"></i>
                         <span class="add-to-cart">Stoğa Ekle</span>
                     </button>
@@ -209,8 +225,8 @@
                                 @endforeach
                             </select>
                         </div>
-
-                        <p class="text-muted" id="total-buy-price">Toplam Alış Fiyatı: <span>15</span> ₺</p>
+                        <p>Bu üründen stokta <span style="font-weight: bold">7</span> adet bulunmakta</p>
+                        <p class="text-muted" id="total-buy-price">Toplam Alış Fiyatı: <span>0</span> ₺</p>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Ekle</button>
@@ -321,14 +337,17 @@
         function onAmountChange(el) {
             const price = $("input[name='price']").val();
             const amount = $(el).val();
-            $("#total-buy-price").find("span").text((Math.round(price * amount * 100) / 100).toFixed(2))
+            if (price !== undefined && amount !== undefined) {
+                $("#total-buy-price").find("span").text((Math.round(price * amount * 100) / 100).toFixed(2))
+            }
         }
 
         function onPriceChange(el) {
             const amount = $("input[name='amount']").val();
             const price = $(el).val();
-
-            $("#total-buy-price").find("span").text((Math.round(price * amount * 100) / 100).toFixed(2))
+            if (price !== undefined && amount !== undefined) {
+                $("#total-buy-price").find("span").text((Math.round(price * amount * 100) / 100).toFixed(2))
+            }
         }
 
         function filterHandler(e) {
@@ -348,12 +367,20 @@
 
                         if (res.length > 0) {
                             res.forEach((product, key) => {
-                                const newProducts = `
+                                let imagePath = ''
+                                if (product.product_file_data.length > 0) {
+                                    imagePath = "{{ asset('images/product/:path') }}"
+                                    imagePath = imagePath.replace(":path", product.product_file_data[0]
+                                        .file_name)
+                                } else {
+                                    imagePath = 'http://via.placeholder.com/600x350'
+                                }
+                                const newProduct = `
                                 <div class="card ecommerce-card">
                                     <div class="item-img text-center">
                                         <a href="{{ url('app/ecommerce/details') }}">
                                             <img class="img-fluid card-img-top"
-                                                src="images/product/${product.product_file_data[0].file_name}"
+                                                src="${imagePath}"
                                                 alt="img-placeholder" /></a>
                                     </div>
                                     <div class="card-body">
@@ -382,7 +409,7 @@
                                     </div>
                                 </div>
                             `;
-                                products.append(newProducts);
+                                products.append(newProduct);
                             });
 
                             feather.replace()

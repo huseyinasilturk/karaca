@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Company extends Model
+class Reminder extends Model
 {
     use HasFactory;
-
-    protected $fillable = ["name", "phone", "address", "note", "company_type"];
+    protected $fillable = ['start_date','end_date','title','detail','active'];
 }

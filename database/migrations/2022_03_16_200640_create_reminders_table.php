@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCompaniesTable extends Migration
+class CreateRemindersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateCompaniesTable extends Migration
      */
     public function up()
     {
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('reminders', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->string("phone")->nullable();
-            $table->string("address")->nullable();
-            $table->string("note")->nullable();
-            $table->integer("company_type")->nullable();
+            $table->boolean("active")->default(0)->nullable();
+            $table->dateTime("start_date");
+            $table->dateTime("end_date");
+            $table->string("title",150);
+            $table->text("detail")->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreateCompaniesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('reminders');
     }
 }

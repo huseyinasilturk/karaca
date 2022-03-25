@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCompaniesTable extends Migration
+class CreateDayOffsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateCompaniesTable extends Migration
      */
     public function up()
     {
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('day_offs', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->string("phone")->nullable();
-            $table->string("address")->nullable();
-            $table->string("note")->nullable();
-            $table->integer("company_type")->nullable();
+            $table->integer("personal_id");
+            $table->date("start_date");
+            $table->date("end_date");
+            $table->longText("detail")->nullable();
+            $table->integer("day");
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreateCompaniesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('day_offs');
     }
 }

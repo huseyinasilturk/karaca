@@ -15,7 +15,7 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\MiscellaneousController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartsController;
-use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CompanyController
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ObjectiveController;
@@ -23,7 +23,12 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellStockController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
-use App\Models\IncomeStatement;
+use App\Models\IncomeStatement; 
+use App\Http\Controllers\DayOffController; 
+use App\Http\Controllers\ObjectiveController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReminderController; 
+use App\Models\DayOff; 
 
 /*
 |--------------------------------------------------------------------------
@@ -36,9 +41,7 @@ use App\Models\IncomeStatement;
 // Auth prefix
 Route::prefix("auth")->name("auth")->group(function () {
     Route::post("login", [AuthenticationController::class, 'loginUser'])->name(".loginUser");
-
     Route::get("login", [AuthenticationController::class, 'login'])->name(".login");
-
     Route::get("logout", [AuthenticationController::class, 'logout'])->name(".logout");
 });
 
@@ -52,16 +55,17 @@ Route::group(["middleware" => "auth"], function () {
 
     Route::prefix("product")->name("product")->group(function () {
         Route::get("/", [ProductController::class, "index"])->name(".index");
+        Route::get("/products", [ProductController::class, "products"])->name(".products");
         Route::get("/add", [ProductController::class, "create"])->name(".create");
         Route::post("/add", [ProductController::class, "store"])->name(".store");
         Route::get("/edit/{id}", [ProductController::class, "edit"])->name(".edit");
         Route::post("/update", [ProductController::class, "update"])->name(".update");
         Route::delete("/delete/{id}", [ProductController::class, "destroy"])->name(".delete");
         Route::post("/delete", [ProductController::class, "imageDestroy"])->name(".imageDestroy");
+        Route::post("/filter", [ProductController::class, "filter"])->name(".filter");
     });
 
     Route::prefix("user")->name("user")->group(function () {
-
         Route::get("/list", [UserController::class, "list"])->name(".list");
         Route::get("/userList", [UserController::class, "userList"])->name(".userList");
         Route::post("/add", [UserController::class, "store"])->name(".store");
@@ -75,10 +79,8 @@ Route::group(["middleware" => "auth"], function () {
     Route::prefix("roles")->name("roles")->group(function () {
         Route::get("/", [RoleController::class, "index"])->name(".index");
         Route::get("/{id}", [RoleController::class, "detail"])->name(".detail")->whereNumber("id");
-
         Route::post("/", [RoleController::class, "store"])->name(".store");
         Route::post("/{id}", [RoleController::class, "update"])->name(".update")->whereNumber("id");
-
         Route::delete("/{id}", [RoleController::class, "delete"])->name(".delete")->whereNumber("id");
     });
 
@@ -87,10 +89,12 @@ Route::group(["middleware" => "auth"], function () {
         Route::get("/", [CompanyController::class, "index"])->name(".index");
         Route::get("/company", [CompanyController::class, "companies"])->name(".company");
         Route::get("/add", [CompanyController::class, "create"])->name(".create");
-
-        Route::delete("/{id}", [CompanyController::class, "delete"])->name(".delete")->whereNumber("id");
+        Route::get("/{id}", [CompanyController::class, "edit"])->name(".edit")->whereNumber("id");
 
         Route::post("/", [CompanyController::class, "store"])->name(".store");
+        Route::post("/update", [CompanyController::class, "update"])->name(".update");
+
+        Route::delete("/{id}", [CompanyController::class, "delete"])->name(".delete")->whereNumber("id");
     });
 
     // Stok prefix
@@ -107,14 +111,40 @@ Route::group(["middleware" => "auth"], function () {
 
     // Stok prefix
     Route::prefix("stock")->name("stock")->group(function () {
-        // Stok anasayfa
         Route::get("/", [StockController::class, "index"])->name(".index");
-
-        // Stok ekle
         Route::post("/", [StockController::class, "store"])->name(".store");
-
-        // Stok ürünleri filtrele
         Route::post("/filter-products", [StockController::class, "filterProducts"])->name(".filterProducts");
+    });
+
+    // Hatırlatıcı prefix
+    Route::prefix("reminder")->name("reminder")->group(function () {
+        Route::get("/", [ReminderController::class, "index"])->name(".index");
+        Route::post("/add", [ReminderController::class, "store"])->name(".store");
+        Route::post("/update", [ReminderController::class, "update"])->name(".update");
+        Route::post("/delete", [ReminderController::class, "destroy"])->name(".delete");
+        Route::post("/events", [ReminderController::class, "events"])->name(".events");
+    });
+
+    // İzinler prefix
+    Route::prefix("dayoff")->name("dayoff")->group(function () {
+        // İzin ekleme ekranı
+        Route::get("/add", [DayOffController::class, "create"])->name(".create");
+        // İzinler listeleme ekranı
+        Route::get("/", [DayOffController::class, "index"])->name(".index");
+        // İzinleri döndür
+        Route::get("/dayoff", [DayOffController::class, "dayOffs"])->name(".dayOffs");
+        // İzin güncelle
+        Route::get("/{id}", [DayOffController::class, "edit"])->name(".edit")->whereNumber("id");
+
+        // İzin ekle
+        Route::post("/", [DayOffController::class, "store"])->name(".store");
+        // İzin filtrele
+        Route::post("/filter", [DayOffController::class, "filter"])->name(".filter");
+        // İzin güncelle
+        Route::post("/{id}", [DayOffController::class, "update"])->name(".update");
+
+        // İzin sil
+        Route::delete("/{id}", [DayOffController::class, "delete"])->name(".delete");
     });
 });
 

@@ -27,8 +27,7 @@
         rel="stylesheet">
 
     {{-- Include core + vendor Styles --}}
-    @include('panels/styles')
-
+    @include('panels/styles') 
 </head>
 
 

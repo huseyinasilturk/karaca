@@ -20,24 +20,21 @@
     <section id="basic-datatable">
         <div class="row">
             <div class="col-12">
-                <div class="btn-tooltip">
-                    <button class="btn bg-transparent p-0">
-
-                    </button>
-                </div>
                 <div class="card">
-                    <table class="table" id="company-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Ad</th>
-                                <th>Telefon</th>
-                                <th>Adres</th>
-                                <th>Not</th>
-                                <th>İşlemler</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="card-body">
+                        <table class="table" id="company-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ad</th>
+                                    <th>Telefon</th>
+                                    <th>Adres</th>
+                                    <th>Not</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,7 +61,8 @@
                     dataSrc: ""
                 },
                 columns: [{
-                        data: ""
+                        data: "",
+                        width: "5%"
                     },
                     {
                         data: "name"
@@ -79,13 +77,14 @@
                         data: "note"
                     },
                     {
-                        data: ""
+                        data: "",
+                        width: "5%"
                     }
                 ],
                 columnDefs: [{
                         targets: 0,
                         render: function(data, type, full, meta) {
-                            return "<p>#</p>"
+                            return `<p style="font-weight: bold">${meta.row + 1}</p>`
                         }
                     },
                     {
@@ -132,7 +131,7 @@
                         targets: 5,
                         render: function(data, type, full, meta) {
                             return `<div class="btn-tooltip">
-                                <a href="#" class="btn bg-transparent p-0">${feather.icons["edit-2"].toSvg({
+                                <a href="/company/${full['id']}" class="btn bg-transparent p-0">${feather.icons["edit-2"].toSvg({
                                 class: "font-small-4 text-primary",
                             })}</a>
                             <button class="btn bg-transparent p-0" onclick="deleteHandler(this,${full["id"]})">${feather.icons["trash"].toSvg({
