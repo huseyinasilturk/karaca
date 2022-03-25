@@ -15,20 +15,15 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\MiscellaneousController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartsController;
-use App\Http\Controllers\CompanyController
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\ObjectiveController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellStockController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
-use App\Models\IncomeStatement; 
-use App\Http\Controllers\DayOffController; 
+use App\Http\Controllers\DayOffController;
 use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ReminderController; 
-use App\Models\DayOff; 
 
 /*
 |--------------------------------------------------------------------------
