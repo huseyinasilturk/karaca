@@ -52,21 +52,14 @@
                     <form id="add-new-user" class="add-new-user modal-content pt-0" action="{{ route('user.store') }}" method="POST">
                         @csrf
                         @method("put")
-
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
                         <div class="modal-header mb-1">
                             <h5 class="modal-title" id="exampleModalLabel">Yeni personel kaydet.</h5>
                         </div>
+                        <div class="error">
+
+                        </div>
                         <div class="modal-body flex-grow-1">
-                            @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
                             <div class="mb-1">
                                 <label class="form-label" for="basic-icon-default-fullname">Adı (*)</label>
                                 <input type="text" class="form-control dt-full-name" id="name" name="name"
@@ -109,14 +102,14 @@
 
                                 </select>
                             </div>
-                            @if (auth()->user()->roles[0]->name == "owner")
+                            @if (auth()->user()->roles[0]->name == "owner" || auth()->user()->roles[0]->name == "admin")
                             <div class="mb-1">
                                 <label class="form-label" for="basic-icon-default-email">Maaş</label>
                                 <input type="number" class="form-control dt-email"
                                     name="wage" value="{{ old('wage') }}" />
                             </div>
                             @endif
-                            <button type="submit" class="btn btn-primary me-1 data-submit data-submit-btn insert-or-update">Ekle</button>
+                            <button type="button" onclick="insertOrUpdate()" class="btn btn-primary me-1 data-submit data-submit-btn insert-or-update">Ekle</button>
                             <button type="reset" onclick="modalHide(this)" class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal">İptal</button>
                         </div>
@@ -131,7 +124,8 @@
 @endsection
 
 @section('vendor-script')
-    {{-- Vendor js files --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js" integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        {{-- Vendor js files --}}
     <script src="{{ asset(mix('vendors/js/forms/select/select2.full.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap5.min.js')) }}"></script>
@@ -166,9 +160,47 @@
  * DataTables Basic
  */
 
+function insertOrUpdate() {
+    axios.post(document.getElementById("add-new-user").getAttribute("action"),new FormData(document.getElementById("add-new-user"))).then((res)=>{
+        console.log(res);
+    }).catch((err)=>{
+        let errMsj = `
+        <div class="alert alert-danger">
+             `;
+        Object.values(err.response.data.errors).map((val,key)=>{
+            errMsj += `<ul>`
+            Object.values(val).map((val2,key2)=>{
+              errMsj += `<li>`+val+`</li>` ;
+            })
+            errMsj += `</ul>` ;
+        })
+        errMsj += `</div> `;
+        document.getElementsByClassName("error")[0].innerHTML = errMsj;
+    })
+}
+
+
+function updateOrSubmit() {
+    axios.post(document.getElementById("add-new-user").getAttribute("action"),new FormData(document.getElementById("add-new-user"))).then((res)=>{
+        console.log(res);
+    }).catch((err)=>{
+        let errMsj = `
+        <div class="alert alert-danger">
+             `;
+        Object.values(err.response.data.errors).map((val,key)=>{
+            errMsj += `<ul>`
+            Object.values(val).map((val2,key2)=>{
+              errMsj += `<li>`+val+`</li>` ;
+            })
+            errMsj += `</ul>` ;
+        })
+        errMsj += `</div> `;
+        document.getElementsByClassName("error")[0].innerHTML = errMsj;
+    })
+}
+
  $(function () {
     "use strict";
-
     var dt_basic_table = $(".datatables-basic"),
         assetPath = "../../../app-assets/";
 
@@ -265,7 +297,7 @@
                             '<span class="emp_name text-truncate fw-bold">' +
                             $name +
                             "</span><span class='tr-companyId d-none'>"+ full["company_id"]+"</span> <span class='tr-name d-none'>"+full["name"]+"</span> <span class='tr-surname d-none'>"+full["surname"]+"</span>" +
-                            "<small class='emp_post text-truncate text-muted'> <span class='tr-user-name'>"+ $post+"</span></small>" +
+                            "<small class='emp_post text-truncate text-muted'> <span class='tr-user-name'>"+ $post+"</span></small><span class='tr-wage'>"+ full["wage"]+"</span></small>" +
                             "</div>" +
                             "</div>";
                         return $row_output;
@@ -500,7 +532,6 @@
 
         var timerInterval;
             Swal.fire({
-
                 title: "Emin misin?",
                 text: "Bu kullanıcı silinecek!",
                 icon: "warning",
@@ -563,6 +594,7 @@ $("body").on("click", "#personal-add-update", function () {
 
     document.getElementsByName("_method")[0].value = "post"
     document.getElementsByClassName("insert-or-update")[0].textContent = "Ekle";
+    document.getElementsByClassName("insert-or-update")[0].setAttribute("onclick", "insertOrUpdate()" );
     document.getElementById("add-new-user").setAttribute("action", route('user.store'));
 
 });
@@ -576,16 +608,15 @@ function fun_userEdit(params) {
     $("input[name='surname']").val($(tr).find(".tr-surname").html());
     $("input[name='birthday']").val($(tr).find(".tr-birthday").html());
     $("input[name='email']").val($(tr).find(".tr-email").html());
+    $("input[name='wage']").val($(tr).find(".tr-wage").html());
     $("input[name='user_name']").val($(tr).find(".tr-user-name").html());
     $("select[name='user_role']").val($(tr).find(".tr-role").html());
     $("select[name='company_id']").val($(tr).find(".tr-companyId").html());
     document.getElementsByClassName("insert-or-update")[0].textContent = "Düzenle";
-
-
+    document.getElementsByClassName("insert-or-update")[0].setAttribute("onclick", "updateOrSubmit()" );
     document.getElementsByName("_method")[0].value = "put"
     const userId = $(params).attr("user_id");
     document.getElementById("add-new-user").setAttribute("action", route("user.update", { id:userId  }));
-
     $('#modals-slide-in').modal('toggle');
 
 }

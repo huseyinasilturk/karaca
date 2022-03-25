@@ -15,15 +15,20 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\MiscellaneousController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartsController;
-use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\DayOffController;
+use App\Http\Controllers\CompanyController
+use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\SellStockController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
-use App\Models\DayOff;
+use App\Models\IncomeStatement; 
+use App\Http\Controllers\DayOffController; 
+use App\Http\Controllers\ObjectiveController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReminderController; 
+use App\Models\DayOff; 
 
 /*
 |--------------------------------------------------------------------------
@@ -90,6 +95,18 @@ Route::group(["middleware" => "auth"], function () {
         Route::post("/update", [CompanyController::class, "update"])->name(".update");
 
         Route::delete("/{id}", [CompanyController::class, "delete"])->name(".delete")->whereNumber("id");
+    });
+
+    // Stok prefix
+    Route::prefix("sellstock")->name("sellstock")->group(function () {
+    // Stok anasayfa
+        Route::get("/", [SellStockController::class, "index"])->name(".sellstock");
+        Route::post("/sell", [SellStockController::class, "store"])->name(".store");
+    });
+  // income prefix
+  Route::prefix("income")->name("income")->group(function () {
+    // Stok anasayfa
+        Route::get("/", [IncomeController::class, "index"])->name(".index");
     });
 
     // Stok prefix
