@@ -14,6 +14,10 @@ class Product extends Model
         return $this->hasMany(FileData::class,'table_id','id')->where('table_name','=','products');
     }
 
+    public function productStock(){
+        return $this->hasMany(Stock::class,'product_id','id');
+    }
+
     public function productTypeGet(){
         return $this->hasOne(Objective::class,'id','type_id')->where('name','=','productType');
     }

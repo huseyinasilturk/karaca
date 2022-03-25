@@ -5,6 +5,7 @@
 @section('vendor-style')
   <!-- vendor css files -->
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/swiper.min.css')) }}">
+  <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-swiper.css')) }}">
 @endsection
 @section('page-style')
   <!-- Page css files -->
@@ -689,6 +690,7 @@
 
 @section('vendor-script')
   <!-- vendor files -->
+  <script src="{{ asset(mix('js/scripts/extensions/ext-component-swiper.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/extensions/swiper.min.js')) }}"></script>
 @endsection
 @section('page-script')

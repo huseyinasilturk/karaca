@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/wizard/bs-stepper.min.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/spinner/jquery.bootstrap-touchspin.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">
+
 @endsection
 
 @section('page-style')
@@ -16,6 +17,7 @@
   <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/form-wizard.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-toastr.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/form-number-input.css')) }}">
+
 @endsection
 
 @section('content')
@@ -64,7 +66,100 @@
   </div>
   <!-- Wizard ends -->
 
-  <div class="bs-stepper-content">
+  <div class="bs-stepper-content pt-2">
+      <div class="row">
+          <div class="col-9">
+            <div class="col-xl-3 col-sm-4 col-md-3 ">
+                <div class="card ecommerce-card">
+                    <div class="item-img text-center">
+                        <a href="{{ url('app/ecommerce/details') }}">
+                            <img class="img-fluid card-img-top" src="{{ asset('images/pages/eCommerce/1.png') }}" alt="img-placeholder" /></a>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="item-name text-center">
+                             Apple Watch Series
+                        </h6>
+                    </div>
+                    <div class="item-options text-center pb-2">
+                        <div class="item-wrapper">
+                            <span class="card-text item-company row justify-content-center"  style="">
+                                <div class="input-group  input-group-lg " style="">
+                                    <input type="number" class="touchspin" value="1" />
+                                </div>
+                            </span>
+
+                            <div class="item-cost">
+                                <div class="input-group input-group-merge mb-2 mt-2">
+                                    <span class="input-group-text">₺</span>
+                                    <input type="text" class="form-control" placeholder="100" aria-label="Amount (to the nearest dollar)">
+                                    <span class="input-group-text">.00</span>
+                                  </div>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-cart">
+                            <i data-feather="shopping-cart"></i>
+                            <span class="add-to-cart">Ekle</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="checkout-options">
+                <div class="card">
+                  <div class="card-body">
+                    <label class="section-label form-label mb-1">Options</label>
+                    <div class="coupons input-group input-group-merge">
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Coupons"
+                        aria-label="Coupons"
+                        aria-describedby="input-coupons"
+                      />
+                      <span class="input-group-text text-primary ps-1" id="input-coupons">Apply</span>
+                    </div>
+                    <hr />
+                    <div class="price-details">
+                      <h6 class="price-title">Price Details</h6>
+                      <ul class="list-unstyled">
+                        <li class="price-detail">
+                          <div class="detail-title">Total MRP</div>
+                          <div class="detail-amt">$598</div>
+                        </li>
+                        <li class="price-detail">
+                          <div class="detail-title">Bag Discount</div>
+                          <div class="detail-amt discount-amt text-success">-25$</div>
+                        </li>
+                        <li class="price-detail">
+                          <div class="detail-title">Estimated Tax</div>
+                          <div class="detail-amt">$1.3</div>
+                        </li>
+                        <li class="price-detail">
+                          <div class="detail-title">EMI Eligibility</div>
+                          <a href="#" class="detail-amt text-primary">Details</a>
+                        </li>
+                        <li class="price-detail">
+                          <div class="detail-title">Delivery Charges</div>
+                          <div class="detail-amt discount-amt text-success">Free</div>
+                        </li>
+                      </ul>
+                      <hr />
+                      <ul class="list-unstyled">
+                        <li class="price-detail">
+                          <div class="detail-title detail-total">Total</div>
+                          <div class="detail-amt fw-bolder">$574</div>
+                        </li>
+                      </ul>
+                      <button type="button" class="btn btn-primary w-100 btn-next place-order">Place Order</button>
+                    </div>
+                  </div>
+                </div>
+                <!-- Checkout Place Order Right ends -->
+              </div>
+          </div>
+
+      </div>
     <!-- Checkout Place order starts -->
     <div id="step-cart" class="content" role="tabpanel" aria-labelledby="step-cart-trigger">
       <div id="place-order" class="list-view product-checkout">
@@ -78,17 +173,9 @@
             </div>
             <div class="card-body">
               <div class="item-name">
-                <h6 class="mb-0"><a href="{{url('app/ecommerce/details')}}" class="text-body">Apple Watch Series 5</a></h6>
+                <h6 class="mb-0"><a href="{{url('app/ecommerce/details')}}" class="text-body">Apple Watch Series asd</a></h6>
                 <span class="item-company">By <a href="#" class="company-name">Apple</a></span>
-                <div class="item-rating">
-                  <ul class="unstyled-list list-inline">
-                    <li class="ratings-list-item"><i data-feather="star" class="filled-star"></i></li>
-                    <li class="ratings-list-item"><i data-feather="star" class="filled-star"></i></li>
-                    <li class="ratings-list-item"><i data-feather="star" class="filled-star"></i></li>
-                    <li class="ratings-list-item"><i data-feather="star" class="filled-star"></i></li>
-                    <li class="ratings-list-item"><i data-feather="star" class="unfilled-star"></i></li>
-                  </ul>
-                </div>
+
               </div>
               <span class="text-success mb-1">In Stock</span>
               <div class="item-quantity">
@@ -384,58 +471,7 @@
         <!-- Checkout Place Order Left ends -->
 
         <!-- Checkout Place Order Right starts -->
-        <div class="checkout-options">
-          <div class="card">
-            <div class="card-body">
-              <label class="section-label form-label mb-1">Options</label>
-              <div class="coupons input-group input-group-merge">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Coupons"
-                  aria-label="Coupons"
-                  aria-describedby="input-coupons"
-                />
-                <span class="input-group-text text-primary ps-1" id="input-coupons">Apply</span>
-              </div>
-              <hr />
-              <div class="price-details">
-                <h6 class="price-title">Price Details</h6>
-                <ul class="list-unstyled">
-                  <li class="price-detail">
-                    <div class="detail-title">Total MRP</div>
-                    <div class="detail-amt">$598</div>
-                  </li>
-                  <li class="price-detail">
-                    <div class="detail-title">Bag Discount</div>
-                    <div class="detail-amt discount-amt text-success">-25$</div>
-                  </li>
-                  <li class="price-detail">
-                    <div class="detail-title">Estimated Tax</div>
-                    <div class="detail-amt">$1.3</div>
-                  </li>
-                  <li class="price-detail">
-                    <div class="detail-title">EMI Eligibility</div>
-                    <a href="#" class="detail-amt text-primary">Details</a>
-                  </li>
-                  <li class="price-detail">
-                    <div class="detail-title">Delivery Charges</div>
-                    <div class="detail-amt discount-amt text-success">Free</div>
-                  </li>
-                </ul>
-                <hr />
-                <ul class="list-unstyled">
-                  <li class="price-detail">
-                    <div class="detail-title detail-total">Total</div>
-                    <div class="detail-amt fw-bolder">$574</div>
-                  </li>
-                </ul>
-                <button type="button" class="btn btn-primary w-100 btn-next place-order">Place Order</button>
-              </div>
-            </div>
-          </div>
-          <!-- Checkout Place Order Right ends -->
-        </div>
+
       </div>
       <!-- Checkout Place order Ends -->
     </div>
@@ -654,9 +690,11 @@
   <script src="{{ asset(mix('vendors/js/forms/wizard/bs-stepper.min.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/forms/spinner/jquery.bootstrap-touchspin.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
+  <script src="{{ asset(mix('vendors/js/forms/spinner/jquery.bootstrap-touchspin.js'))}}"></script>
 @endsection
 
 @section('page-script')
   <!-- Page js files -->
   <script src="{{ asset(mix('js/scripts/pages/app-ecommerce-checkout.js')) }}"></script>
+  <script src="{{ asset(mix('js/scripts/forms/form-number-input.js'))}}"></script>
 @endsection

@@ -50,7 +50,7 @@ class UserController extends Controller
         $user = User::join("information", "information.id", "=", "users.information_id")->join("model_has_roles as mhr","mhr.model_id","=","users.id")
         ->join("roles as r","r.id","=","mhr.role_id")
         ->join("wages","wages.user_id","users.id")->where("wages.status","=","1")
-        ->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"), "users.*", "information.*", "users.id as user_id","r.title as role_title","r.name as role_name"])->get();
+        ->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"),"wages.wage_price as wage", "users.*", "information.*", "users.id as user_id","r.title as role_title","r.name as role_name"])->get();
 
 
         return  response()->json(["data"=>$user], 202);
@@ -99,6 +99,7 @@ class UserController extends Controller
 
         Mail::to($request->only("email"))->send(new Subscribe($user_information));
 
+
         $assingRole = $user->assignRole($request->user_role);
 
         $roles = Role::all();
@@ -137,7 +138,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
 
 
@@ -147,18 +148,23 @@ class UserController extends Controller
 
         $user->update($request->only("user_name", "email","company_id"));
 
+        $wage = Wage::where("user_id","=",$id)->where("wage_price","=",$request->wage)->where("status","=",1);
+
+        $test = $wage->get()->first();
+
+        if ($test->wage_price == $request->wage) {
+            return response()->json(["status"=>$wage->get(),"test"=>1]);
+        }
+
+        return response()->json(["status"=>$test    ]);
+
         $information = Information::find($user->information_id)->update($request->only("name", "surname", "birthday"));
 
         Wage::where("user_id","=",$user->id)->update(["status"=>0]);
-        $wage = Wage::create(['wage_price'=>$request->wage,'wage_date'=> Carbon::now(),'status'=>1,"user_id"=> $user->id]);
 
         $assingRole = $user->syncRoles($request->user_role);
 
-        $roles = Role::all();
-
-        $company = Company::all();
-
-        return redirect()->back()->with(['company'=>$company,'roles'=>$roles]);
+        return response()->json(["status"=>202]);
     }
 
     /**
