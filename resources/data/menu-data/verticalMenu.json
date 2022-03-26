@@ -15,13 +15,6 @@
                     "name": "Listele",
                     "icon": "circle",
                     "slug": "user.list"
-                },
-                {
-                    "url": "/",
-                    "name": "eCommerce",
-                    "icon": "circle",
-                    "slug": "dashboard-ecommerce"
-
                 }
             ]
         },
@@ -66,7 +59,7 @@
             "slug": "#",
             "submenu": [
                 {
-                    "url": "stock/", 
+                    "url": "stock/",
                     "name": "Stoğa Ekle",
                     "icon": "list",
                     "slug": "stock.index"
@@ -75,7 +68,7 @@
                     "url": "sellstock/",
                     "name": "Satış",
                     "icon": "sell",
-                    "slug": "sellstock.index" 
+                    "slug": "sellstock.index"
                 }
             ]
         },
@@ -99,7 +92,7 @@
                 }
             ]
         },
-        { 
+        {
             "url": "dayoff",
             "name": "İzin",
             "icon": "minimize",
@@ -125,7 +118,7 @@
             "icon": "calendar",
             "slug": "reminder.index"
         },
-        { 
+        {
             "navheader": "Araçlar",
             "slug": ""
         },
