@@ -24,6 +24,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DayOffController;
 use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReminderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,13 +95,13 @@ Route::group(["middleware" => "auth"], function () {
 
     // Stok prefix
     Route::prefix("sellstock")->name("sellstock")->group(function () {
-    // Stok anasayfa
+        // Stok anasayfa
         Route::get("/", [SellStockController::class, "index"])->name(".sellstock");
         Route::post("/sell", [SellStockController::class, "store"])->name(".store");
     });
-  // income prefix
-  Route::prefix("income")->name("income")->group(function () {
-    // Stok anasayfa
+    // income prefix
+    Route::prefix("income")->name("income")->group(function () {
+        // Stok anasayfa
         Route::get("/", [IncomeController::class, "index"])->name(".index");
     });
 
