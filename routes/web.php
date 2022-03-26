@@ -103,6 +103,7 @@ Route::group(["middleware" => "auth"], function () {
     Route::prefix("income")->name("income")->group(function () {
         // Stok anasayfa
         Route::get("/", [IncomeController::class, "index"])->name(".index");
+        Route::post("/store", [IncomeController::class, "store"])->name(".store");
     });
 
     // Stok prefix

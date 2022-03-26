@@ -15,7 +15,7 @@ class IncomeController extends Controller
     public function index()
     {
 
-        $income = IncomeStatement::select(["income_statements.*","products.name"])->join("products","products.id","=","income_statements.product_id")->get();
+        $income = IncomeStatement::select(["income_statements.*","products.name"])->leftjoin("products","products.id","=","income_statements.product_id")->get();
         return view("live.income.index",compact("income"));
     }
   /**
@@ -46,7 +46,16 @@ class IncomeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+       $Income = IncomeStatement::create([
+            "product_id" => -1 ,
+            "price"	=> $request->price ,
+            "amount" =>	1 ,
+            "detail"	=> $request->detail ,
+            "costumer_id" => $request->costumer
+        ]);
+
+       return response()->json($Income);
     }
 
     /**

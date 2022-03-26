@@ -50,6 +50,9 @@ class SellStockController extends Controller
     public function store(Request $request)
     {
 
+
+       $test = [];
+
         foreach ($request->product as $key => $value) {
             $product = json_decode($value);
             $productCount = $product->adet;
@@ -61,12 +64,13 @@ class SellStockController extends Controller
                     }
                     else {
                         Stock::find($stock_value->id)->update(["amount"=>$stock_value->amount-$productCount]);
-                        $productCount =$stock_value->amount- $productCount;
-
+                        $productCount = $productCount - $stock_value->amount;
                     }
                     if ($productCount<=0) {
                         break;
                     }
+
+                    array_push($test,["adım"=>$key,"productCount"=>$productCount,"stock"=>$stock_value->amount]);
                 }
                 IncomeStatement::create([
                     "product_id"	=> $product->id,
@@ -77,7 +81,7 @@ class SellStockController extends Controller
                 ]);
         }
 
-        return response()->json(["geriDonus"=>$stock]);
+        return response()->json(["geriDonus"=>$test]);
     }
 
     /**

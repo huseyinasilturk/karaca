@@ -70,7 +70,7 @@
                                 </span>
                                 <div class="item-cost col-8 offset-2">
                                     <div class="input-group input-group-merge mb-1 mt-1">
-                                        <input type="number" class="form-control " value="{{$value->list_price}}">
+                                        <input type="number" class="form-control " name="price" value="{{$value->list_price}}">
                                         <span class="input-group-text">₺</span>
                                     </div>
                                 </div>
@@ -103,7 +103,7 @@
                                 <option value="2">Müşteri 1</option>
                                 <option value="3">Müşteri 2</option>
                                 </select>
-                        </div>
+                            </div>
                         <div class="price-details">
                         <h6 class="price-title text-center">Ürün List</h6>
                         <hr  />
@@ -139,50 +139,43 @@
 @endsection
 
 @section('vendor-script')
-  <!-- Vendor js files -->
+
   <script src="{{ asset(mix('vendors/js/forms/wizard/bs-stepper.min.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/forms/spinner/jquery.bootstrap-touchspin.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
   <script src="{{ asset(mix('js/scripts/extensions/ext-component-swiper.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/extensions/swiper.min.js')) }}"></script>
+
 @endsection
 
 @section('page-script')
 
-  <!-- Page js files -->
   <script src="{{ asset(mix('js/scripts/pages/app-ecommerce-checkout.js')) }}"></script>
   <script src="{{ asset(mix('js/scripts/forms/form-number-input.js'))}}"></script>
 
-  <!-- ------------------------------- -->
   <script>
-$("#satisYap").on('submit', function(e){
 
-    e.preventDefault();
+    $("#satisYap").on('submit', function(e){
 
-    console.log(new FormData(this));
+        e.preventDefault();
 
+        console.log(new FormData(this));
+        axios.post(route("sellstock.store"),new FormData(this)).then((res)=>{
+            console.log(res);
+        });
 
-
-    axios.post(route("sellstock.store"),new FormData(this)).then((res)=>{
-        console.log(res);
-    });
-
-})
+    })
 
     $(".clickSub").on('click', function(e){
-
+console.log($(this).closest("card").find("input[name='price']"));
         let stok = parseInt($(this).closest(".card").find(".stok").html());
         let adet = parseInt($(this).closest(".card").find(".adet").val());
-        console.log(adet);
-        console.log(stok);
         if (stok<adet) {
             alert("Yetersiz Stok");
             return;
         }
-
         let kalanStok =stok-adet;
         $(this).closest(".card").find(".stok").html(kalanStok);
-
         const tableRow = `
             <tr productId="${$(this).attr("id")}"">
                 <td>
@@ -192,21 +185,17 @@ $("#satisYap").on('submit', function(e){
                     ${adet}
                 </td>
                 <td>
-                    ${parseInt($(this).attr("list_price"))*adet}
+                    ${parseInt($(this).closest(".card").find("input[name='price']").val())*adet}
                 </td>
             </tr>
             `;
             let test = {
                 adet:adet,
                 id:$(this).attr("id"),
-                price:parseInt($(this).attr("list_price"))
+                price:parseInt($(this).closest(".card").find("input[name='price']").val())
             };
-
-            console.log(test);
             let value = JSON.stringify(test);
-            console.log(value);
-
-$("#sellstock").closest("form").append($(`<input name='product[]' value='${value}'/>`))
+            $("#sellstock").closest("form").append($(`<input name='product[]' value='${value}'/>`))
             $("#sellstock").append(tableRow);
     })
 

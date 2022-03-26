@@ -31,6 +31,12 @@
 
         <!-- list and filter start -->
         <div class="card">
+            <button type="button"
+                data-bs-toggle= "modal"
+                data-bs-target= "#modals-slide-in"
+                class="btn btn-gradient-primary">
+                Diğer Gelir Ekle
+            </button>
             <div class="card-datatable table-responsive p-0">
                 <table class="datatables-basic table">
                     <thead>
@@ -47,17 +53,60 @@
                         @foreach ($income as  $value)
                         <tr>
                             <td>{{$value->detail}}</td>
-                            <td>{{$value->name}}</td>
+                            <td>{{(!empty($value->name) ? $value->name : "---")}}</td>
                             <td>{{$value->price}}</td>
                             <td>{{$value->amount}}</td>
                             <td>{{$value->amount*$value->price}}</td>
-                            <td>{{$value->costumer_id}}"Henüz müşteri tablosu yok"</td>
+                            <td>{{($value->costumer_id == -1 ? "---" : $value->costumer_id)}}"Henüz müşteri tablosu yok"</td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
+            <section class="app-user-list">
 
+
+                <!-- list and filter start -->
+                <div class="card">
+
+                    <div class="modal modal-slide-in new-user-modal fade " id="modals-slide-in">
+                        <div class="modal-dialog">
+                            <form id="insertOrUpdate" class="add-new-user modal-content pt-0" action="{{ route('income.store') }}" method="POST">
+                                @csrf
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
+                                <div class="modal-header mb-1">
+                                    <h5 class="modal-title" id="exampleModalLabel">Diğer Gelir Ekle.</h5>
+                                </div>
+                                <div class="modal-body flex-grow-1">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="basic-icon-default-fullname">Detay</label>
+                                        <textarea type="text" class="form-control" name="detail"></textarea>
+                                    </div>
+                                    <div class="mb-1">
+                                        <label class="form-label" for="fp-default">T. Fiyat</label>
+                                        <input type="text" name="price" class="form-control flatpickr-basic" />
+                                    </div>
+                                    <div class="col-md-12 mb-1">
+                                        <label class="form-label" for="select2-basic">Müşteri Seçin</label>
+                                        <select class="select2 form-select" name="costumer">
+                                        <option value="-1">Müşterisiz</option>
+                                        <option value="1">Anonim</option>
+                                        <option value="2">Müşteri 1</option>
+                                        <option value="3">Müşteri 2</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary me-1 data-submit data-submit-btn insert-or-update">Ekle</button>
+                                    <button type="reset" onclick="modalHide(this)" class="btn btn-outline-secondary"
+                                        data-bs-dismiss="modal">İptal</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Modal to add new user Ends-->
+                </div>
+                <!-- list and filter end -->
+            </section>
+        </div>
 @endsection
 
 @section('vendor-script')
@@ -91,5 +140,16 @@
 @endsection
 
 @section('page-script')
+        <script>
 
+
+            $("#insertOrUpdate").submit((e)=>{
+                e.preventDefault();
+                axios.post(route("income.store"),new FormData(e.target)).then((res)=>{
+                    console.log(res);
+                });
+            })
+
+
+        </script>
 @endsection
