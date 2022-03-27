@@ -35,8 +35,19 @@ class StockController extends Controller
 
     public function store(StockRequest $request)
     {
-        $requestData = $request->only("amount", "company_id", "purchase_price", "product_id", "unit_type");
-        $createStock = Stock::create($requestData);
+        $stockExists = Stock::where("product_id", $request->product_id)->where("purchase_price", $request->purchase_price)->first();
+
+        if ($stockExists) {
+            $updateAmount = $stockExists->update(["amount" => $stockExists->amount + $request->amount]);
+
+            if (!$updateAmount) {
+                return response()->json(["message" => "Stok miktarı güncellenirken hata oluştu"], 404);
+            }
+
+            return response()->json(["message" => "Stok miktarı başarıyla güncellendi"], 200);
+        }
+
+        $createStock = Stock::create($request->validated());
 
         if (!$createStock) {
             return response()->json(["message" => "Stok oluştururken hata oluştu"], 404);
@@ -56,7 +67,7 @@ class StockController extends Controller
         ]);
 
         if (!$createExpense) {
-            return response()->json(["message" => "Gider oluşturulurken hata oluştu"], 200);
+            return response()->json(["message" => "Gider oluşturulurken hata oluştu"], 404);
         }
 
         return response()->json(["message" => "Stoğa başarıyla eklendi"], 201);

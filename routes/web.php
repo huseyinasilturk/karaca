@@ -26,6 +26,7 @@ use App\Http\Controllers\DayOffController;
 use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\StockLimitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -126,6 +127,11 @@ Route::group(["middleware" => "auth"], function () {
         Route::post("/filter", [CustomerController::class, "filter"])->name(".filter");
 
         Route::delete("/{id}", [CustomerController::class, "delete"])->name(".delete");
+    });
+
+    // Stok limitleri prefix
+    Route::prefix("stock-limit")->name("stockLimit")->group(function () {
+        Route::get("/add", [StockLimitController::class, "add"])->name(".add");
     });
 
     // Hatırlatıcı prefix
