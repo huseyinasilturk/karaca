@@ -41,7 +41,7 @@
         {
             "url": "income_statements",
             "name": "Gelir",
-            "icon": "layers",
+            "icon": "trending-up",
             "slug": "#",
             "submenu": [
                 {
@@ -55,7 +55,7 @@
         {
             "url": "stock",
             "name": "Stok",
-            "icon": "layers",
+            "icon": "database",
             "slug": "#",
             "submenu": [
                 {
