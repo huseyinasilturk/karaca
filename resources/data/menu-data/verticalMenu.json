@@ -113,6 +113,26 @@
             ]
         },
         {
+            "url": "customer",
+            "name": "Müşteri",
+            "icon": "users",
+            "slug": "#",
+            "submenu": [
+                {
+                    "url": "customer/",
+                    "name": "Müşteriler",
+                    "icon": "list",
+                    "slug": "customer.index"
+                },
+                {
+                    "url": "customer/add",
+                    "name": "Müşteri Ekle",
+                    "icon": "plus",
+                    "slug": "customer.add"
+                }
+            ]
+        },
+        {
             "url": "reminder",
             "name": "Hatırlatıcı",
             "icon": "calendar",

@@ -16,6 +16,7 @@ use App\Http\Controllers\MiscellaneousController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SellStockController;
@@ -111,6 +112,20 @@ Route::group(["middleware" => "auth"], function () {
         Route::get("/", [StockController::class, "index"])->name(".index");
         Route::post("/", [StockController::class, "store"])->name(".store");
         Route::post("/filter-products", [StockController::class, "filterProducts"])->name(".filterProducts");
+    });
+
+    // Müşteri prefix
+    Route::prefix("customer")->name("customer")->group(function () {
+        Route::get("/", [CustomerController::class, "index"])->name(".index");
+        Route::get("/add", [CustomerController::class, "add"])->name(".add");
+        Route::get("/customers", [CustomerController::class, "customers"])->name(".customers");
+        Route::get("/{id}", [CustomerController::class, "edit"])->name(".edit");
+
+        Route::post("/", [CustomerController::class, "store"])->name(".store");
+        Route::post("/{id}", [CustomerController::class, "update"])->name(".update");
+        Route::post("/filter", [CustomerController::class, "filter"])->name(".filter");
+
+        Route::delete("/{id}", [CustomerController::class, "delete"])->name(".delete");
     });
 
     // Hatırlatıcı prefix

@@ -19,27 +19,33 @@ class ObjectiveController extends Controller
     {
         $objectivesTypes = [
             'quality' => [
-                'name' => __('Kalite'),
+                'name' => 'Kalite',
                 'inputs' => [
-                    'text1' => __('Kalite Adı'),
+                    'text1' => 'Kalite Adı',
                 ],
             ],
             'companyType' => [
-                'name' => __('Firma Tipi'),
+                'name' => 'Firma Tipi',
                 'inputs' => [
-                    'text1' => __('Tip'),
+                    'text1' => 'Tip',
                 ],
             ],
             'productType' => [
-                'name' => __('Ürün Tipi'),
+                'name' => 'Ürün Tipi',
                 'inputs' => [
-                    'text1' => __('Tip'),
+                    'text1' => 'Tip',
                 ],
             ],
             'unitType' => [
-                'name' => __('Birim Tipi'),
+                'name' => 'Birim Tipi',
                 'inputs' => [
-                    'text1' => __('Tip'),
+                    'text1' => 'Tip',
+                ],
+            ],
+            'customerType' => [
+                'name' => 'Müşteri Tipi',
+                'inputs' => [
+                    'text1' => 'Tip',
                 ],
             ],
         ];
