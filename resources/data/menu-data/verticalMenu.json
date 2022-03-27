@@ -61,13 +61,13 @@
                 {
                     "url": "stock/",
                     "name": "Stoğa Ekle",
-                    "icon": "list",
+                    "icon": "plus",
                     "slug": "stock.index"
                 },
                 {
                     "url": "sellstock/",
                     "name": "Satış",
-                    "icon": "sell",
+                    "icon": "shopping-bag",
                     "slug": "sellstock.index"
                 }
             ]
@@ -81,13 +81,13 @@
                 {
                     "url": "product/",
                     "name": "Ürün Listele",
-                    "icon": "circle",
+                    "icon": "list",
                     "slug": "product.index"
                 },
                 {
                     "url": "product/add",
                     "name": "Ürün Ekle",
-                    "icon": "circle",
+                    "icon": "plus",
                     "slug": "product.create"
                 }
             ]
@@ -101,13 +101,13 @@
                 {
                     "url": "dayoff/",
                     "name": "İzinler",
-                    "icon": "index",
+                    "icon": "list",
                     "slug": "dayoff.index"
                 },
                 {
                     "url": "dayoff/add",
                     "name": "İzin Ekle",
-                    "icon": "add",
+                    "icon": "plus",
                     "slug": "dayoff.add"
                 }
             ]
