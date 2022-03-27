@@ -135,7 +135,7 @@
         @foreach ($products as $product)
             <div class="card ecommerce-card">
                 <div class="item-img text-center">
-                    <a href="{{ url('app/ecommerce/details') }}">
+                    <a href="{{ route('product.edit', $product->id) }}">
                         @if (count($product->productFileData) > 0)
                             <img class="img-fluid card-img-top"
                                 src="{{ asset('images/product/' . $product->productFileData[0]->file_name) }}"
@@ -154,7 +154,8 @@
                         </h6>
                     </div>
                     <h6 class="item-name">
-                        <a class="text-body" href="{{ url('app/ecommerce/details') }}">{{ $product->name }}</a>
+                        <a class="text-body"
+                            href="{{ route('product.edit', $product->id) }}">{{ $product->name }}</a>
                     </h6>
                 </div>
                 <div class="item-options text-center">
@@ -165,17 +166,9 @@
                             </h4>
                         </div>
                     </div>
-                    @php
-                        $count = 0;
-                        if (count($product->productStock) > 0) {
-                            foreach ($product->productStock as $productStock) {
-                                $count += $productStock->amount;
-                            }
-                        }
-                    @endphp
-                    <button data-bs-toggle="modal" data-bs-target="#stockModal" data-stock="{{ $count }}"
-                        data-product="{{ $product->id }}" onclick="modalDataHandler(this)"
-                        class="btn btn-primary btn-cart">
+                    <button data-bs-toggle="modal" data-bs-target="#stockModal"
+                        data-stock="{{ $product->productStock->amount }}" data-product="{{ $product->id }}"
+                        onclick="modalDataHandler(this)" class="btn btn-primary btn-cart">
                         <i data-feather="layers"></i>
                         <span class="add-to-cart">Stoğa Ekle</span>
                     </button>
@@ -204,28 +197,41 @@
 
                         <label style="margin-bottom: 5px">Alış Fiyatı</label>
                         <div class="mb-1">
-                            <input type="number" placeholder="Alış Fiyatı" name="purchase_price" autocomplete="off"
+                            <input type="text" placeholder="Alış Fiyatı" name="purchase_price" autocomplete="off"
                                 oninput="onPriceChange(this)" class="form-control" />
                         </div>
 
                         <label style="margin-bottom: 5px">Birim Tipi</label>
                         <div class="mb-1">
-                            <select class="form-select" name="unit_type">
-                                @foreach ($unitTypes as $unitType)
-                                    <option value="{{ $unitType->id }}">{{ $unitType->text1 }}</option>
-                                @endforeach
+                            <select class="form-select {{ !count($unitTypes) > 0 ? 'border-warning' : '' }}"
+                                name="unit_type">
+                                @if (count($unitTypes) > 0)
+                                    <option value="-1" disabled>Birim tipi seçiniz</option>
+                                    @foreach ($unitTypes as $unitType)
+                                        <option value="{{ $unitType->id }}">{{ $unitType->text1 }}</option>
+                                    @endforeach
+                                @else
+                                    <option value="-1" disabled selected>Birim Tipi eklemeniz gerekli
+                                    </option>
+                                @endif
                             </select>
                         </div>
-
                         <label style="margin-bottom: 5px">Firma</label>
                         <div class="mb-1">
-                            <select class="form-select" name="company_id">
-                                @foreach ($companies as $company)
-                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
-                                @endforeach
+                            <select class="form-select {{ !count($companies) > 0 ? 'border-warning' : '' }}"
+                                name="company_id">
+                                @if (count($companies) > 0)
+                                    <option value="-1" disabled>Firma seçiniz</option>
+                                    @foreach ($companies as $company)
+                                        <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                    @endforeach
+                                @else
+                                    <option value="-1" disabled selected>Firma eklemeniz gerekli</option>
+                                @endif
                             </select>
                         </div>
-                        <p>Bu üründen stokta <span style="font-weight: bold">7</span> adet bulunmakta</p>
+                        <p class="stock-amount">Bu üründen stokta <span style="font-weight: bold">7</span> adet bulunmakta
+                        </p>
                         <p class="text-muted" id="total-buy-price">Toplam Alış Fiyatı: <span>0</span> ₺</p>
                     </div>
                     <div class="modal-footer">
@@ -296,7 +302,10 @@
 
         function modalDataHandler(el) {
             const productId = $(el).attr("data-product");
+            const stockAmount = $(el).attr("data-stock");
+
             $("input[name='product_id']").val(productId);
+            $(".stock-amount").find("span").text(stockAmount);
         }
 
         function stockFormHandler(e) {
@@ -308,6 +317,19 @@
                 data: $(e.target).serialize(),
                 dataType: "json",
                 success: (res, textStatus, xhr) => {
+                    if (xhr.status === 200) {
+                        toastr["success"](
+                            res.message,
+                            "Başarılı!", {
+                                closeButton: true,
+                                tapToDismiss: true,
+                                timeOut: 2000,
+                                progressBar: true
+                            }
+                        );
+
+                        console.log($(e.target).find(".stock-amount").find("span").text())
+                    }
                     if (xhr.status === 201) {
                         toastr["success"](
                             res.message,
@@ -319,6 +341,8 @@
                             }
                         );
                     }
+
+                    $(e.target).trigger("reset");
                 },
                 error: (err) => {
                     toastr["error"](
@@ -378,7 +402,7 @@
                                 const newProduct = `
                                 <div class="card ecommerce-card">
                                     <div class="item-img text-center">
-                                        <a href="{{ url('app/ecommerce/details') }}">
+                                        <a href="{{ route('product.edit', $product->id) }}">
                                             <img class="img-fluid card-img-top"
                                                 src="${imagePath}"
                                                 alt="img-placeholder" /></a>
@@ -390,7 +414,7 @@
                                             </h6>
                                         </div>
                                         <h6 class="item-name">
-                                            <a class="text-body" href="{{ url('app/ecommerce/details') }}">${product.name}</a>
+                                            <a class="text-body" href="{{ route('product.edit', $product->id) }}">${product.name}</a>
                                         </h6>
                                     </div>
                                     <div class="item-options text-center">
