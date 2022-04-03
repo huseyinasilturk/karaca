@@ -167,8 +167,9 @@
                         </div>
                     </div>
                     <button data-bs-toggle="modal" data-bs-target="#stockModal"
-                        data-stock="{{ $product->productStock->amount }}" data-product="{{ $product->id }}"
-                        onclick="modalDataHandler(this)" class="btn btn-primary btn-cart">
+                        data-stock="{{ !empty($product->productStock) ? $product->productStock->amount : '0' }}"
+                        data-product="{{ $product->id }}" onclick="modalDataHandler(this)"
+                        class="btn btn-primary btn-cart">
                         <i data-feather="layers"></i>
                         <span class="add-to-cart">Stoğa Ekle</span>
                     </button>
@@ -399,10 +400,14 @@
                                 } else {
                                     imagePath = 'http://via.placeholder.com/600x350'
                                 }
+
+                                let editUrl = "{{ route('product.edit', ':id') }}";
+                                editUrl = editUrl.replace(":id", product.id)
+
                                 const newProduct = `
                                 <div class="card ecommerce-card">
                                     <div class="item-img text-center">
-                                        <a href="{{ route('product.edit', $product->id) }}">
+                                        <a href="${editUrl}">
                                             <img class="img-fluid card-img-top"
                                                 src="${imagePath}"
                                                 alt="img-placeholder" /></a>
@@ -414,7 +419,7 @@
                                             </h6>
                                         </div>
                                         <h6 class="item-name">
-                                            <a class="text-body" href="{{ route('product.edit', $product->id) }}">${product.name}</a>
+                                            <a class="text-body" href="${editUrl}">${product.name}</a>
                                         </h6>
                                     </div>
                                     <div class="item-options text-center">

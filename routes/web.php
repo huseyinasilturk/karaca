@@ -132,6 +132,12 @@ Route::group(["middleware" => "auth"], function () {
     // Stok limitleri prefix
     Route::prefix("stock-limit")->name("stockLimit")->group(function () {
         Route::get("/add", [StockLimitController::class, "add"])->name(".add");
+        Route::get("/", [StockLimitController::class, "index"])->name(".index");
+        Route::get("/limits", [StockLimitController::class, "limits"])->name(".limits");
+
+        Route::post("/", [StockLimitController::class, "store"])->name(".store");
+
+        Route::delete("/{id}", [StockLimitController::class, "delete"])->name(".delete");
     });
 
     // Hatırlatıcı prefix

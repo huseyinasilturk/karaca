@@ -71,7 +71,7 @@
 
             $.ajax({
                 method: "POST",
-                // url: route("customer.store"),
+                url: route("stockLimit.store"),
                 data: $(e.target).serialize(),
                 dataType: "json",
                 success: (res, textStatus, xhr) => {
