@@ -26,34 +26,37 @@ class UserController extends Controller
      */
     public function list()
     {
+        $breadcrumbs = [
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Personeller"], ['name' => "Liste"]
+        ];
+
         $roles = Role::all();
         $company = Company::all();
 
-        return view("live.user.list", compact("roles","company"));
+        return view("live.user.list", compact("roles", "company", "breadcrumbs"));
     }
-  public function detail($id = false)
+    public function detail($id = false)
     {
         if ($id) {
-            $user = User::join("information", "information.id", "=", "users.information_id")->join("model_has_roles as mhr","mhr.model_id","=","users.id")
-            ->join("roles as r","r.id","=","mhr.role_id")->where("users.id","=",$id)->join("wages","wages.user_id","users.id")->where("wages.status","=","1")
-            ->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"), "users.*", "information.*", "users.id as user_id","r.title as role_title","r.name as role_name","wages.wage_price as wage_price"])->get()->first();
+            $user = User::join("information", "information.id", "=", "users.information_id")->join("model_has_roles as mhr", "mhr.model_id", "=", "users.id")
+                ->join("roles as r", "r.id", "=", "mhr.role_id")->where("users.id", "=", $id)->join("wages", "wages.user_id", "users.id")->where("wages.status", "=", "1")
+                ->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"), "users.*", "information.*", "users.id as user_id", "r.title as role_title", "r.name as role_name", "wages.wage_price as wage_price"])->get()->first();
 
-            return view("live.user.detail",compact("user"));
-        }
-        else {
+            return view("live.user.detail", compact("user"));
+        } else {
             return view("live.user.list");
         }
     }
 
     public function userList()
     {
-        $user = User::join("information", "information.id", "=", "users.information_id")->join("model_has_roles as mhr","mhr.model_id","=","users.id")
-        ->join("roles as r","r.id","=","mhr.role_id")
-        ->join("wages","wages.user_id","users.id")->where("wages.status","=","1")
-        ->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"),"wages.wage_price as wage", "users.*", "information.*", "users.id as user_id","r.title as role_title","r.name as role_name"])->get();
+        $user = User::join("information", "information.id", "=", "users.information_id")->join("model_has_roles as mhr", "mhr.model_id", "=", "users.id")
+            ->join("roles as r", "r.id", "=", "mhr.role_id")
+            ->join("wages", "wages.user_id", "users.id")->where("wages.status", "=", "1")
+            ->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"), "wages.wage_price as wage", "users.*", "information.*", "users.id as user_id", "r.title as role_title", "r.name as role_name"])->get();
 
 
-        return  response()->json(["data"=>$user], 202);
+        return  response()->json(["data" => $user], 202);
     }
 
     /**
@@ -90,8 +93,8 @@ class UserController extends Controller
 
         $password = $this->generatePassword(6, 2);
 
-        $user = User::create(array_merge($request->only("user_name", "email","company_id"), ['password' => bcrypt($password), "information_id" => $information->id]));
-        $wage = Wage::create(['wage_price'=>$request->wage,'wage_date'=> Carbon::now(),'status'=>1,"user_id"=> $user->id]);
+        $user = User::create(array_merge($request->only("user_name", "email", "company_id"), ['password' => bcrypt($password), "information_id" => $information->id]));
+        $wage = Wage::create(['wage_price' => $request->wage, 'wage_date' => Carbon::now(), 'status' => 1, "user_id" => $user->id]);
 
         $userName = $request->name . " " . $request->surname;
 
@@ -105,9 +108,8 @@ class UserController extends Controller
         $roles = Role::all();
 
         $company = Company::all();
-        return redirect()->back()->with(['company'=>$company,'roles'=>$roles]);
-
-     }
+        return redirect()->back()->with(['company' => $company, 'roles' => $roles]);
+    }
 
     /**
      * Display the specified resource.
@@ -146,25 +148,25 @@ class UserController extends Controller
 
         $user = User::find($id);
 
-        $user->update($request->only("user_name", "email","company_id"));
+        $user->update($request->only("user_name", "email", "company_id"));
 
-        $wage = Wage::where("user_id","=",$id)->where("wage_price","=",$request->wage)->where("status","=",1);
+        $wage = Wage::where("user_id", "=", $id)->where("wage_price", "=", $request->wage)->where("status", "=", 1);
 
         $test = $wage->get()->first();
 
         if ($test->wage_price == $request->wage) {
-            return response()->json(["status"=>$wage->get(),"test"=>1]);
+            return response()->json(["status" => $wage->get(), "test" => 1]);
         }
 
-        return response()->json(["status"=>$test    ]);
+        return response()->json(["status" => $test]);
 
         $information = Information::find($user->information_id)->update($request->only("name", "surname", "birthday"));
 
-        Wage::where("user_id","=",$user->id)->update(["status"=>0]);
+        Wage::where("user_id", "=", $user->id)->update(["status" => 0]);
 
         $assingRole = $user->syncRoles($request->user_role);
 
-        return response()->json(["status"=>202]);
+        return response()->json(["status" => 202]);
     }
 
     /**
@@ -178,11 +180,10 @@ class UserController extends Controller
 
         try {
             User::find($id)->delete();
-            return response()->json(["message"=>"Personel Silindi."],202);
+            return response()->json(["message" => "Personel Silindi."], 202);
         } catch (\Throwable $th) {
-            return response()->json(["message"=>"Personel Silinemedi."],404);
+            return response()->json(["message" => "Personel Silinemedi."], 404);
         }
-
     }
 
 

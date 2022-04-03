@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'İzinler')
+@section('title', 'Müşteriler')
 
 @section('vendor-style')
     <!-- Vendor css files -->

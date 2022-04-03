@@ -10,7 +10,6 @@ use App\Models\Product;
 use App\Models\Stock;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class StockController extends Controller
 {
@@ -22,7 +21,7 @@ class StockController extends Controller
         ];
 
         $breadcrumbs = [
-            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Stok"], ['name' => "Stok"]
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Stok"], ['name' => "Ekle"]
         ];
 
         $products = Product::with("productFileData", "productTypeGet", "productCompanyGet", "productStock")->get();

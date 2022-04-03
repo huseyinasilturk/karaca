@@ -13,7 +13,7 @@ class DayOffController extends Controller
     public function index()
     {
         $breadcrumbs = [
-            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "İzin"], ['name' => "İzinler"]
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "İzinler"], ['name' => "Listele"]
         ];
         $personals = User::with("information")->get();
 
@@ -23,7 +23,7 @@ class DayOffController extends Controller
     public function create()
     {
         $breadcrumbs = [
-            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "İzin"], ['name' => "İzin Ekle"]
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "İzinler"], ['name' => "Ekle"]
         ];
 
         $personals = User::with("information")->get();
