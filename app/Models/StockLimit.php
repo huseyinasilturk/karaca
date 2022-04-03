@@ -10,4 +10,9 @@ class StockLimit extends Model
     use HasFactory;
 
     protected $fillable = ["product_id", "limit"];
+
+    public function product()
+    {
+        return $this->hasOne(Product::class, "id", "product_id");
+    }
 }

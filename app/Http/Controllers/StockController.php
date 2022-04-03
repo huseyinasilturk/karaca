@@ -8,6 +8,7 @@ use App\Models\ExpenseStatement;
 use App\Models\Objective;
 use App\Models\Product;
 use App\Models\Stock;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -35,10 +36,27 @@ class StockController extends Controller
 
     public function store(StockRequest $request)
     {
-        $stockExists = Stock::where("product_id", $request->product_id)->where("purchase_price", $request->purchase_price)->first();
 
+        $product = Product::find($request->product_id);
+
+        // Stokta üründen, o fiyata var mı
+        $stockExists = Stock::where("product_id", $product->id)->where("purchase_price", $request->purchase_price)->first();
+
+        // Gidere kaydedilecek fiyatı hesapla
+        $price = $request->amount * $request->purchase_price;
+
+        // Eğer varsa o ürünün adedini güncelle ve gidere ekle
         if ($stockExists) {
             $updateAmount = $stockExists->update(["amount" => $stockExists->amount + $request->amount]);
+
+            $createExpense = ExpenseStatement::create([
+                "price" => $price,
+                "detail" => $product->name . " ürününden " . $request->amount . " adet eklendi.",
+                "table_name" => "stocks",
+                "table_id" => $stockExists->id,
+                "company_id" => $request->company_id,
+                "expense_date" => Carbon::now()
+            ]);
 
             if (!$updateAmount) {
                 return response()->json(["message" => "Stok miktarı güncellenirken hata oluştu"], 404);
@@ -47,15 +65,12 @@ class StockController extends Controller
             return response()->json(["message" => "Stok miktarı başarıyla güncellendi"], 200);
         }
 
+        // Eğer stokta yoksa, stoğa yeni ürün ekle ve giderini ekle
         $createStock = Stock::create($request->validated());
 
         if (!$createStock) {
             return response()->json(["message" => "Stok oluştururken hata oluştu"], 404);
         }
-
-        $product = Product::find($request->product_id);
-
-        $price = $request->amount * $request->purchase_price;
 
         $createExpense = ExpenseStatement::create([
             "price" => $price,
@@ -63,7 +78,7 @@ class StockController extends Controller
             "table_name" => "stocks",
             "table_id" => $createStock->id,
             "company_id" => $request->company_id,
-            "expense_date" => date('Y-m-d')
+            "expense_date" => Carbon::now()
         ]);
 
         if (!$createExpense) {
