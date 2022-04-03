@@ -101,6 +101,7 @@ Route::group(["middleware" => "auth"], function () {
         Route::get("/", [SellStockController::class, "index"])->name(".sellstock");
         Route::post("/sell", [SellStockController::class, "store"])->name(".store");
     });
+
     // income prefix
     Route::prefix("income")->name("income")->group(function () {
         // Stok anasayfa
@@ -134,8 +135,10 @@ Route::group(["middleware" => "auth"], function () {
         Route::get("/add", [StockLimitController::class, "add"])->name(".add");
         Route::get("/", [StockLimitController::class, "index"])->name(".index");
         Route::get("/limits", [StockLimitController::class, "limits"])->name(".limits");
+        Route::get("/{id}", [StockLimitController::class, "edit"])->name(".edit")->whereNumber("id");
 
         Route::post("/", [StockLimitController::class, "store"])->name(".store");
+        Route::post("/{id}", [StockLimitController::class, "update"])->name(".update");
 
         Route::delete("/{id}", [StockLimitController::class, "delete"])->name(".delete");
     });
@@ -151,23 +154,15 @@ Route::group(["middleware" => "auth"], function () {
 
     // İzinler prefix
     Route::prefix("dayoff")->name("dayoff")->group(function () {
-        // İzin ekleme ekranı
         Route::get("/add", [DayOffController::class, "create"])->name(".create");
-        // İzinler listeleme ekranı
         Route::get("/", [DayOffController::class, "index"])->name(".index");
-        // İzinleri döndür
         Route::get("/dayoff", [DayOffController::class, "dayOffs"])->name(".dayOffs");
-        // İzin güncelle
         Route::get("/{id}", [DayOffController::class, "edit"])->name(".edit")->whereNumber("id");
 
-        // İzin ekle
         Route::post("/", [DayOffController::class, "store"])->name(".store");
-        // İzin filtrele
         Route::post("/filter", [DayOffController::class, "filter"])->name(".filter");
-        // İzin güncelle
         Route::post("/{id}", [DayOffController::class, "update"])->name(".update");
 
-        // İzin sil
         Route::delete("/{id}", [DayOffController::class, "delete"])->name(".delete");
     });
 });
