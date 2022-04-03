@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([RolePermissionSeeder::class]);
+        // Veritabanı SQL Seederları
+        $this->call([RolePermissionSeeder::class, ObjectiveSeeder::class,  CompanySeeder::class, ProductSeeder::class, FileDataSeeder::class]);
 
         $information = Information::create([
             "name" => "Karaca",
@@ -31,10 +32,5 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $user->assignRole("admin");
-
-        // $user->givePermissionTo('*.create,update,view');
-
-        // Veritabanı SQL Seederları
-        // $this->call([CountryCitySeeder::class, ObjectiveSeeder::class, ModuleSeeder::class, AddressSeeder::class, AddressAtCompanySeeder::class, CompanySeeder::class, ContactAtCompanySeeder::class]);
     }
 }

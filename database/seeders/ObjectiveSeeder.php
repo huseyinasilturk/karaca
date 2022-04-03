@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class FileDataSeeder extends Seeder
+class ObjectiveSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,7 @@ class FileDataSeeder extends Seeder
      */
     public function run()
     {
-        $path = public_path('sql/fileDatas.sql');
+        $path = public_path('sql/objectives.sql');
         $sql = file_get_contents($path);
         DB::unprepared($sql);
     }

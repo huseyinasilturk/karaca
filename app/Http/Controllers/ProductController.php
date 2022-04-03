@@ -55,7 +55,7 @@ class ProductController extends Controller
                 foreach ($request->file("files") as $key => $file) {
                     $fileName = time() . "_netadim_" . $file->getClientOriginalName();
                     $extension = $file->getClientOriginalExtension();
-                    if (in_array(Str::lower($extension), ["jpg", "png", "jpeg", "mpeg", "svg"])) {
+                    if (in_array(Str::lower($extension), ["jpg", "png", "jpeg", "mpeg", "svg", "webp"])) {
                         $file->move(public_path('images/product'), $fileName);
                         array_push($data, ["table_id" => $product->id, "table_name" => "products", "file_name" => $fileName, "type" => "images", "created_at" => date('Y-m-d H:i:s'), "updated_at" => date('Y-m-d H:i:s')]);
                     }
