@@ -14,32 +14,15 @@
 
 @section('page-style')
 
-    <style>
-        #search-input {
-            background: transparent;
-            /* border: 0; */
-            color: #212121;
-            font-size: .8rem;
-            line-height: 2;
-            padding: 8px;
-            border: 1px solid #bbb;
-            outline: none;
-            border-radius: 4px;
-        }
-
-    </style>
 @endsection
 
 @section('content')
     <div class="row">
-
-        <div class="col-12 mb-4">
-            <div class="d-flex align-items-center">
-                <h4>@lang("Nesneler")</h4>
-                <input class=" ml-3 w-25" type="text" id="search-input" oninput="searchObject(this)"
-                    placeholder="@lang('Nesne Ara')" title="@lang('Nese Arama Kutusu')">
+        <div class="col-12 mb-2">
+            <div>
+                <input class="form-control ml-3 w-25" type="text" id="search-input" oninput="searchObject(this)"
+                    placeholder="Nesne Ara" title="Nesne Arama Kutusu">
             </div>
-
         </div>
         @foreach ($objectivesTypes as $key => $objective)
             <div class="col-12 col-lg-6 accordion col-xl-4 objective-div" search-data="{{ $objective['name'] }}">
@@ -62,7 +45,7 @@
                                                 @foreach ($objective['inputs'] as $input)
                                                     <th scope="col">{{ $input }}</th>
                                                 @endforeach
-                                                <th scope="col">@lang("İşlemler")</th>
+                                                <th scope="col">İşlemler</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -75,13 +58,13 @@
                                                         @endforeach
                                                         <td>
                                                             <a class="text-success mr-2 edit-objective"
-                                                                onclick="editObjective(this)" href="#" data-toggle="modal"
-                                                                data-form="{{ $key }}"
-                                                                data-target="#objective-modal">
-                                                                <i class="fa-solid fa-ban"></i></a>
+                                                                onclick="editObjective(this)" href="#"
+                                                                data-bs-toggle="modal" data-form="{{ $key }}"
+                                                                data-bs-target="#objective-modal">
+                                                                <i class="fa-solid fa-pen"></i></a>
                                                             <a class="text-danger m2 delete-objective"
                                                                 onclick="deleteObjective(this)" data-id={{ $item['id'] }}
-                                                                href="#"><i class="fa-solid fa-xmark ml-1"></i></a>
+                                                                href="#"><i class="fa-solid fa-trash-can"></i></a>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -112,18 +95,17 @@
                                             @if (Str::startsWith($inputKey, 'number'))
                                                 <div class="form-group">
                                                     <input class="form-control objective-input" name="{{ $inputKey }}"
-                                                        type="number" placeholder="@lang($input)">
+                                                        type="number" placeholder="{{ $input }}">
                                                 </div>
                                             @elseif (Str::startsWith($inputKey, 'text'))
                                                 <div class="form-group">
                                                     <input class="form-control objective-input" name="{{ $inputKey }}"
-                                                        type="text" placeholder="@lang($input)">
+                                                        type="text" placeholder="{{ $input }}">
                                                 </div>
                                             @endif
                                         @endforeach
                                         <button type="button" class="btn btn-primary mt-1 pd-x-20"
-                                            id="{{ $key }}-add-button"
-                                            onclick="addObjective(this)">@lang("Ekle")</button>
+                                            id="{{ $key }}-add-button" onclick="addObjective(this)">Ekle</button>
                                     </div>
                                 </form>
                             </div>
@@ -152,7 +134,7 @@
                                     placeholder="Kalite Adı">
                             </div>
                             <button type="button" class="btn btn-primary pd-x-20"
-                                onclick="modalUpdateHandler()">@lang("Güncelle")</button>
+                                onclick="modalUpdateHandler()">Güncelle</button>
                         </div>
                     </form>
                 </div>
@@ -192,7 +174,7 @@
             const emptyForm = Object.values(obj).every(x => x === null || x === "");
 
             if (emptyForm) {
-                toastr.error("@lang('Boş değer giremezsiniz.')")
+                toastr.error("Boş değer giremezsiniz.")
             } else {
 
                 // Eğer ekleme tıklandığında accordion açık değilse açıyor
@@ -221,6 +203,7 @@
                     },
                     success: (res) => {
 
+
                         if (res.status === 201) {
                             const data = {
                                 ...res.data
@@ -241,14 +224,20 @@
                                 }
                             });
 
-                            newRow.append($(`
-                    <td>
-                        <a class="text-success mr-2 edit-objective" onclick="editObjective(this)" href="#"
-                            data-toggle="modal" data-form="${data['name']}"
-                            data-target="#objective-modal"><i class="fa-solid fa-ban"></i></a><a
-                            class="text-danger m2 delete-objective" onclick="deleteObjective(this)" href="#"><i class="fa-solid fa-xmark ml-1"></i></a>
-                    </td>
-                    `));
+
+
+                            newRow.append($(` <td>
+                                <a class="text-success mr-2 edit-objective"
+                                onclick="editObjective(this)" href="#" data-bs-toggle="modal"
+                                data-form="${data['name']}"
+                                data-bs-target="#objective-modal">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                <a class="text-danger m2 delete-objective"
+                                    onclick="deleteObjective(this)" data-id="${data['id']}"
+                                    href="#"><i class="fa-solid fa-trash-can"></i>
+                                </a>
+                            </td>`));
 
                             tableBody.append(newRow);
                             toastr.success(res.message);
@@ -312,14 +301,14 @@
         // Silme butonuna tıklanınca sil ...
         function deleteObjective(e) {
             Swal.fire({
-                title: "@lang('Nesneyi Silmek İstediğinize Emin Misiniz')?",
-                text: "@lang('Silinen nesne geri alınamaz')!",
+                title: "Nesneyi Silmek İstediğinize Emin Misiniz?",
+                text: "Silinen nesne geri alınamaz!",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#0CC27E",
                 cancelButtonColor: "#FF586B",
-                confirmButtonText: "@lang('Evet, sil')!",
-                cancelButtonText: "@lang('Hayır, iptal et')!",
+                confirmButtonText: "Evet, sil!",
+                cancelButtonText: "Hayır, iptal et!",
                 confirmButtonClass: "btn btn-success mr-5",
                 cancelButtonClass: "btn btn-danger",
                 buttonsStyling: false
@@ -371,6 +360,11 @@
                 data: formData,
                 success: (res) => {
                     if (res.status === 200) {
+
+                        const data = {
+                            ...res.data
+                        }
+
                         // Eski tr'yi bulmak için değerler
                         const parentId = $("#modal-form").find('input[name="name"]').val();
                         const rowId = $("#modal-form").find('input[name="id"]').val();
@@ -393,13 +387,19 @@
                         });
 
                         newRow.append($(`
-                    <td>
-                        <a class="text-success mr-2 edit-objective" onclick="editObjective(this)" href="#"
-                            data-toggle="modal" data-form="${formData['name']}"
-                            data-target="#objective-modal"><i class="fa-solid fa-ban"></i></a><a
-                            class="text-danger m2 delete-objective" deleteObjective(this) href="#"><i class="fa-solid fa-xmark ml-1"></i></a>
-                    </td>
-                    `));
+                                <td>
+                                    <a class="text-success mr-2 edit-objective"
+                                    onclick="editObjective(this)" href="#" data-bs-toggle="modal"
+                                    data-form="${data['name']}"
+                                    data-bs-target="#objective-modal">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a class="text-danger m2 delete-objective"
+                                        onclick="deleteObjective(this)" data-id="${data['id']}"
+                                        href="#"><i class="fa-solid fa-trash-can"></i>
+                                    </a>
+                                </td>
+                            `));
 
                         // Eski tr'yi, yenisi ile değiştir
                         $(`#${parentId}`).find(`tr[data-id="${rowId}"]`).replaceWith(newRow);

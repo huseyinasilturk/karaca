@@ -17,18 +17,20 @@ class SellStockController extends Controller
      */
     public function index()
     {
-
+        $breadcrumbs = [
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Stok"], ['name' => "Satış"]
+        ];
 
         // $stocks = DB::select("SELECT COALESCE(SUM(stocks.amount),0) AS stock, products.* FROM products LEFT JOIN stocks ON products.id = stocks.product_id  GROUP BY stocks.product_id")
 
         DB::enableQueryLog();
 
-        $stocks =  Product::select(["products.*",DB::raw("COALESCE(SUM(stocks.amount),0) as amount"),DB::raw("COALESCE(list_prices.list_price,0) as list_price")])->with("productFileData")->leftjoin("stocks","products.id","stocks.product_id")->leftjoin("list_prices","list_prices.product_id","products.id")->where("list_prices.company_id","=",auth()->user()->company_id)->orWhereNull("list_prices.company_id")->groupBy("stocks.product_id")->get();
+        $stocks =  Product::select(["products.*", DB::raw("COALESCE(SUM(stocks.amount),0) as amount"), DB::raw("COALESCE(list_prices.list_price,0) as list_price")])->with("productFileData")->leftjoin("stocks", "products.id", "stocks.product_id")->leftjoin("list_prices", "list_prices.product_id", "products.id")->where("list_prices.company_id", "=", auth()->user()->company_id)->orWhereNull("list_prices.company_id")->groupBy("stocks.product_id")->get();
 
         // return $stocks;
         // return  DB::getQueryLog();
 
-        return view("live.sellStock.index",compact("stocks"));
+        return view("live.sellStock.index", compact("stocks", "breadcrumbs"));
     }
 
     /**
@@ -51,37 +53,36 @@ class SellStockController extends Controller
     {
 
 
-       $test = [];
+        $test = [];
 
         foreach ($request->product as $key => $value) {
             $product = json_decode($value);
             $productCount = $product->adet;
-            $stock= Stock::where("product_id",$product->id)->where("amount","!=",0)->orderBy('created_at', 'ASC')->get();
-                foreach ($stock as $key => $stock_value) {
-                    if ($stock_value->amount < $productCount) {
-                        Stock::find($stock_value->id)->update(["amount"=>0]);
-                        $productCount = $productCount-$stock_value->amount;
-                    }
-                    else {
-                        Stock::find($stock_value->id)->update(["amount"=>$stock_value->amount-$productCount]);
-                        $productCount = $productCount - $stock_value->amount;
-                    }
-                    if ($productCount<=0) {
-                        break;
-                    }
-
-                    array_push($test,["adım"=>$key,"productCount"=>$productCount,"stock"=>$stock_value->amount]);
+            $stock = Stock::where("product_id", $product->id)->where("amount", "!=", 0)->orderBy('created_at', 'ASC')->get();
+            foreach ($stock as $key => $stock_value) {
+                if ($stock_value->amount < $productCount) {
+                    Stock::find($stock_value->id)->update(["amount" => 0]);
+                    $productCount = $productCount - $stock_value->amount;
+                } else {
+                    Stock::find($stock_value->id)->update(["amount" => $stock_value->amount - $productCount]);
+                    $productCount = $productCount - $stock_value->amount;
                 }
-                IncomeStatement::create([
-                    "product_id"	=> $product->id,
-                    "price"	=>$product->price,
-                    "amount"	=>$product->adet,
-                    "detail"	=>"Ürün Satış İşlemi",
-                    "costumer_id"=>$request->costumer
-                ]);
+                if ($productCount <= 0) {
+                    break;
+                }
+
+                array_push($test, ["adım" => $key, "productCount" => $productCount, "stock" => $stock_value->amount]);
+            }
+            IncomeStatement::create([
+                "product_id"    => $product->id,
+                "price"    => $product->price,
+                "amount"    => $product->adet,
+                "detail"    => "Ürün Satış İşlemi",
+                "costumer_id" => $request->costumer
+            ]);
         }
 
-        return response()->json(["geriDonus"=>$test]);
+        return response()->json(["geriDonus" => $test]);
     }
 
     /**

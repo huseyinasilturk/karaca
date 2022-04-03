@@ -17,6 +17,10 @@ class ObjectiveController extends Controller
      */
     public function index()
     {
+        $breadcrumbs = [
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Nesneler"], ['name' => "Nesneler"]
+        ];
+
         $objectivesTypes = [
             'quality' => [
                 'name' => 'Kalite',
@@ -52,7 +56,7 @@ class ObjectiveController extends Controller
 
         $objectives = Objective::all()->groupBy("name");
 
-        return view('live.objective.index', compact('objectives', 'objectivesTypes'));
+        return view('live.objective.index', compact('objectives', 'objectivesTypes', 'breadcrumbs'));
     }
 
     /**

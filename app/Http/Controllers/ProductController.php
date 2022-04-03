@@ -17,7 +17,7 @@ class ProductController extends Controller
     public function index()
     {
         $breadcrumbs = [
-            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Ürün"], ['name' => "Ürün Listeleme"]
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Ürün"], ['name' => "Listeleme"]
         ];
         $Product = Product::with('productFileData', 'productTypeGet', 'productCompanyGet')->get();
         $Company = Company::all();
@@ -34,7 +34,7 @@ class ProductController extends Controller
     public function create()
     {
         $breadcrumbs = [
-            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Ürün"], ['name' => "Ürün Ekle"]
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Ürün"], ['name' => "Ekle"]
         ];
         $ProductObjectives = Objective::whereName("productType")->get();
         $Company = Company::all();

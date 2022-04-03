@@ -100,7 +100,7 @@
             "submenu": [
                 {
                     "url": "dayoff/",
-                    "name": "İzinler",
+                    "name": "İzin Listele",
                     "icon": "list",
                     "slug": "dayoff.index"
                 },
@@ -120,7 +120,7 @@
             "submenu": [
                 {
                     "url": "customer/",
-                    "name": "Müşteriler",
+                    "name": "Müşteri Listele",
                     "icon": "list",
                     "slug": "customer.index"
                 },

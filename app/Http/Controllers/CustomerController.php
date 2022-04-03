@@ -12,7 +12,7 @@ class CustomerController extends Controller
     public function index()
     {
         $breadcrumbs = [
-            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "İzin"], ['name' => "İzinler"]
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Müşteriler"], ['name' => "Listele"]
         ];
         $customers = Customer::with("type")->get();
         $customerTypes = Objective::where("name", "customerType")->get();
@@ -23,7 +23,7 @@ class CustomerController extends Controller
     public function add()
     {
         $breadcrumbs = [
-            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Müşteriler"], ['name' => "Müşteri Ekle"]
+            ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Müşteriler"], ['name' => "Ekle"]
         ];
         $customerTypes = Objective::where("name", "customerType")->get();
         return view("live.customer.add", compact("breadcrumbs", "customerTypes"));

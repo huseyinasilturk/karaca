@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'User List')
+@section('title', 'Personel Listesi')
 
 @section('vendor-style')
     {{-- Page Css files --}}
