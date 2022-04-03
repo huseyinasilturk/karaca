@@ -25,6 +25,7 @@ class StockLimitRequest extends FormRequest
     {
         return [
             "product_id" => "required",
+            "company_id" => "required",
             "limit" => "required",
         ];
     }
@@ -33,6 +34,7 @@ class StockLimitRequest extends FormRequest
     {
         return [
             "product_id.required" => "Ürün seçmek zorundasınız",
+            "company_id.required" => "Firma seçmek zorundasınız",
             "limit.required" => "Limit belirtmek zorundasınız",
         ];
     }

@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'Limit Ekle')
+@section('title', 'Limit Güncelle')
 
 @section('vendor-style')
     <!-- Vendor css files -->
@@ -25,7 +25,28 @@
                     <form class="form" onsubmit="submitHandler(event)">
                         <input type="hidden" name="id" value="{{ $stockLimit->id }}">
                         <div class="row">
-                            <div class="col-md-6 col-12">
+                            <div class="col-md-4 col-12">
+                                <div class="mb-1">
+                                    <label class="form-label" for="company">Firma</label>
+                                    <select class="form-select" id="company" name="company_id">
+                                        @if (count($Company) > 0)
+                                            <option value="-1" disabled>Firma seçiniz</option>
+                                            @foreach ($Company as $firm)
+                                                @if ($firm->id == $stockLimit->company_id)
+                                                    <option selected value="{{ $firm->id }}">{{ $firm->name }}
+                                                    </option>
+                                                @else
+                                                    <option value="{{ $firm->id }}">{{ $firm->name }}
+                                                    </option>
+                                                @endif
+                                            @endforeach
+                                        @else
+                                            <option value="-1" disabled selected>Firma ekleyiniz</option>
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-12">
                                 <div class="mb-1">
                                     <label class="form-label" for="product">Ürün</label>
                                     <select class="form-select" id="product" name="product_id">
@@ -46,7 +67,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-12">
+                            <div class="col-md-4 col-12">
                                 <div class="mb-1">
                                     <label class="form-label" for="limit">Limit</label>
                                     <input type="number" id="limit" class="form-control" placeholder="Limit"

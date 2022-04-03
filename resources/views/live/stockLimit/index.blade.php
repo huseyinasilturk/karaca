@@ -41,6 +41,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Ad</th>
+                                    <th>Firma</th>
                                     <th>Limit</th>
                                     <th>İşlemler</th>
                                 </tr>
@@ -82,7 +83,10 @@
                     width: "5%"
                 },
                 {
-                    data: "product.name"
+                    data: "product.name",
+                },
+                {
+                    data: "company.name",
                 },
                 {
                     data: "limit"
@@ -91,6 +95,7 @@
                     data: "",
                     width: "5%"
                 }
+
             ],
             columnDefs: [{
                     targets: 0,
@@ -120,6 +125,16 @@
                 },
                 {
                     targets: 3,
+                    render: function(data, type, full, meta) {
+                        if (data !== null) {
+                            return `<p>${data}</p>`
+                        } else {
+                            return "---"
+                        }
+                    }
+                },
+                {
+                    targets: 4,
                     render: function(data, type, full, meta) {
                         return `<div class="btn-tooltip">
                                 <a href="/stock-limit/${full['id']}" class="btn bg-transparent p-0">${feather.icons["edit-2"].toSvg({
