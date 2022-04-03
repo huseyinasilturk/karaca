@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // Veritabanı SQL Seederları
-        $this->call([RolePermissionSeeder::class, ObjectiveSeeder::class,  CompanySeeder::class, ProductSeeder::class, FileDataSeeder::class]);
+        $this->call([RolePermissionSeeder::class, ObjectiveSeeder::class,  CompanySeeder::class, ProductSeeder::class, FileDataSeeder::class, ListPriceSeeder::class, StockSeeder::class,  StockLimitSeeder::class]);
 
         $information = Information::create([
             "name" => "Karaca",

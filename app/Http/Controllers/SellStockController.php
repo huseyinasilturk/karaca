@@ -23,7 +23,7 @@ class SellStockController extends Controller
 
         // $stocks = DB::select("SELECT COALESCE(SUM(stocks.amount),0) AS stock, products.* FROM products LEFT JOIN stocks ON products.id = stocks.product_id  GROUP BY stocks.product_id")
 
-        DB::enableQueryLog();
+        // DB::enableQueryLog();
 
         $stocks =  Product::select(["products.*", DB::raw("COALESCE(SUM(stocks.amount),0) as amount"), DB::raw("COALESCE(list_prices.list_price,0) as list_price")])->with("productFileData")->leftjoin("stocks", "products.id", "stocks.product_id")->leftjoin("list_prices", "list_prices.product_id", "products.id")->where("list_prices.company_id", "=", auth()->user()->company_id)->orWhereNull("list_prices.company_id")->groupBy("stocks.product_id")->get();
 
