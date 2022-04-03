@@ -139,10 +139,10 @@
                         @if (count($product->productFileData) > 0)
                             <img class="img-fluid card-img-top"
                                 src="{{ asset('images/product/' . $product->productFileData[0]->file_name) }}"
-                                alt="img-placeholder" />
+                                alt="img-placeholder" lazy />
                         @else
                             <img class="img-fluid card-img-top" src="http://via.placeholder.com/600x350"
-                                alt="img-placeholder" />
+                                alt="img-placeholder" lazy />
                         @endif
 
                     </a>
@@ -410,7 +410,7 @@
                                         <a href="${editUrl}">
                                             <img class="img-fluid card-img-top"
                                                 src="${imagePath}"
-                                                alt="img-placeholder" /></a>
+                                                alt="img-placeholder" lazy /></a>
                                     </div>
                                     <div class="card-body">
                                         <div class="item-wrapper justify-content-end">

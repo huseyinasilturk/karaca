@@ -29,7 +29,7 @@
                                 <div class="mb-1">
                                     <label class="form-label" for="productTypeID">Ürün Tipi</label>
                                     <select class="select2 form-select" id="productTypeID" name="type_id" required>
-                                        <option value="0">Seçiniz</option>
+                                        <option value="0" disabled>Seçiniz</option>
                                         @foreach ($ProductObjectives as $probj)
                                             <option value="{{ $probj->id }}">{{ $probj->text1 }}</option>
                                         @endforeach
