@@ -418,7 +418,6 @@ Route::group(['middleware' => ['web', 'activity']], function () {
 
     // map leaflet
     Route::get('/maps/leaflet', [ChartsController::class, 'maps_leaflet'])->name('map-leaflet');
-
-    // locale Route
+ 
     Route::get('lang/{locale}', [LanguageController::class, 'swap']);
 });
