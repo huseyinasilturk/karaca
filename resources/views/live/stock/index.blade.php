@@ -18,6 +18,8 @@
 @endsection
 
 @section('content-sidebar')
+
+@if (!empty($products))
     <!-- Ecommerce Sidebar Starts -->
     <div class="sidebar-shop">
         <div class="row">
@@ -150,7 +152,7 @@
                 <div class="card-body">
                     <div class="item-wrapper justify-content-end">
                         <h6 class="item-price">
-                            {{ $product->productCompanyGet[0]->list_price }} ₺
+                            {{ !empty($product->productCompanyGet[0]->list_price) ? $product->productCompanyGet[0]->list_price : 0 }}₺
                         </h6>
                     </div>
                     <h6 class="item-name">
@@ -162,7 +164,8 @@
                     <div class="item-wrapper justify-content-end">
                         <div class="item-cost">
                             <h4 class="item-price">
-                                {{ $product->productCompanyGet[0]->list_price }} ₺
+
+                                {{ !empty($product->productCompanyGet[0]->list_price) ? $product->productCompanyGet[0]->list_price : 0 }} ₺
                             </h4>
                         </div>
                     </div>
@@ -243,6 +246,19 @@
         </div>
     </div>
     <!-- Modal Ends -->
+    @else
+    <div class="card col-12">
+        <div class="card-body">
+            <p>Önce ürün eklemelisiniz</p>
+            <p class="mb-0">
+                <a href="{{ route('product.create') }}" class="text-primary"
+                    style="font-weight: bold">Buradan</a>
+                gidebilirsiniz
+            </p>
+        </div>
+    </div>
+    @endif
+
 @endsection
 
 @section('vendor-script')

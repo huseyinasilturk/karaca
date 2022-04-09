@@ -22,6 +22,7 @@
 @else
     <link rel="stylesheet" href="{{ asset(mix('css/base/core/menu/menu-types/vertical-menu.css')) }}" />
 @endif
+<link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">
 
 {{-- Page Styles --}}
 @yield('page-style')

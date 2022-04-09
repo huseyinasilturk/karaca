@@ -16,7 +16,9 @@ class CreateStockLimitsTable extends Migration
         Schema::create('stock_limits', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger("product_id");
-            $table->integer("company_id");
+
+            $table->unsignedInteger("company_id");
+
             $table->integer("limit");
             $table->timestamps();
         });

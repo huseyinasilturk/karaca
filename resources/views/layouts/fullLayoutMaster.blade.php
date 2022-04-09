@@ -27,7 +27,7 @@
         rel="stylesheet">
 
     {{-- Include core + vendor Styles --}}
-    @include('panels/styles') 
+    @include('panels/styles')
 </head>
 
 
@@ -57,6 +57,9 @@
     @include('panels/scripts')
 
     <script type="text/javascript">
+
+
+
         $(window).on('load', function() {
             if (feather) {
                 feather.replace({

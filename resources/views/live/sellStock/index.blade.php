@@ -6,7 +6,6 @@
   <!-- Vendor css files -->
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/wizard/bs-stepper.min.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/spinner/jquery.bootstrap-touchspin.css')) }}">
-  <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">
 
 @endsection
 
@@ -31,6 +30,7 @@
       <div class="row">
         <div class="col-9">
             <div class="row">
+
         @foreach ($stocks as $key => $value )
 
                 <div class="col-xl-3 col-sm-4 col-md-3 ">
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
                             <p class="card-text item-description">
-                               Stok Adeti : <span class="stok"> {{$value->amount}} </span>
+                               Stok Adeti : <span class="stok" pro_id="{{$value->id}}"> {{$value->amount}} </span>
                               </p>
                             <button id="{{$value->id}}" list_price="{{$value->list_price}}" name="{{$value->name}}" class="btn btn-primary btn-cart clickSub">
                                 <i data-feather="shopping-cart"></i>
@@ -99,9 +99,9 @@
                             <div class="col-md-12 mb-1 text-center">
                                 <label class="form-label" for="select2-basic">Müşteri Seçin</label>
                                 <select class="select2 form-select" name="costumer">
-                                <option value="1">Anonim</option>
-                                <option value="2">Müşteri 1</option>
-                                <option value="3">Müşteri 2</option>
+                                @foreach ($customer as $value )
+                                    <option value="{{$value->id}}"> {{$value->name}} </option>
+                                @endforeach
                                 </select>
                             </div>
                         <div class="price-details">
@@ -133,6 +133,9 @@
                 <!-- Checkout Place Order Right ends -->
               </div>
           </div>
+          <input type="button" value="Standart Bildirim" onclick="masaustuBildirim('Standart Bildirim','Merhaba ! Ben Standart bir bildirimim ','http://www.yadotek.com/');" />
+          <input type="button" value="Resimli Bildirim" onclick="masaustuBildirim('Resimli Bildirim','Merhaba ! Ben resimli bir bildirimim','yadotek.com/', 'http://www.patabilisim.com/themes/site/images/logo.png');" />
+
 
   </div>
 </div>
@@ -142,32 +145,43 @@
 
   <script src="{{ asset(mix('vendors/js/forms/wizard/bs-stepper.min.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/forms/spinner/jquery.bootstrap-touchspin.js')) }}"></script>
-  <script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
   <script src="{{ asset(mix('js/scripts/extensions/ext-component-swiper.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/extensions/swiper.min.js')) }}"></script>
 
 @endsection
 
 @section('page-script')
-
   <script src="{{ asset(mix('js/scripts/pages/app-ecommerce-checkout.js')) }}"></script>
   <script src="{{ asset(mix('js/scripts/forms/form-number-input.js'))}}"></script>
 
   <script>
+$(function() {
+                let ip_address = '127.0.0.1';
+                let socket_port = '9699';
+                let socket = io(ip_address + ':' + socket_port);
 
-    $("#satisYap").on('submit', function(e){
+                $("#satisYap").on('submit', function(e){
+                    e.preventDefault();
 
-        e.preventDefault();
+                    axios.post(route("sellstock.store"),new FormData(this)).then((res)=>{
 
-        console.log(new FormData(this));
-        axios.post(route("sellstock.store"),new FormData(this)).then((res)=>{
-            console.log(res);
-        });
+                        if (res.data.stockLimit.length) {
+                            let message=" ";
+                            let id = [];
+                            let companyId = {{auth()->user()->company_id}};
+                            res.data.stockLimit.map((value,key)=>{
+                                message += "-> "+value["c_name"]+" bayisinde "+value["name"]+" ürününden "+value["amount"]+" adet kaldı.\n";
+                                id.push({id:value["id"],adet:value["amount"]});
+                            })
 
-    })
+                            socket.emit('sendToStockServer',message,id,companyId);
+                        }
+                    });
+                })
+    });
 
     $(".clickSub").on('click', function(e){
-console.log($(this).closest("card").find("input[name='price']"));
+        console.log($(this).closest("card").find("input[name='price']"));
         let stok = parseInt($(this).closest(".card").find(".stok").html());
         let adet = parseInt($(this).closest(".card").find(".adet").val());
         if (stok<adet) {
