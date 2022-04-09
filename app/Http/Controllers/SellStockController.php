@@ -25,6 +25,7 @@ class SellStockController extends Controller
 
         // $stocks = DB::select("SELECT COALESCE(SUM(stocks.amount),0) AS stock, products.* FROM products LEFT JOIN stocks ON products.id = stocks.product_id  GROUP BY stocks.product_id")
 
+
         DB::enableQueryLog();
         $customer = Customer::all();
         $stocks =  Product::select(["products.*", DB::raw("COALESCE(SUM(stocks.amount),0) as amount"), DB::raw("COALESCE(list_prices.list_price,0) as list_price")])
@@ -38,6 +39,7 @@ class SellStockController extends Controller
         })
         ->groupBy("stocks.product_id")
         ->get();
+ 
         // return $stocks;
         // return  DB::getQueryLog();
 

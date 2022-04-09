@@ -251,6 +251,7 @@ Route::group(['middleware' => ['web', 'activity']], function () {
     Route::group(['prefix' => 'icons'], function () {
         Route::get('feather', [UserInterfaceController::class, 'icons_feather'])->name('icons-feather');
     });
+ 
     /* Route Icons */
 
     /* Route Cards */
@@ -260,6 +261,14 @@ Route::group(['middleware' => ['web', 'activity']], function () {
         Route::get('statistics', [CardsController::class, 'card_statistics'])->name('card-statistics');
         Route::get('analytics', [CardsController::class, 'card_analytics'])->name('card-analytics');
         Route::get('actions', [CardsController::class, 'card_actions'])->name('card-actions');
+ 
+
+    // income prefix
+    Route::prefix("income")->name("income")->group(function () {
+        // Stok anasayfa
+        Route::get("/", [IncomeController::class, "index"])->name(".index");
+        Route::post("/store", [IncomeController::class, "store"])->name(".store");
+ 
     });
     /* Route Cards */
 
@@ -308,6 +317,7 @@ Route::group(['middleware' => ['web', 'activity']], function () {
         Route::get('ratings', [ExtensionController::class, 'ratings'])->name('ext-component-ratings');
         Route::get('locale', [ExtensionController::class, 'locale'])->name('ext-component-locale');
     });
+ 
     /* Route Extensions */
 
     /* Route Page Layouts */
@@ -317,6 +327,20 @@ Route::group(['middleware' => ['web', 'activity']], function () {
         Route::get('without-menu', [PageLayoutController::class, 'layout_without_menu'])->name('layout-without-menu');
         Route::get('empty', [PageLayoutController::class, 'layout_empty'])->name('layout-empty');
         Route::get('blank', [PageLayoutController::class, 'layout_blank'])->name('layout-blank');
+ 
+
+    // Stok limitleri prefix
+    Route::prefix("stock-limit")->name("stockLimit")->group(function () {
+        Route::get("/add", [StockLimitController::class, "add"])->name(".add");
+        Route::get("/", [StockLimitController::class, "index"])->name(".index");
+        Route::get("/limits", [StockLimitController::class, "limits"])->name(".limits");
+        Route::get("/{id}", [StockLimitController::class, "edit"])->name(".edit")->whereNumber("id");
+
+        Route::post("/", [StockLimitController::class, "store"])->name(".store");
+        Route::post("/{id}", [StockLimitController::class, "update"])->name(".update");
+
+        Route::delete("/{id}", [StockLimitController::class, "delete"])->name(".delete");
+ 
     });
     /* Route Page Layouts */
 
@@ -342,6 +366,7 @@ Route::group(['middleware' => ['web', 'activity']], function () {
     });
     /* Route Forms */
 
+ 
     /* Route Tables */
     Route::group(['prefix' => 'table'], function () {
         Route::get('', [TableController::class, 'table'])->name('table');
@@ -373,6 +398,20 @@ Route::group(['middleware' => ['web', 'activity']], function () {
         Route::get('not-authorized', [MiscellaneousController::class, 'not_authorized'])->name('misc-not-authorized');
         Route::get('maintenance', [MiscellaneousController::class, 'maintenance'])->name('misc-maintenance');
         Route::get('license', [PagesController::class, 'license'])->name('page-license');
+ 
+    // İzinler prefix
+    Route::prefix("dayoff")->name("dayoff")->group(function () {
+        Route::get("/add", [DayOffController::class, "create"])->name(".create");
+        Route::get("/", [DayOffController::class, "index"])->name(".index");
+        Route::get("/dayoff", [DayOffController::class, "dayOffs"])->name(".dayOffs");
+        Route::get("/{id}", [DayOffController::class, "edit"])->name(".edit")->whereNumber("id");
+
+        Route::post("/", [DayOffController::class, "store"])->name(".store");
+        Route::post("/filter", [DayOffController::class, "filter"])->name(".filter");
+        Route::post("/{id}", [DayOffController::class, "update"])->name(".update");
+
+        Route::delete("/{id}", [DayOffController::class, "delete"])->name(".delete");
+ 
     });
 
     /* Modal Examples */

@@ -60,7 +60,7 @@ class ProductController extends Controller
                         array_push($data, ["table_id" => $product->id, "table_name" => "products", "file_name" => $fileName, "type" => "images", "created_at" => date('Y-m-d H:i:s'), "updated_at" => date('Y-m-d H:i:s')]);
                     }
                 }
-                $insertImage = FileData::insert($data);
+                FileData::insert($data);
             }
 
             $listPrices = $request->listPrice;

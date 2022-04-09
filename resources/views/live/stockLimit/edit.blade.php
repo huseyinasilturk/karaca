@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'Limit Ekle')
+@section('title', 'Limit Güncelle')
 
 @section('vendor-style')
     <!-- Vendor css files -->
@@ -23,6 +23,7 @@
                 </div>
                 <div class="card-body">
                     <form class="form" onsubmit="submitHandler(event)">
+                        <input type="hidden" name="id" value="{{ $stockLimit->id }}">
                         <div class="row">
                             <div class="col-md-4 col-12">
                                 <div class="mb-1">
@@ -31,8 +32,13 @@
                                         @if (count($Company) > 0)
                                             <option value="-1" disabled>Firma seçiniz</option>
                                             @foreach ($Company as $firm)
-                                                <option value="{{ $firm->id }}">{{ $firm->name }}
-                                                </option>
+                                                @if ($firm->id == $stockLimit->company_id)
+                                                    <option selected value="{{ $firm->id }}">{{ $firm->name }}
+                                                    </option>
+                                                @else
+                                                    <option value="{{ $firm->id }}">{{ $firm->name }}
+                                                    </option>
+                                                @endif
                                             @endforeach
                                         @else
                                             <option value="-1" disabled selected>Firma ekleyiniz</option>
@@ -47,8 +53,13 @@
                                         @if (count($products) > 0)
                                             <option value="-1" disabled>Ürün seçiniz</option>
                                             @foreach ($products as $product)
-                                                <option value="{{ $product->id }}">{{ $product->name }}
-                                                </option>
+                                                @if ($product->id == $stockLimit->product_id)
+                                                    <option selected value="{{ $product->id }}">{{ $product->name }}
+                                                    </option>
+                                                @else
+                                                    <option value="{{ $product->id }}">{{ $product->name }}
+                                                    </option>
+                                                @endif
                                             @endforeach
                                         @else
                                             <option value="-1" disabled selected>Ürün ekleyiniz</option>
@@ -60,11 +71,11 @@
                                 <div class="mb-1">
                                     <label class="form-label" for="limit">Limit</label>
                                     <input type="number" id="limit" class="form-control" placeholder="Limit"
-                                        autocomplete="off" name="limit" />
+                                        autocomplete="off" name="limit" value="{{ $stockLimit->limit }}" />
                                 </div>
                             </div>
                             <div class="col-12 text-end">
-                                <button type="submit" class="btn btn-success px-3">Ekle</button>
+                                <button type="submit" class="btn btn-success px-3">Güncelle</button>
                             </div>
                         </div>
                     </form>
@@ -85,13 +96,15 @@
         function submitHandler(e) {
             e.preventDefault();
 
+            const id = $('input[name="id"]').val();
+
             $.ajax({
                 method: "POST",
-                url: route("stockLimit.store"),
+                url: route("stockLimit.update", id),
                 data: $(e.target).serialize(),
                 dataType: "json",
                 success: (res, textStatus, xhr) => {
-                    if (xhr.status === 201) {
+                    if (xhr.status === 200) {
                         toastr["success"](
                             res.message,
                             "Başarılı!", {
@@ -101,8 +114,6 @@
                                 progressBar: true
                             }
                         );
-
-                        $(e.target).trigger("reset");
                     }
                 },
                 error: err => {
