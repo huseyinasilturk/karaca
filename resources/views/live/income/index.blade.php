@@ -27,7 +27,35 @@
     <!-- users list start -->
 
     <section class="app-user-list">
+        <div class="col-lg-12 col-12">
+            <div class="card card-revenue-budget">
+              <div class="row mx-0">
+                <div class="col-md-8 col-12 revenue-report-wrapper">
+                  <div class="d-sm-flex justify-content-between align-items-center mb-3">
+                    <h4 class="card-title mb-50 mb-sm-0">Gelir Gider Raporu</h4>
+                    <div class="d-flex align-items-center">
+                      <div class="d-flex align-items-center me-2">
+                        <span class="bullet bullet-primary font-small-3 me-50 cursor-pointer"></span>
+                        <span>Gelir</span>
+                      </div>
 
+                    </div>
+                  </div>
+                  <div id="revenue-report-chart" class=" col-8 offset-2"></div>
+                </div>
+                <div class="col-md-4 col-12 budget-wrapper" style="display: flex;align-items: center">
+                <span class="fw-bolder me-25"></span>
+                <h1 class="mb-25 row">Bu ay toplam gelir:{{$totalSumAy[0]->totalSum}} ₺</h1>
+                <br>
+                  <div class="row">
+                    <span class="fw-bolder me-25">Bu yıl toplam gelir:</span>
+                    <span>{{$totalSum[0]->totalSum}}</span>
+                  </div>
+                  <div id="budget-chart"></div>
+                </div>
+              </div>
+            </div>
+          </div>
 
         <!-- list and filter start -->
         <div class="card">
@@ -136,10 +164,13 @@
     <script src="{{ asset(mix('vendors/js/extensions/moment.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/extensions/sweetalert2.all.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/extensions/polyfill.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/charts/apexcharts.min.js')) }}"></script>
+
 
 @endsection
 
 @section('page-script')
+<script src="{{ asset(mix('js/scripts/cards/card-analytics.js')) }}"></script>
         <script>
 
 

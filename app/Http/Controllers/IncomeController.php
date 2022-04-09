@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\IncomeStatement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class IncomeController extends Controller
 {
@@ -16,7 +17,27 @@ class IncomeController extends Controller
     {
 
         $income = IncomeStatement::select(["income_statements.*","products.name"])->leftjoin("products","products.id","=","income_statements.product_id")->get();
-        return view("live.income.index",compact("income"));
+        $totalSum = DB::select("SELECT MONTH(created_at) AS mouth, YEAR(created_at) AS YEAR, SUM(income_statements.price * income_statements.amount) AS totalSum
+        FROM income_statements
+        WHERE YEAR(created_at) = YEAR(DATE(NOW())) ");
+
+        $totalSumAy = DB::select("SELECT MONTH(created_at) AS mouth, YEAR(created_at) AS YEAR, SUM(income_statements.price * income_statements.amount) AS totalSum
+        FROM income_statements
+        WHERE YEAR(created_at) = YEAR(DATE(NOW())) AND MONTH(created_at) = MONTH(DATE(NOW()))  ");
+
+        return view("live.income.index",compact("income","totalSum","totalSumAy"));
+
+    }
+
+    public function select()
+    {
+
+        $rapor = DB::select("SELECT MONTH(created_at) AS mouth, YEAR(created_at) AS YEAR, SUM(income_statements.price * income_statements.amount) AS totalSum
+        FROM income_statements
+        WHERE YEAR(created_at) = YEAR(DATE(NOW()))
+        GROUP BY MONTH(created_at), YEAR(created_at)");
+
+        return response()->json($rapor);
     }
   /**
      * Show the form for creating a new resource.

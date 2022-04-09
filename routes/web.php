@@ -123,6 +123,7 @@ Route::group(['middleware' => ['web', 'activity']], function () {
         Route::prefix("income")->name("income")->group(function () {
             // Stok anasayfa
             Route::get("/", [IncomeController::class, "index"])->name(".index");
+            Route::get("/select", [IncomeController::class, "select"])->name(".selectee");
             Route::post("/store", [IncomeController::class, "store"])->name(".store");
         });
 

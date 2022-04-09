@@ -23,9 +23,14 @@ const io = require("socket.io")(server, {
 io.on("connection", (socket) => {
     console.log("connection");
 
-    socket.on("sendToStockServer", (message) => {
-        console.log(message);
-        io.emit("getStockServer", message);
+    socket.on("sendToStockServer", (message, id, companyId) => {
+        console.log({
+            id: id,
+            message: message,
+            server: "server.js",
+            companyId: companyId,
+        });
+        io.emit("getStockServer", message, id, companyId);
     });
 
     socket.on("disconnect", (socket) => {

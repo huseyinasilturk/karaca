@@ -87,6 +87,7 @@
                     );
                 }, time/4);
          }
+
     </script>
 
     {{-- include default scripts --}}

@@ -27,8 +27,17 @@ class SellStockController extends Controller
 
         DB::enableQueryLog();
         $customer = Customer::all();
-        $stocks =  Product::select(["products.*", DB::raw("COALESCE(SUM(stocks.amount),0) as amount"), DB::raw("COALESCE(list_prices.list_price,0) as list_price")])->with("productFileData")->leftjoin("stocks", "products.id", "stocks.product_id")->leftjoin("list_prices", "list_prices.product_id", "products.id")->where("list_prices.company_id", "=", auth()->user()->company_id)->orWhereNull("list_prices.company_id")->groupBy("stocks.product_id")->get();
-
+        $stocks =  Product::select(["products.*", DB::raw("COALESCE(SUM(stocks.amount),0) as amount"), DB::raw("COALESCE(list_prices.list_price,0) as list_price")])
+        ->with("productFileData")
+        ->leftjoin("stocks", "products.id", "stocks.product_id")
+        ->leftjoin("list_prices", "list_prices.product_id", "products.id")
+        ->where("stocks.company_id", "=", auth()->user()->company_id)
+        ->where(function ($query)
+        {
+            $query->where("list_prices.company_id", "=", auth()->user()->company_id)->orWhereNull("list_prices.company_id");
+        })
+        ->groupBy("stocks.product_id")
+        ->get();
         // return $stocks;
         // return  DB::getQueryLog();
 
@@ -61,7 +70,7 @@ class SellStockController extends Controller
         foreach ($request->product as $key => $value) {
             $product = json_decode($value);
             $productCount = $product->adet;
-            $stock = Stock::where("product_id", $product->id)->where("amount", "!=", 0)->orderBy('created_at', 'ASC')->get();
+            $stock = Stock::where("product_id", $product->id)->where("company_id", auth()->user()->company_id)->where("amount", "!=", 0)->orderBy('created_at', 'ASC')->get();
             foreach ($stock as $key => $stock_value) {
                 if ($stock_value->amount < $productCount) {
                     Stock::find($stock_value->id)->update(["amount" => 0]);
@@ -85,14 +94,12 @@ class SellStockController extends Controller
             ]);
         }
 
-        $stockLimits = DB::select("SELECT c.name  AS c_name , sl.limit, products.*, COALESCE(SUM(stocks.amount),0) AS amount, COALESCE(list_prices.list_price,0) AS list_price
+        $stockLimits = DB::select("SELECT c.name  AS c_name , sl.limit, products.*,COALESCE(SUM(stocks.amount),0) as amount
         FROM products
         LEFT JOIN stocks ON products.id = stocks.product_id
-        LEFT JOIN list_prices ON list_prices.product_id = products.id
         LEFT JOIN stock_limits sl ON sl.product_id = products.id
-        LEFT JOIN companies c ON c.id = sl.company_id
-        WHERE (list_prices.company_id = ".auth()->user()->company_id." OR list_prices.company_id IS NULL) AND stocks.company_id = ".auth()->user()->company_id." AND sl.limit > amount
-        GROUP BY stocks.product_id");
+        LEFT JOIN companies c ON c.id = stocks.company_id
+        WHERE stocks.company_id = ".auth()->user()->company_id." AND ( sl.limit > amount AND sl.company_id =".auth()->user()->company_id.")"  );
 
         return response()->json(["success" => 202,"stockLimit"=>$stockLimits]);
     }
