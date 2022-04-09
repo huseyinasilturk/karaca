@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\IncomeStatement;
 use App\Models\Product;
 use App\Models\Stock;
+use App\Models\StockLimit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -24,13 +26,13 @@ class SellStockController extends Controller
         // $stocks = DB::select("SELECT COALESCE(SUM(stocks.amount),0) AS stock, products.* FROM products LEFT JOIN stocks ON products.id = stocks.product_id  GROUP BY stocks.product_id")
 
         DB::enableQueryLog();
-
+        $customer = Customer::all();
         $stocks =  Product::select(["products.*", DB::raw("COALESCE(SUM(stocks.amount),0) as amount"), DB::raw("COALESCE(list_prices.list_price,0) as list_price")])->with("productFileData")->leftjoin("stocks", "products.id", "stocks.product_id")->leftjoin("list_prices", "list_prices.product_id", "products.id")->where("list_prices.company_id", "=", auth()->user()->company_id)->orWhereNull("list_prices.company_id")->groupBy("stocks.product_id")->get();
 
         // return $stocks;
         // return  DB::getQueryLog();
 
-        return view("live.sellStock.index", compact("stocks", "breadcrumbs"));
+        return view("live.sellStock.index", compact("stocks", "breadcrumbs","customer"));
     }
 
     /**
@@ -54,6 +56,7 @@ class SellStockController extends Controller
 
 
         $test = [];
+
 
         foreach ($request->product as $key => $value) {
             $product = json_decode($value);
@@ -82,7 +85,16 @@ class SellStockController extends Controller
             ]);
         }
 
-        return response()->json(["geriDonus" => $test]);
+        $stockLimits = DB::select("SELECT c.name  AS c_name , sl.limit, products.*, COALESCE(SUM(stocks.amount),0) AS amount, COALESCE(list_prices.list_price,0) AS list_price
+        FROM products
+        LEFT JOIN stocks ON products.id = stocks.product_id
+        LEFT JOIN list_prices ON list_prices.product_id = products.id
+        LEFT JOIN stock_limits sl ON sl.product_id = products.id
+        LEFT JOIN companies c ON c.id = sl.company_id
+        WHERE (list_prices.company_id = ".auth()->user()->company_id." OR list_prices.company_id IS NULL) AND stocks.company_id = ".auth()->user()->company_id." AND sl.limit > amount
+        GROUP BY stocks.product_id");
+
+        return response()->json(["success" => 202,"stockLimit"=>$stockLimits]);
     }
 
     /**

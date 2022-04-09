@@ -26,7 +26,6 @@ class StockController extends Controller
 
         $products = Product::with("productFileData", "productTypeGet", "productCompanyGet", "productStock")->get();
         $companies = Company::all();
-
         $productCategories = Objective::where("name", "productType")->get();
         $unitTypes = Objective::where("name", "unitType")->get();
 

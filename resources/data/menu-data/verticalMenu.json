@@ -175,6 +175,12 @@
             "slug": "objective.index"
         },
         {
+            "url": "/activity",
+            "name": "Loglar",
+            "icon": "lock",
+            "slug": "actives"
+        },
+        {
             "navheader": "Development",
             "slug": ""
         },

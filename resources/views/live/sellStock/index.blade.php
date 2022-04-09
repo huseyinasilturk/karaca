@@ -99,9 +99,9 @@
                             <div class="col-md-12 mb-1 text-center">
                                 <label class="form-label" for="select2-basic">Müşteri Seçin</label>
                                 <select class="select2 form-select" name="costumer">
-                                <option value="1">Anonim</option>
-                                <option value="2">Müşteri 1</option>
-                                <option value="3">Müşteri 2</option>
+                                @foreach ($customer as $value )
+                                    <option value="{{$value->id}}"> {{$value->name}} </option>
+                                @endforeach
                                 </select>
                             </div>
                         <div class="price-details">
@@ -133,6 +133,8 @@
                 <!-- Checkout Place Order Right ends -->
               </div>
           </div>
+          <input type="button" value="Standart Bildirim" onclick="masaustuBildirim('Standart Bildirim','Merhaba ! Ben Standart bir bildirimim ','http://www.yadotek.com/');" />
+          <input type="button" value="Resimli Bildirim" onclick="masaustuBildirim('Resimli Bildirim','Merhaba ! Ben resimli bir bildirimim','yadotek.com/', 'http://www.patabilisim.com/themes/site/images/logo.png');" />
 
   </div>
 </div>
@@ -149,23 +151,37 @@
 @endsection
 
 @section('page-script')
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.min.js" integrity="sha512-eiqtDDb4GUVCSqOSOTz/s/eiU4B31GrdSb17aPAA4Lv/Cjc8o+hnDvuNkgXhSI5yHuDvYkuojMaQmrB5JB31XQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="{{ asset(mix('js/scripts/pages/app-ecommerce-checkout.js')) }}"></script>
   <script src="{{ asset(mix('js/scripts/forms/form-number-input.js'))}}"></script>
 
   <script>
+  $(function() {
+                let ip_address = '127.0.0.1';
+                let socket_port = '9699';
+                let socket = io(ip_address + ':' + socket_port);
 
-    $("#satisYap").on('submit', function(e){
+                socket.on('getStockServer', (message) => {
+                    console.log(message);
+                    notificationHam("Stok Uyarısı",message,"error",2000)
+                });
 
-        e.preventDefault();
+                $("#satisYap").on('submit', function(e){
+                    e.preventDefault();
 
-        console.log(new FormData(this));
-        axios.post(route("sellstock.store"),new FormData(this)).then((res)=>{
-            console.log(res);
-        });
-
-    })
-
+                    axios.post(route("sellstock.store"),new FormData(this)).then((res)=>{
+                        console.log(res);
+                        console.log(res.data.stockLimit.length);
+                        if (res.data.stockLimit.length) {
+                            let message=" ";
+                            res.data.stockLimit.map((value,key)=>{
+                                message += "-> "+value["c_name"]+" bayisinde "+value["name"]+" ürününden "+value["amount"]+" adet kaldı.\n";
+                            })
+                            socket.emit('sendToStockServer',message);
+                        }
+                    });
+                })
+    });
     $(".clickSub").on('click', function(e){
 console.log($(this).closest("card").find("input[name='price']"));
         let stok = parseInt($(this).closest(".card").find(".stok").html());

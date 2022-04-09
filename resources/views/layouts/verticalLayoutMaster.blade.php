@@ -61,7 +61,33 @@
 
     <div class="sidenav-overlay"></div>
     <div class="drag-target"></div>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
 
+    <script>
+
+
+
+        function notificationHam(title="",body="",type="success",time=2000) {
+                 Push.create(title, {
+                     body: body,
+                     timeout: time,
+                     onClick: function () {
+                         window.focus();
+                         this.close();
+                     }
+                 });
+                 setTimeout(function () {
+                    toastr[type](
+                        body,
+                    title,
+                    {
+                        closeButton: true,
+                        tapToDismiss: false,
+                    }
+                    );
+                }, time/4);
+         }
+    </script>
 
     {{-- include default scripts --}}
     @include('panels/scripts')
@@ -81,6 +107,9 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+
+
     </script>
 </body>
 
