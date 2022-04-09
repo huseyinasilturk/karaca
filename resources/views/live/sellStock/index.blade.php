@@ -133,9 +133,6 @@
                 <!-- Checkout Place Order Right ends -->
               </div>
           </div>
-          <input type="button" value="Standart Bildirim" onclick="masaustuBildirim('Standart Bildirim','Merhaba ! Ben Standart bir bildirimim ','http://www.yadotek.com/');" />
-          <input type="button" value="Resimli Bildirim" onclick="masaustuBildirim('Resimli Bildirim','Merhaba ! Ben resimli bir bildirimim','yadotek.com/', 'http://www.patabilisim.com/themes/site/images/logo.png');" />
-
 
   </div>
 </div>
