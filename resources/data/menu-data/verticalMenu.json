@@ -69,6 +69,32 @@
                     "name": "Satış",
                     "icon": "shopping-bag",
                     "slug": "sellstock.index"
+                },
+                {
+                    "url": "stockTransfer/",
+                    "name": "Stok Aktar",
+                    "icon": "shopping-bag",
+                    "slug": "stockTransfer.index"
+                },
+                {
+                    "url": "stock-limit",
+                    "name": "Stok Limitleri",
+                    "icon": "bar-chart-2",
+                    "slug": "#",
+                    "submenu": [
+                        {
+                            "url": "stock-limit/",
+                            "name": "Limitler",
+                            "icon": "list",
+                            "slug": "stockLimit.index"
+                        },
+                        {
+                            "url": "stock-limit/add",
+                            "name": "Limit Ekle",
+                            "icon": "plus",
+                            "slug": "stockLimit.add"
+                        }
+                    ]
                 }
             ]
         },
@@ -132,26 +158,7 @@
                 }
             ]
         },
-        {
-            "url": "stock-limit",
-            "name": "Stok Limitleri",
-            "icon": "bar-chart-2",
-            "slug": "#",
-            "submenu": [
-                {
-                    "url": "stock-limit/",
-                    "name": "Limitler",
-                    "icon": "list",
-                    "slug": "stockLimit.index"
-                },
-                {
-                    "url": "stock-limit/add",
-                    "name": "Limit Ekle",
-                    "icon": "plus",
-                    "slug": "stockLimit.add"
-                }
-            ]
-        },
+
         {
             "url": "reminder",
             "name": "Hatırlatıcı",
