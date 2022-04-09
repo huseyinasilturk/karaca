@@ -113,12 +113,7 @@ var normalizeDate = function (dateString) {
 // Advanced Search Functions Ends
 
 $(function () {
-    var isRtl = $("html").attr("data-textdirection") === "rtl";
-
     var dt_ajax_table = $(".datatables-ajax"),
-        dt_filter_table = $(".dt-column-search"),
-        dt_adv_filter_table = $(".dt-advanced-search"),
-        dt_responsive_table = $(".dt-responsive"),
         assetPath = "../../../app-assets/";
 
     if ($("body").attr("data-framework") === "laravel") {
@@ -132,7 +127,7 @@ $(function () {
         var dt_ajax = dt_ajax_table.dataTable({
             processing: true,
             dom: '<"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-            ajax: assetPath + "data/ajax.php",
+            ajax: route("stockTransfer.list"),
             language: {
                 paginate: {
                     // remove previous & next text from pagination
@@ -140,234 +135,17 @@ $(function () {
                     next: "&nbsp;",
                 },
             },
-        });
-    }
-
-    // Column Search
-    // --------------------------------------------------------------------
-
-    if (dt_filter_table.length) {
-        // Setup - add a text input to each footer cell
-        $(".dt-column-search thead tr")
-            .clone(true)
-            .appendTo(".dt-column-search thead");
-        $(".dt-column-search thead tr:eq(1) th").each(function (i) {
-            var title = $(this).text();
-            $(this).html(
-                '<input type="text" class="form-control form-control-sm" placeholder="Search ' +
-                    title +
-                    '" />'
-            );
-
-            $("input", this).on("keyup change", function () {
-                if (dt_filter.column(i).search() !== this.value) {
-                    dt_filter.column(i).search(this.value).draw();
-                }
-            });
-        });
-
-        var dt_filter = dt_filter_table.DataTable({
-            ajax: assetPath + "data/table-datatable.json",
             columns: [
-                { data: "full_name" },
-                { data: "email" },
-                { data: "post" },
-                { data: "city" },
-                { data: "start_date" },
-                { data: "salary" },
-            ],
-            dom: '<"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-            orderCellsTop: true,
-            language: {
-                paginate: {
-                    // remove previous & next text from pagination
-                    previous: "&nbsp;",
-                    next: "&nbsp;",
-                },
-            },
-        });
-    }
-
-    // Advanced Search
-    // --------------------------------------------------------------------
-
-    // Advanced Filter table
-    if (dt_adv_filter_table.length) {
-        var dt_adv_filter = dt_adv_filter_table.DataTable({
-            ajax: assetPath + "data/table-datatable.json",
-            columns: [
-                { data: "responsive_id" },
-                { data: "full_name" },
-                { data: "email" },
-                { data: "post" },
-                { data: "city" },
-                { data: "start_date" },
-                { data: "salary" },
-            ],
-
-            columnDefs: [
                 {
-                    className: "control",
-                    orderable: false,
-                    targets: 0,
+                    defaultContent:
+                        '<input type="button" class="name" value="Name"/><input type="button" class="position" value="Position"/>',
                 },
+                { data: "company_name" },
+                { data: "product_name" },
+                { data: "amount" },
+                { data: "purchase_price" },
+                { data: "id" },
             ],
-            dom: '<"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-            orderCellsTop: true,
-            responsive: {
-                details: {
-                    display: $.fn.dataTable.Responsive.display.modal({
-                        header: function (row) {
-                            var data = row.data();
-                            return "Details of " + data["full_name"];
-                        },
-                    }),
-                    type: "column",
-                    renderer: function (api, rowIdx, columns) {
-                        var data = $.map(columns, function (col, i) {
-                            return col.title !== "" // ? Do not show row in modal popup if title is blank (for check box)
-                                ? '<tr data-dt-row="' +
-                                      col.rowIndex +
-                                      '" data-dt-column="' +
-                                      col.columnIndex +
-                                      '">' +
-                                      "<td>" +
-                                      col.title +
-                                      ":" +
-                                      "</td> " +
-                                      "<td>" +
-                                      col.data +
-                                      "</td>" +
-                                      "</tr>"
-                                : "";
-                        }).join("");
-
-                        return data
-                            ? $('<table class="table"/><tbody />').append(data)
-                            : false;
-                    },
-                },
-            },
-            language: {
-                paginate: {
-                    // remove previous & next text from pagination
-                    previous: "&nbsp;",
-                    next: "&nbsp;",
-                },
-            },
-        });
-    }
-
-    // on key up from input field
-    $("input.dt-input").on("keyup", function () {
-        filterColumn($(this).attr("data-column"), $(this).val());
-    });
-
-    // Responsive Table
-    // --------------------------------------------------------------------
-
-    if (dt_responsive_table.length) {
-        var dt_responsive = dt_responsive_table.DataTable({
-            ajax: assetPath + "data/table-datatable.json",
-            columns: [
-                { data: "responsive_id" },
-                { data: "full_name" },
-                { data: "email" },
-                { data: "post" },
-                { data: "city" },
-                { data: "start_date" },
-                { data: "salary" },
-                { data: "age" },
-                { data: "experience" },
-                { data: "status" },
-            ],
-            columnDefs: [
-                {
-                    className: "control",
-                    orderable: false,
-                    targets: 0,
-                },
-                {
-                    // Label
-                    targets: -1,
-                    render: function (data, type, full, meta) {
-                        var $status_number = full["status"];
-                        var $status = {
-                            1: {
-                                title: "Current",
-                                class: "badge-light-primary",
-                            },
-                            2: {
-                                title: "Professional",
-                                class: " badge-light-success",
-                            },
-                            3: {
-                                title: "Rejected",
-                                class: " badge-light-danger",
-                            },
-                            4: {
-                                title: "Resigned",
-                                class: " badge-light-warning",
-                            },
-                            5: { title: "Applied", class: " badge-light-info" },
-                        };
-                        if (typeof $status[$status_number] === "undefined") {
-                            return data;
-                        }
-                        return (
-                            '<span class="badge rounded-pill ' +
-                            $status[$status_number].class +
-                            '">' +
-                            $status[$status_number].title +
-                            "</span>"
-                        );
-                    },
-                },
-            ],
-            dom: '<"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-            responsive: {
-                details: {
-                    display: $.fn.dataTable.Responsive.display.modal({
-                        header: function (row) {
-                            var data = row.data();
-                            return "Details of " + data["full_name"];
-                        },
-                    }),
-                    type: "column",
-                    renderer: function (api, rowIdx, columns) {
-                        var data = $.map(columns, function (col, i) {
-                            return col.title !== "" // ? Do not show row in modal popup if title is blank (for check box)
-                                ? '<tr data-dt-row="' +
-                                      col.rowIdx +
-                                      '" data-dt-column="' +
-                                      col.columnIndex +
-                                      '">' +
-                                      "<td>" +
-                                      col.title +
-                                      ":" +
-                                      "</td> " +
-                                      "<td>" +
-                                      col.data +
-                                      "</td>" +
-                                      "</tr>"
-                                : "";
-                        }).join("");
-
-                        return data
-                            ? $('<table class="table"/>').append(
-                                  "<tbody>" + data + "</tbody>"
-                              )
-                            : false;
-                    },
-                },
-            },
-            language: {
-                paginate: {
-                    // remove previous & next text from pagination
-                    previous: "&nbsp;",
-                    next: "&nbsp;",
-                },
-            },
         });
     }
 

@@ -27,6 +27,7 @@ use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\StockLimitController;
+use App\Http\Controllers\StockTransfer;
 
 /*
 |--------------------------------------------------------------------------
@@ -112,7 +113,13 @@ Route::group(['middleware' => ['web', 'activity']], function () {
 
             Route::delete("/{id}", [CompanyController::class, "delete"])->name(".delete")->whereNumber("id");
         });
-
+        // Stok prefix
+        Route::prefix("stockTransfer")->name("stockTransfer")->group(function () {
+            // Stok anasayfa
+            Route::get("/", [StockTransfer::class, "index"])->name(".index");
+            Route::get("/list", [StockTransfer::class, "list"])->name(".list");
+            Route::post("/transfer", [StockTransfer::class, "transfer"])->name(".transfer");
+        });
         // Stok prefix
         Route::prefix("sellstock")->name("sellstock")->group(function () {
             // Stok anasayfa
@@ -418,6 +425,6 @@ Route::group(['middleware' => ['web', 'activity']], function () {
 
     // map leaflet
     Route::get('/maps/leaflet', [ChartsController::class, 'maps_leaflet'])->name('map-leaflet');
- 
+
     Route::get('lang/{locale}', [LanguageController::class, 'swap']);
 });
