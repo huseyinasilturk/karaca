@@ -22,17 +22,12 @@
 @endsection
 
 @section('content')
-  <!-- Wizard starts -->
-
-  <!-- Wizard ends -->
 
   <div class="bs-stepper-content pt-2">
       <div class="row">
         <div class="col-9">
             <div class="row">
-
         @foreach ($stocks as $key => $value )
-
                 <div class="col-xl-3 col-sm-4 col-md-3 ">
                     <div class="card ecommerce-card">
                         <div class="item-img text-center">

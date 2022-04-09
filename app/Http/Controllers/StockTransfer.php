@@ -38,10 +38,12 @@ class StockTransfer extends Controller
     public function transfer(Request $request)
     {
 
-        $stock = Stock::find($request->stock_id)->first();
+        $stock = Stock::where("id","=",$request->stock_id)->first();
 
-$kalanStok = $stock->amount - $request->amount;
-        $stock = $stock->update(['amount'=> $kalanStok]);
+
+        $kalanStok = $stock->amount - $request->amount;
+
+        $stock = $stock->where("id","=",$request->stock_id)->update(['amount'=> $kalanStok]);
 
         Stock::create([
             "purchase_price"=> $request->price,
