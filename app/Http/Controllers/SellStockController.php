@@ -39,7 +39,7 @@ class SellStockController extends Controller
         })
         ->groupBy("stocks.product_id")
         ->get();
- 
+
         // return $stocks;
         // return  DB::getQueryLog();
 
