@@ -19,6 +19,15 @@
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/swiper.min.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-swiper.css')) }}">
 
+    <style>
+        .e-cards{
+            min-height:380px;
+        }
+        .e-cols{
+            padding:0 10px;
+        }
+    </style>
+
 @endsection
 
 @section('content')
@@ -28,8 +37,8 @@
         <div class="col-9">
             <div class="row">
         @foreach ($stocks as $key => $value )
-                <div class="col-xl-3 col-sm-4 col-md-3 ">
-                    <div class="card ecommerce-card">
+                <div class="col-xl-3 col-sm-4 col-md-3 e-cols">
+                    <div class="card ecommerce-card e-cards productCard{{$value->id}}">
                         <div class="item-img text-center">
                             <div class="swiper-navigations swiper-container  " style="min-height: 100px">
                                 <div class="swiper-wrapper" >
@@ -84,10 +93,10 @@
         </div>
     </div>
 
-          <div class="col-3">
+          <div class="col-3 p-0">
             <div class="checkout-options">
                 <div class="card">
-                  <div class="card-body">
+                  <div class="card-body p-1">
                       <form id="satisYap">
 
                         <label class="section-label form-label mb-1">Satış Faturası</label>
@@ -107,6 +116,7 @@
                                 <th>Adı</th>
                                 <th>Adet</th>
                                 <th>T.Fiyat</th>
+                                <th>Sil</th>
                             </thead>
                             <tbody id="sellstock">
 
@@ -115,8 +125,8 @@
                         <hr />
                         <ul class="list-unstyled">
                             <li class="price-detail">
-                            <div class="detail-title detail-total">Total</div>
-                            <div class="detail-amt fw-bolder">$574</div>
+                            <div class="detail-title detail-total">Toplam</div>
+                            <div class="detail-amt fw-bolder">0₺</div>
                             </li>
                         </ul>
                         <button type="submit" class="btn btn-primary w-100 btn-next place-order">Sat</button>
@@ -173,27 +183,55 @@ $(function() {
     });
 
     $(".clickSub").on('click', function(e){
-        console.log($(this).closest("card").find("input[name='price']"));
         let stok = parseInt($(this).closest(".card").find(".stok").html());
         let adet = parseInt($(this).closest(".card").find(".adet").val());
+        if(adet==0){
+            alert("Ürün Adedi 0'dan büyük olmalı");
+            return;
+        }
         if (stok<adet) {
             alert("Yetersiz Stok");
             return;
         }
         let kalanStok =stok-adet;
         $(this).closest(".card").find(".stok").html(kalanStok);
-        const tableRow = `
-            <tr productId="${$(this).attr("id")}"">
-                <td>
-                    ${$(this).attr("name")}
-                </td>
-                <td>
-                    ${adet}
-                </td>
-                <td>
-                    ${parseInt($(this).closest(".card").find("input[name='price']").val())*adet}
-                </td>
-            </tr>
+
+        productidNow=$(this).attr("id");
+        productPriceNow=parseInt($(this).closest(".card").find("input[name='price']").val());
+        productNumberControl=$('#sellstock tr[productID='+productidNow+']').length;
+        if(productNumberControl>0){
+            productNumber=parseInt($('#sellstock tr[productID='+productidNow+']').find(".productNumber").text());
+            newProductNumber=(productNumber+adet);
+            newProductPrice=(productPriceNow*newProductNumber);
+            $('#sellstock tr[productID='+productidNow+']').find(".productNumber").text(newProductNumber);
+            $('#sellstock tr[productID='+productidNow+']').find(".productPrice").text(newProductPrice);
+            let test = {
+                adet:newProductNumber,
+                id:productidNow,
+                price:newProductPrice
+            };
+            let value = JSON.stringify(test);
+            productClass=".productList"+productidNow;
+            $(productClass).val(value);
+        } else {
+
+            const tableRow = `
+                <tr productId="${$(this).attr("id")}">
+                    <td class="productName">
+                        ${$(this).attr("name")}
+                    </td>
+                    <td class="productNumber">
+                        ${adet}
+                    </td>
+                    <td class="productPrice">
+                        ${parseInt($(this).closest(".card").find("input[name='price']").val())*adet}
+                    </td>
+                    <td class="productAction">
+                        <button class="btn bg-transparent p-0" onclick="productDelete(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash font-small-4 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                    </td>
+                </tr>
             `;
             let test = {
                 adet:adet,
@@ -201,9 +239,35 @@ $(function() {
                 price:parseInt($(this).closest(".card").find("input[name='price']").val())
             };
             let value = JSON.stringify(test);
-            $("#sellstock").closest("form").append($(`<input name='product[]' value='${value}'/>`))
+            $("#sellstock").closest("form").append($(`<input type="hidden" name='product[]' class="productList${$(this).attr("id")}" value='${value}'/>`))
             $("#sellstock").append(tableRow);
+        }
+        productPriceSum();
     })
+
+    function productPriceSum(ths){
+        priceTotal=0;
+        $('#sellstock tr').each(function(a,b){
+            productPrice=parseInt($(b).find(".productPrice").text());
+            priceTotal+=productPrice;
+        })
+        $(".detail-amt").html(priceTotal+"₺");
+    }
+
+    function productDelete(ths){
+        productid=$(ths).closest("tr").attr("productid");
+        productClass=".productList"+productid;
+        productValue=$(productClass).val();
+        const productValueObj = JSON.parse(productValue);
+        productNumber=productValueObj.adet;
+        productListClass=".productCard"+productid;
+        productListStockNumber=parseInt($(productListClass).find(".stok").text());
+        newProductNumberSum=(productNumber+productListStockNumber);
+        $(productListClass).find(".stok").text(newProductNumberSum);
+        $(ths).closest("tr").remove();
+        $(productClass).remove();
+        productPriceSum();
+    }
 
  </script>
 
