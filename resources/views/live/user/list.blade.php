@@ -53,11 +53,11 @@
                         <form id="add-new-user" class="add-new-user modal-content pt-0" action="{{ route('user.store') }}"
                             method="POST">
                             @csrf
-                            @method("put")
+                            @method('put')
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close">×</button>
                             <div class="modal-header mb-1">
-                                <h5 class="modal-title" id="exampleModalLabel">Yeni personel kaydet.</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Personel İşlemleri</h5>
                             </div>
                             <div class="error">
 
@@ -172,18 +172,37 @@
                 "add-new-user"))).then((res) => {
                 console.log(res);
             }).catch((err) => {
-                let errMsj = `
-        <div class="alert alert-danger">
-             `;
-                Object.values(err.response.data.errors).map((val, key) => {
-                    errMsj += `<ul>`
-                    Object.values(val).map((val2, key2) => {
+                let errMsjResponse = err.response.data.message;
+                let searchWagePrice = errMsjResponse.search("'wage_price'");
+                let searchEmailUnique = errMsjResponse.search("users_email_unique");
+                console.log("searchWagePrice");
+                console.log(searchWagePrice);
+                console.log("searchEmailUnique");
+                console.log(searchEmailUnique);
+                if (searchEmailUnique != '-1') {
+                    toastr["warning"]("Bu email adresi ile daha önce kayıt oluşturulmuş.", "Hata!")
+                    let errMsj =
+                        `<div class="alert alert-danger"><ul><li>Bu email adresi ile daha önce kayıt oluşturulmuş.</li></ul></div>`;
+                    document.getElementsByClassName("error")[0].innerHTML = errMsj;
+                } else if (searchWagePrice != '-1') {
+                    toastr["warning"]("Personelin maaş bilgisini doldurunuz.", "Hata!")
+                    let errMsj =
+                        `<div class="alert alert-danger"><ul><li>Personelin maaş bilgisini doldurunuz.</li></ul></div>`;
+                    document.getElementsByClassName("error")[0].innerHTML = errMsj;
+                } else {
+                    let errMsj = `<div class="alert alert-danger">`;
+                    Object.values(err.response.data.errors).map((val, key) => {
+                        errMsj += `<ul>`
                         errMsj += `<li>` + val + `</li>`;
+                        toastr["warning"](val, "Hata!")
+                        // Object.values(val).map((val2, key2) => {
+                        // errMsj += `<li>` + val + `</li>`;
+                        // })
+                        errMsj += `</ul>`;
                     })
-                    errMsj += `</ul>`;
-                })
-                errMsj += `</div> `;
-                document.getElementsByClassName("error")[0].innerHTML = errMsj;
+                    errMsj += `</div> `;
+                    document.getElementsByClassName("error")[0].innerHTML = errMsj;
+                }
             })
         }
 
@@ -394,23 +413,16 @@
                                     }) +
                                     "</a>" +
                                     '<div class="dropdown-menu dropdown-menu-end">' +
-                                    `<a onclick="fun_userDetail(this)"   user_id="${full["user_id"]}" class="dropdown-item">` +
-                                    feather.icons["file-text"].toSvg({
-                                        class: "font-small-4 me-50",
-                                    }) +
-                                    "Details</a>" +
-                                    `<a  user_id="${full["user_id"]}" class="dropdown-item delete-record">` +
-                                    feather.icons["trash-2"].toSvg({
-                                        class: "font-small-4 me-50",
-                                    }) +
-                                    `Sil</a><a onclick="fun_userEdit(this)"  class="dropdown-item"   user_id="${full["user_id"]}" class="item-edit">` +
+                                    `<a onclick="fun_userEdit(this)"  class="dropdown-item"   user_id="${full["user_id"]}" class="item-edit">` +
                                     feather.icons["edit"].toSvg({
                                         class: "font-small-4",
-                                    }) + `
-                            Düzenle</a>
-                            </div>
-                            </div>`
-
+                                    }) + ` Düzenle</a>` +
+                                    `<a  user_id="${full["user_id"]}" class="dropdown-item delete-record">
+                                            ` + feather.icons["trash-2"].toSvg({
+                                        class: "font-small-4 me-50",
+                                    }) + `Sil</a>` +
+                                    `</div>
+                                    </div>`
                                 );
                             },
                         },

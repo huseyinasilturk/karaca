@@ -21,7 +21,7 @@ class UserController extends Controller
 
     /**
      * e.
-     Personelleri listelemek için kıllılan sayfa
+     * Personelleri listelemek için kıllılan sayfa
      * @return \Illuminate\Http\Response
      */
     public function list()
