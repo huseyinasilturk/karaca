@@ -17,7 +17,7 @@ class StockTransfer extends Controller
     public function index()
     {
         $companies = Company::all();
-        return view("live.stockTransfer.index",compact("companies"));
+        return view("live.stockTransfer.index", compact("companies"));
     }
 
     /**
@@ -27,88 +27,34 @@ class StockTransfer extends Controller
      */
     public function list()
     {
-        $test = Stock::select(["c.name AS company_name", "p.name AS product_name","stocks.amount","stocks.purchase_price","stocks.id","stocks.unit_type","stocks.product_id",])
-        ->leftJoin("companies as c","c.id" ,"stocks.company_id")
-        ->leftJoin("products as p" , "p.id" , "stocks.product_id")
-        ->where("amount", "!=" ,0)->get();
+        $test = Stock::select(["c.name AS company_name", "p.name AS product_name", "stocks.amount", "stocks.purchase_price", "stocks.id", "stocks.unit_type", "stocks.product_id",])
+            ->leftJoin("companies as c", "c.id", "stocks.company_id")
+            ->leftJoin("products as p", "p.id", "stocks.product_id")
+            ->where("amount", "!=", 0)->get();
 
-        return  response()->json(["data"=>($test)]);
+        return  response()->json(["data" => ($test)]);
     }
 
     public function transfer(Request $request)
     {
-
-        $stock = Stock::where("id","=",$request->stock_id)->first();
-
+        $stock = Stock::where("id", "=", $request->stock_id)->first();
 
         $kalanStok = $stock->amount - $request->amount;
 
-        $stock = $stock->where("id","=",$request->stock_id)->update(['amount'=> $kalanStok]);
+        $stock = $stock->where("id", "=", $request->stock_id)->update(['amount' => $kalanStok]);
 
-        Stock::create([
-            "purchase_price"=> $request->price,
-            "unit_type"=> $request->unit_type,
-            "product_id"=> $request->product_id,
-            "company_id"=> $request->company_id,
-            "amount"=> $request->amount
+        $createStock = Stock::create([
+            "purchase_price" => $request->price,
+            "unit_type" => $request->unit_type,
+            "product_id" => $request->product_id,
+            "company_id" => $request->company_id,
+            "amount" => $request->amount
         ]);
 
-      return redirect()->back();
+        if (!$createStock) {
+            return response()->json(["message" => "Stok oluştururken bir hata oluştu"], 404);
+        }
 
-    }
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return response()->json(["message" => "Stok başarıyla güncellendi"], 201);
     }
 }

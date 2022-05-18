@@ -53,7 +53,7 @@
                         <form id="add-new-user" class="add-new-user modal-content pt-0" action="{{ route('user.store') }}"
                             method="POST">
                             @csrf
-                            @method("put")
+                            @method('put')
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close">×</button>
                             <div class="modal-header mb-1">
@@ -351,6 +351,10 @@
                             targets: -2,
                             render: function(data, type, full, meta) {
                                 var $status_number = full["role_name"];
+                                // console.log(data);
+                                if (data === null) {
+                                    data = "Belirtilmedi"
+                                }
                                 var $status = {
                                     admin: {
                                         title: "Current",

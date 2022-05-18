@@ -30,29 +30,7 @@
                         </button>
                         <div class="search-results">16285 results found</div>
                     </div>
-                    <div class="view-options d-flex">
-                        <div class="btn-group dropdown-sort">
-                            <button type="button" class="btn btn-outline-primary dropdown-toggle me-1"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="active-sorting">Featured</span>
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Featured</a>
-                                <a class="dropdown-item" href="#">Lowest</a>
-                                <a class="dropdown-item" href="#">Highest</a>
-                            </div>
-                        </div>
-                        <div class="btn-group" role="group">
-                            <input type="radio" class="btn-check" name="radio_options" id="radio_option1"
-                                autocomplete="off" checked />
-                            <label class="btn btn-icon btn-outline-primary view-btn grid-view-btn" for="radio_option1"><i
-                                    data-feather="grid" class="font-medium-3"></i></label>
-                            <input type="radio" class="btn-check" name="radio_options" id="radio_option2"
-                                autocomplete="off" />
-                            <label class="btn btn-icon btn-outline-primary view-btn list-view-btn" for="radio_option2"><i
-                                    data-feather="list" class="font-medium-3"></i></label>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>

@@ -11,9 +11,9 @@ use App\Models\Company;
 use App\Models\Wage;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use DB;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -50,13 +50,15 @@ class UserController extends Controller
 
     public function userList()
     {
-        $user = User::join("information", "information.id", "=", "users.information_id")->join("model_has_roles as mhr", "mhr.model_id", "=", "users.id")
-            ->join("roles as r", "r.id", "=", "mhr.role_id")
-            ->join("wages", "wages.user_id", "users.id")->where("wages.status", "=", "1")
+        DB::enableQueryLog();
+        $user = User::join("information", "information.id", "=", "users.information_id")->leftJoin("model_has_roles as mhr", "mhr.model_id", "=", "users.id")
+            ->leftJoin("roles as r", "r.id", "=", "mhr.role_id")
+            ->leftJoin("wages", "wages.user_id", "users.id")->where("wages.status", "=", "1")->orWhere("wages.status", "=", NULL)
             ->select([DB::raw("CONCAT(information.name,' ',information.surname) as name_surname"), "wages.wage_price as wage", "users.*", "information.*", "users.id as user_id", "r.title as role_title", "r.name as role_name"])->get();
 
+        $query = DB::getQueryLog();
 
-        return  response()->json(["data" => $user], 202);
+        return  response()->json(["data" => $user, "query" => $query], 202);
     }
 
     /**
@@ -100,7 +102,7 @@ class UserController extends Controller
 
         $user_information = array(["name" => $userName, "user_name" => $request->user_name, "password" => $password]);
 
-        Mail::to($request->only("email"))->send(new Subscribe($user_information));
+        // Mail::to($request->only("email"))->send(new Subscribe($user_information));
 
 
         $assingRole = $user->assignRole($request->user_role);
