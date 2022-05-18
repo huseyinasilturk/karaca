@@ -49,7 +49,7 @@
         </div>
     @else
         <nav
-            class="header-navbar navbar navbar-expand-lg align-items-center {{ $configData['navbarClass'] }} navbar-light navbar-shadow {{ $configData['navbarColor'] }} {{ $configData['layoutWidth'] === 'boxed' && $configData['verticalMenuNavbarType'] === 'navbar-floating'? 'container-xxl': '' }}">
+            class="header-navbar navbar navbar-expand-lg align-items-center {{ $configData['navbarClass'] }} navbar-light navbar-shadow {{ $configData['navbarColor'] }} {{ $configData['layoutWidth'] === 'boxed' && $configData['verticalMenuNavbarType'] === 'navbar-floating' ? 'container-xxl' : '' }}">
 @endif
 <div class="navbar-container d-flex content">
     <div class="bookmark-wrapper d-flex align-items-center">
@@ -88,7 +88,7 @@
         </ul>
     </div>
     <ul class="nav navbar-nav align-items-center ms-auto">
-        <li class="nav-item dropdown dropdown-language">
+        <li class="nav-item dropdown dropdown-language d-none">
             <a class="nav-link dropdown-toggle" id="dropdown-flag" href="#" data-bs-toggle="dropdown"
                 aria-haspopup="true">
                 <i class="flag-icon flag-icon-us"></i>
@@ -111,7 +111,7 @@
         </li>
         <li class="nav-item d-none d-lg-block"><a class="nav-link nav-link-style"><i class="ficon"
                     data-feather="{{ $configData['theme'] === 'dark' ? 'sun' : 'moon' }}"></i></a></li>
-        <li class="nav-item dropdown dropdown-cart me-25">
+        <li class="nav-item dropdown dropdown-cart me-25 d-none">
             <a class="nav-link" href="javascript:void(0);" data-bs-toggle="dropdown">
                 <i class="ficon" data-feather="shopping-cart"></i>
                 <span class="badge rounded-pill bg-primary badge-up cart-item-count">6</span>
@@ -244,8 +244,8 @@
                         <div class="list-item d-flex align-items-start">
                             <div class="me-1">
                                 <div class="avatar">
-                                    <img src="{{ asset('images/portrait/small/avatar-s-15.jpg') }}" alt="avatar"
-                                        width="32" height="32">
+                                    <img src="{{ asset('images/avatars/man.png') }}" alt="avatar" width="32"
+                                        height="32">
                                 </div>
                             </div>
                             <div class="list-item-body flex-grow-1">
@@ -357,20 +357,17 @@
                 </div>
                 <span class="avatar">
                     <img class="round"
-                        src="{{ Auth::user() ? Auth::user()->profile_photo_url : asset('images/portrait/small/avatar-s-11.jpg') }}"
+                        src="{{ !empty(Auth::user()->profile_photo_url) ? Auth::user()->profile_photo_url : asset('images/avatars/man.png') }}"
                         alt="avatar" height="40" width="40">
                     <span class="avatar-status-online"></span>
                 </span>
             </a>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">
-                <h6 class="dropdown-header">Manage Profile</h6>
+                <h6 class="dropdown-header">Profili Yönet</h6>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item"
                     href="{{ Route::has('profile.show') ? route('profile.show') : 'javascript:void(0)' }}">
-                    <i class="me-50" data-feather="user"></i> Profile
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="me-50" data-feather="settings"></i> Settings
+                    <i class="me-50" data-feather="user"></i> Profil
                 </a>
 
                 @if (Auth::check())
