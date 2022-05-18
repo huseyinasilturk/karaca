@@ -65,8 +65,56 @@
                 class="btn btn-gradient-primary">
                 Diğer Gelir Ekle
             </button>
+
+
+
+            <div class="row">
+                <div class="col">
+
+
+                      <div class="row m-2">
+                          <div class="col-4">
+                              <div class="row">
+                                <label for="colFormLabelSm" class="col-sm-4 col-form-label-lg">Müşteriler</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select form-select-lg" name="customer" onchange="filterIncome()">
+                                        <option value="-2">Seçiniz</option>
+                                        @foreach ($income->unique("customer_id") as $val )
+                                            <option value="{{$val["customer_id"] == null ? "-1" : $val["customer_id"]}}">{{($val["customer_id"] == null ? "Anonim" : $val["customer_name"])}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="col-4">
+                            <div class="row">
+                              <label for="colFormLabelSm" class="col-sm-4 col-form-label-lg">Ay</label>
+                              <div class="col-sm-8">
+                                <input type="month" class="form-control" name="date" min="2020-03" onchange="filterIncome()" >
+                              </div>
+                          </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                              <label for="colFormLabelSm" class="col-sm-4 col-form-label-lg">Ürün</label>
+                              <div class="col-sm-8">
+                                  <select class="form-select form-select-lg" name="product" onchange="filterIncome()">
+                                    <option value="-2">Seçiniz</option>
+                                      @foreach ($income->unique("product_id") as $val )
+                                          <option value="{{$val["product_id"]}}">{{($val["product_id"] == -1 ? "Diğer" : $val["name"])}}</option>
+                                      @endforeach
+                                  </select>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                </div>
+            </div>
+
             <div class="card-datatable table-responsive p-0">
-                <table class="datatables-basic table">
+                <table class="datatables-basic table" id="income_table">
                     <thead>
                         <tr>
                             <th>Detay</th>
@@ -78,6 +126,7 @@
                         </tr>
                     </thead>
                     <tbody>
+
                         @foreach ($income as  $value)
                         <tr>
                             <td>{{$value->detail}}</td>
@@ -85,9 +134,10 @@
                             <td>{{$value->price}}</td>
                             <td>{{$value->amount}}</td>
                             <td>{{$value->amount*$value->price}}</td>
-                            <td>{{($value->costumer_id == -1 ? "---" : $value->costumer_id)}}"Henüz müşteri tablosu yok"</td>
+                            <td>{{($value->costumer_id == -1 ? "---" : $value->customer_name)}}</td>
                         </tr>
                         @endforeach
+
                     </tbody>
                 </table>
             </div>
@@ -173,7 +223,151 @@
 <script src="{{ asset(mix('js/scripts/cards/card-analytics.js')) }}"></script>
         <script>
 
+cardRendered();
 
+function cardRendered() {
+    $("#revenue-report-chart").children().eq(0).remove();
+    const rapor = [];
+
+const aylar_value = [
+    "Ocak",
+    "Şubat",
+    "Mart",
+    "Nisan",
+    "Mayıs",
+    "Haziran",
+    "Temmuz",
+    "Ağustos",
+    "Eylül",
+    "Ekim",
+    "Kasım",
+    "Aralık",
+];
+
+let product= $("select[name='product']").val();
+let date= $("input[name='date']").val();
+let customer = $("select[name='customer']").val();
+
+let aylar_vEkran = [];
+let gelir = [];
+
+axios.post(route("income.selectee"),{product,customer,date}).then((res) => {
+     aylar_vEkran = [];
+    gelir = [];
+    res.data.rapor.map((val) => {
+        aylar_vEkran.push(aylar_value[val["mouth"]]);
+        gelir.push(val["totalSum"]);
+    });
+}).then(()=>{
+    test(gelir,aylar_vEkran);
+});
+
+function test(gelir,aylar_vEkran) {
+
+    "use strict";
+    var $textMutedColor = "#b9b9c3";
+    var revenueReportChart;
+
+    var $revenueReportChart = document.querySelector("#revenue-report-chart");
+
+    var revenueReportChartOptions;
+    revenueReportChartOptions = {
+        chart: {
+            height: 230,
+            stacked: true,
+            type: "bar",
+            toolbar: { show: false },
+        },
+        plotOptions: {
+            bar: {
+                columnWidth: "15px",
+            },
+            distributed: true,
+        },
+        colors: [window.colors.solid.primary, window.colors.solid.warning],
+        series: [
+            {
+                name: "Gelir",
+                data: gelir,
+            },
+        ],
+        dataLabels: {
+            enabled: false,
+        },
+        legend: {
+            show: false,
+        },
+        grid: {
+            yaxis: {
+                lines: { show: false },
+            },
+        },
+        xaxis: {
+            categories: aylar_vEkran,
+            labels: {
+                style: {
+                    colors: $textMutedColor,
+                    fontSize: "0.86rem",
+                },
+            },
+            axisTicks: {
+                show: false,
+            },
+            axisBorder: {
+                show: false,
+            },
+        },
+        yaxis: {
+            labels: {
+                style: {
+                    colors: $textMutedColor,
+                    fontSize: "0.86rem",
+                },
+            },
+        },
+    };
+    revenueReportChart = new ApexCharts(
+        $revenueReportChart,
+        revenueReportChartOptions
+    );
+    revenueReportChart.render();
+}
+
+
+}
+
+function filterIncome(params) {
+
+    let product= $("select[name='product']").val();
+    let date= $("input[name='date']").val();
+    let customer = $("select[name='customer']").val();
+
+    cardRendered();
+
+    axios.post(route("income.filter"),{product,customer,date}).then((res)=>{
+        console.log(res);
+    $("#income_table").find("tbody").html("");
+
+    res.data.income.map((value,key)=>{
+        $("#income_table").find("tbody").append(
+
+`
+                        <tr>
+                            <td>${value.detail}</td>
+                            <td> ${(value.name==null ? "---" : value.name)} </td>
+                            <td>${value.price}</td>
+                            <td>${value.amount}</td>
+                            <td>${value.amount*value.price}</td>
+                            <td>${(value.customer_name == null ? "---" : value.customer_name)}</td>
+                        </tr>
+`
+        )
+
+
+    })
+
+    });
+}
             $("#insertOrUpdate").submit((e)=>{
                 e.preventDefault();
                 axios.post(route("income.store"),new FormData(e.target)).then((res)=>{
