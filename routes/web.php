@@ -149,7 +149,7 @@ Route::group(['middleware' => ['web', 'activity']], function () {
             Route::get("/{id}", [CustomerController::class, "edit"])->name(".edit");
 
             Route::post("/", [CustomerController::class, "store"])->name(".store");
-            Route::post("/{id}", [CustomerController::class, "update"])->name(".update");
+            Route::post("/{id}", [CustomerController::class, "update"])->name(".update")->whereNumber("id");
             Route::post("/filter", [CustomerController::class, "filter"])->name(".filter");
 
             Route::delete("/{id}", [CustomerController::class, "delete"])->name(".delete");
@@ -159,10 +159,11 @@ Route::group(['middleware' => ['web', 'activity']], function () {
         Route::prefix("stock-limit")->name("stockLimit")->group(function () {
             Route::get("/add", [StockLimitController::class, "add"])->name(".add");
             Route::get("/", [StockLimitController::class, "index"])->name(".index");
+            Route::get("/{id}", [StockLimitController::class, "edit"])->name(".edit")->whereNumber("id");
             Route::get("/limits", [StockLimitController::class, "limits"])->name(".limits");
 
+            Route::post("/filter", [StockLimitController::class, "filter"])->name(".filter");
             Route::post("/", [StockLimitController::class, "store"])->name(".store");
-
             Route::delete("/{id}", [StockLimitController::class, "delete"])->name(".delete");
         });
 

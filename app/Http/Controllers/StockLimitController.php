@@ -6,6 +6,7 @@ use App\Http\Requests\StockLimitRequest;
 use App\Models\Company;
 use App\Models\Product;
 use App\Models\StockLimit;
+use Illuminate\Http\Request;
 
 class StockLimitController extends Controller
 {
@@ -27,13 +28,13 @@ class StockLimitController extends Controller
 
         $products = Product::with("productStock")->get();
 
-        return view("live.stockLimit.add", compact("breadcrumbs", "products","Company"));
+        return view("live.stockLimit.add", compact("breadcrumbs", "products", "Company"));
     }
 
     public function store(StockLimitRequest $request)
     {
         $stockLimitControl = StockLimit::where("company_id", $request->company_id)->where("product_id", $request->product_id)->first();
-        if(!empty($stockLimitControl)){
+        if (!empty($stockLimitControl)) {
             return response()->json(["message" => "Bu ürün seçili firmaya daha önce stok eklemesi yapılmış lütfen oradan devam ediniz. "], 404);
         } else {
             $createLimit = StockLimit::create($request->validated());
@@ -44,8 +45,6 @@ class StockLimitController extends Controller
 
             return response()->json(["message" => "Limit başarıyla oluşturuldu"], 201);
         }
-
-
     }
 
     public function edit($id)
@@ -65,7 +64,7 @@ class StockLimitController extends Controller
     public function update(StockLimitRequest $request, $id)
     {
         $stockLimitControl = StockLimit::whereNotIn('id', [$id])->where("company_id", $request->company_id)->where("product_id", $request->product_id)->first();
-        if(!empty($stockLimitControl)){
+        if (!empty($stockLimitControl)) {
             return response()->json(["message" => "Bu ürün seçili firmaya daha önce stok eklemesi yapılmış lütfen oradan devam ediniz. "], 404);
         }
         $updateLimit = StockLimit::find($id)->update($request->validated());
@@ -79,7 +78,7 @@ class StockLimitController extends Controller
 
     public function limits()
     {
-        $limits = StockLimit::with("product","company")->get();
+        $limits = StockLimit::with("product", "company")->get();
         return ($limits);
 
         return response()->json($limits, 200);
@@ -93,5 +92,20 @@ class StockLimitController extends Controller
             return response()->json(["message" => "Limit silinirken hata oluştu"], 404);
         }
         return response()->json(["message" => "Limit başarıyla silindi"], 200);
+    }
+
+    public function filter(Request $request)
+    {
+        $stockLimits = StockLimit::query();
+
+        if ($request->filled("product")) {
+            $stockLimits = $stockLimits->whereHas('product', function ($query) use ($request) {
+                $query->where('name', 'LIKE', '%' . $request->product . '%');
+            });
+        }
+
+        $stockLimits = $stockLimits->get()->load("product", "company");
+
+        return response()->json($stockLimits, 200);
     }
 }

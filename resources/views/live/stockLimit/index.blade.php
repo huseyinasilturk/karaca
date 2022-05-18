@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'İzinler')
+@section('title', 'Limitler')
 
 @section('vendor-style')
     <!-- Vendor css files -->
@@ -167,7 +167,7 @@
 
             $.ajax({
                 method: "POST",
-                url: route('customer.filter'),
+                url: route('stockLimit.filter'),
                 data: $(e.target).serialize(),
                 dataType: "json",
                 success: (res, textStatus, xhr) => {
@@ -256,7 +256,7 @@
         function clearFilters() {
             $.ajax({
                 method: "GET",
-                url: route('customer.customers'),
+                url: route('stockLimit.limits'),
                 dataType: "json",
                 success: res => {
                     $("#customer").val("-1")

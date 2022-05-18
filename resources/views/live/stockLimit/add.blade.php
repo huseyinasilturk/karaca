@@ -105,16 +105,32 @@
                         $(e.target).trigger("reset");
                     }
                 },
-                error: err => {
-                    toastr["error"](
-                        err.responseJSON.message,
-                        "Hata!", {
-                            closeButton: true,
-                            tapToDismiss: true,
-                            timeOut: 3000,
-                            progressBar: true
-                        }
-                    );
+                error: (err, textStatus, xhr) => {
+                    console.log(err.status);
+                    if (err.status === 404) {
+                        toastr["error"](
+                            err.responseJSON.message,
+                            "Hata!", {
+                                closeButton: true,
+                                tapToDismiss: true,
+                                timeOut: 3000,
+                                progressBar: true
+                            }
+                        );
+                    }
+
+                    if (err.status === 422) {
+                        toastr["error"](
+                            Object.values(err.responseJSON.errors)[0][0],
+                            "Hata!", {
+                                closeButton: true,
+                                tapToDismiss: true,
+                                timeOut: 3000,
+                                progressBar: true
+                            }
+                        );
+                    }
+
                 }
             })
         }
