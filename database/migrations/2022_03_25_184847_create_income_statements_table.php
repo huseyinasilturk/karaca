@@ -19,7 +19,8 @@ class CreateIncomeStatementsTable extends Migration
             $table->integer("price");
             $table->integer("amount");
             $table->string("detail");
-            $table->integer("costumer_id");
+            $table->integer("company_id");
+            $table->integer("customer_id");
             $table->timestamps();
         });
     }
