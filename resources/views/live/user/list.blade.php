@@ -32,6 +32,8 @@
         <!-- list and filter start -->
         <div class="card">
             <div class="card-body">
+
+
                 <div class="card-datatable table-responsive p-0">
                     <table class="datatables-basic table">
                         <thead>
@@ -119,6 +121,55 @@
                             </div>
                         </form>
                     </div>
+                </div>
+
+                <div class="modal fade" id="wageDetailModal" tabindex="-1" aria-labelledby="wageDetailModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="wageDetailModalLabel">Personel Maaş Bilgisi</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tarih</th>
+                                                    <th>İşlem</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="py-1">2022-05-00</td>
+                                                    <td class="py-1">
+                                                        <button class="btn btn-success btn-sm disabled">Maaş
+                                                            Yatırıldı</button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="py-1">2022-05-00</td>
+                                                    <td class="py-1">
+                                                        <button class="btn btn-primary btn-sm">Maaş Yatır</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="personal-wage-detail">
+                    <p>hey</p>
                 </div>
             </div>
             <!-- Modal to add new user Ends-->
@@ -213,7 +264,7 @@
                 console.log(res);
             }).catch((err) => {
                 let errMsj = `
-        <div class="alert alert-danger">
+                <div class="alert alert-danger">
              `;
                 Object.values(err.response.data.errors).map((val, key) => {
                     errMsj += `<ul>`
@@ -425,6 +476,10 @@
                                             ` + feather.icons["trash-2"].toSvg({
                                         class: "font-small-4 me-50",
                                     }) + `Sil</a>` +
+                                    `<a type="button" user_id="${full["user_id"]}" class="dropdown-item " data-bs-toggle="modal" data-bs-target="#wageDetailModal" onclick="wageDetailModal(${full["user_id"]})">
+                                            ` + feather.icons["bar-chart-2"].toSvg({
+                                        class: "font-small-4 me-50",
+                                    }) + `Maaş Bilgisi</a>` +
                                     `</div>
                                     </div>`
                                 );
@@ -676,6 +731,36 @@
             }));
             $('#modals-slide-in').modal('toggle');
 
+        }
+
+        function wageDetailModal(id) {
+            axios.get(route("user.wageDetail", id)).then(res => {
+                $("#wageDetailModal").find("tbody").html("");
+                res.data.dates.forEach((date) => {
+                    const tableRow = $(`<tr>
+                                            <td class="py-1">${date.date}</td>
+                                            <td class="py-1">
+                                                <button onclick="payWage(this, ${id}, ${res.data.user.wage.wage_price}, ${date.paid}, '${date.date + "-00"}')" class="btn ${date.paid ? 'btn-success' : 'btn-primary'}  btn-sm" ${date.paid ? 'disabled' : ''} >${date.paid ? 'Maaş Yatırıldı' : 'Maaşı Öde'}</button>
+                                            </td>
+                                        </tr>`);
+                    $("#wageDetailModal").find("tbody").append(tableRow);
+                })
+            })
+        }
+
+        function payWage(el, id, wage, isPaid, date) {
+            if (!isPaid) {
+                axios.post(route("user.payWage", id), {
+                    wage,
+                    date
+                }).then(res => {
+                    console.log(res)
+                    if (res.status === 201) {
+                        $(el).removeClass("btn-primary").addClass("btn-success").attr("disabled", "true").text(
+                            "Maaş Yatırıldı");
+                    }
+                })
+            }
         }
     </script>
     <script src="{{ asset(mix('js/scripts/forms/pickers/form-pickers.js')) }}"></script>

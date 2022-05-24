@@ -50,4 +50,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Information::class, "id", "information_id");
     }
+
+    public function wage()
+    {
+        return $this->belongsTo(Wage::class, "id", "user_id");
+    }
 }
