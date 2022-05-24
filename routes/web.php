@@ -133,6 +133,7 @@ Route::group(['middleware' => ['web', 'activity']], function () {
             Route::post("/select", [IncomeController::class, "select"])->name(".selectee");
             Route::post("/filter", [IncomeController::class, "filter"])->name(".filter");
             Route::post("/store", [IncomeController::class, "store"])->name(".store");
+            Route::get("/destroy/{id}", [IncomeController::class, "destroy"])->name(".destroy");
         });
 
         // Stok prefix
