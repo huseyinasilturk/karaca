@@ -23,6 +23,7 @@ use App\Http\Controllers\SellStockController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DayOffController;
+use App\Http\Controllers\ExpenseStatementsController;
 use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReminderController;
@@ -129,6 +130,16 @@ Route::group(['middleware' => ['web', 'activity']], function () {
             Route::post("/sell", [SellStockController::class, "store"])->name(".store");
         });
         // income prefix
+        Route::prefix("expenseStatements")->name("expenseStatements")->group(function () {
+            // Stok anasayfa
+            Route::get("/", [ExpenseStatementsController::class, "index"])->name(".index");
+            Route::post("/select", [ExpenseStatementsController::class, "select"])->name(".selectee");
+            Route::post("/filter", [ExpenseStatementsController::class, "filter"])->name(".filter");
+            Route::post("/store", [ExpenseStatementsController::class, "store"])->name(".store");
+            Route::get("/destroy/{id}", [ExpenseStatementsController::class, "destroy"])->name(".destroy");
+        });
+
+        // income prefix
         Route::prefix("income")->name("income")->group(function () {
             // Stok anasayfa
             Route::get("/", [IncomeController::class, "index"])->name(".index");
@@ -137,7 +148,6 @@ Route::group(['middleware' => ['web', 'activity']], function () {
             Route::post("/store", [IncomeController::class, "store"])->name(".store");
             Route::get("/destroy/{id}", [IncomeController::class, "destroy"])->name(".destroy");
         });
-
         // Stok prefix
         Route::prefix("stock")->name("stock")->group(function () {
             Route::get("/", [StockController::class, "index"])->name(".index");
