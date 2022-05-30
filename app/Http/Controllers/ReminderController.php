@@ -37,13 +37,9 @@ class ReminderController extends Controller
      */
     public function store(Request $request)
     {
-        $reminder = Reminder::create([
-            'title' => $request->title,
-            'detail' => $request->detail,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date
-        ]);
-        if($reminder){
+        $data = $request->only("title", "detail", "date", "status");
+        $reminder = Reminder::create($data);
+        if ($reminder) {
             return response()->json([
                 'status' => 201,
                 'message' => __('Hatırlatıcı başarıyla eklendi.'),
@@ -85,18 +81,19 @@ class ReminderController extends Controller
     {
         if (!empty($request->id)) {
             $reminder = Reminder::find($request->id);
-            $reminder->title = $request->title;
-            $reminder->detail = $request->detail;
-            $reminder->start_date = $request->start_date;
-            $reminder->end_date = $request->end_date;
-            $reminder->save();
-            if($reminder){
-                return response()->json([
-                    'status' => 201,
-                    'message' => __('Hatırlatıcı başarıyla güncellendi.'),
-                    'id' => $reminder->id
-                ]);
+            if (!$reminder) {
+                return response()->json(["message" => "Hatırlatıcı bulunamadı"], 404);
             }
+            $data = $request->only("title", "detail", "date", "status");
+            $update = $reminder->update($data);
+            if (!$update) {
+                return response()->json(["message" => "Hatırlatıcı güncellenirken hata oluştu"], 404);
+            }
+            return response()->json([
+                'status' => 201,
+                'message' => 'Hatırlatıcı başarıyla güncellendi.',
+                'id' => $reminder->id
+            ]);
         }
     }
 
@@ -112,18 +109,18 @@ class ReminderController extends Controller
             $reminder = Reminder::find($request->id);
             if ($reminder) {
                 $reminder->delete();
-                return response()->json(['message' => 'Remove Successful :)', 'status' => 201]);
+                return response()->json(['message' => 'Silme başarılı :)', 'status' => 201]);
             } else {
-                return response()->json(['hata' => 'Remove Failed :/', 'status' => 405]);
+                return response()->json(['hata' => 'Silme işleminde bir hata oluştu :/', 'status' => 405]);
             }
         } else {
-            return response()->json(['hata' => 'Remove Failed :/', 'status' => 400]);
+            return response()->json(['hata' => 'Silme işleminde bir hata oluştu :/', 'status' => 400]);
         }
     }
 
-    function events(Request $request)
+    function events()
     {
-        $Reminder = Reminder::select('id','title','start_date as start','end_date as end','detail')->get();
-        return response()->json(['message' => 'Successful :)', 'events'=>$Reminder, 'status' => 201]);
+        $Reminder = Reminder::all();
+        return response()->json(['message' => 'Successful :)', 'events' => $Reminder, 'status' => 201]);
     }
 }
