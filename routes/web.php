@@ -135,6 +135,7 @@ Route::group(['middleware' => ['web', 'activity']], function () {
 
             Route::get("/", [ReportingController::class, "index"])->name(".index");
             Route::post("/sell", [ReportingController::class, "store"])->name(".store");
+            Route::post("/filter", [ReportingController::class, "filter"])->name(".filter");
             Route::get("/expense", [ReportingController::class, "expense"])->name(".expense");
         });
         // income prefix
