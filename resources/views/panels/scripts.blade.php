@@ -31,11 +31,43 @@ crossorigin="anonymous" referrerpolicy="no-referrer"></script>
                 let ip_address = '127.0.0.1';
                 let socket_port = '9699';
                 let socket = io(ip_address + ':' + socket_port);
+                let handleLocalStorage = $("<div>"+(localStorage.getItem("notification")!=null ? localStorage.getItem("notification") : "")+"</div>");
+                $(".notifications_navbar").html(handleLocalStorage.html());
 
                 socket.on('getStockServer', (message,id,companyId) => {
+
                     const  companyIdServer = {{!empty(auth()->user()->company_id) ? auth()->user()->company_id : -1}};
 
                     if (companyId == companyIdServer) {
+
+                        let handleLocalStorage = $("<div>"+(localStorage.getItem("notification")!=null ? localStorage.getItem("notification") : "")+"</div>");
+
+                        let handleLocalStorageLength =  handleLocalStorage.find("a").length;
+                        if (handleLocalStorageLength > 4) {
+                            handleLocalStorage.find(a).eq(0).remove();
+                        }
+
+                        let stockNotification = $(`
+                    <a class="d-flex" href="javascript:void(0)">
+                        <div class="list-item d-flex align-items-start">
+                            <div class="me-1">
+                                <div class="avatar bg-light-warning">
+                                    <div class="avatar-content"><i class="avatar-icon"
+                                            data-feather="alert-triangle"></i></div>
+                                </div>
+                            </div>
+                            <div class="list-item-body flex-grow-1">
+                                <p class="media-heading"><span class="fw-bolder">Stok Uyarısı</span>
+                                </p><small class="notification-text"> ${message}</small>
+                            </div>
+                        </div>
+                    </a>`);
+                    handleLocalStorage.append(stockNotification);
+                    localStorage.setItem("notification",handleLocalStorage.html());
+
+
+                    $(".notifications_navbar").html(handleLocalStorage.html());
+
                         notificationHam("Stok Uyarısı",message,"error",2000)
                     id.map((val)=>{
                         $("span[pro_id='"+val["id"]+"']").html(val["adet"])

@@ -9,5 +9,5 @@ class ExpenseStatement extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["price", "detail", "table_name", "table_id", "company_id", "expense_date"];
+    protected $fillable = ["price", "detail", "table_name", "table_id", "company_id", "expense_date", "expense_type_id"];
 }
