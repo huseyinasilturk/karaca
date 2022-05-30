@@ -32,11 +32,11 @@
                 <div class="row mx-0">
                     <div class="col-md-8 col-12 revenue-report-wrapper">
                         <div class="d-sm-flex justify-content-between align-items-center mb-3">
-                            <h4 class="card-title mb-50 mb-sm-0">Gelir Gider Raporu</h4>
+                            <h4 class="card-title mb-50 mb-sm-0">Gider Raporu</h4>
                             <div class="d-flex align-items-center">
                                 <div class="d-flex align-items-center me-2">
                                     <span class="bullet bullet-primary font-small-3 me-50 cursor-pointer"></span>
-                                    <span>Gelir</span>
+                                    <span>Gider</span>
                                 </div>
 
                             </div>
@@ -45,10 +45,10 @@
                     </div>
                     <div class="col-md-4 col-12 budget-wrapper" style="display: flex;align-items: center">
                         <span class="fw-bolder me-25"></span>
-                        <h1 class="mb-25 row">Bu ay toplam gelir:{{ $totalSumAy[0]->totalSum }} ₺</h1>
+                        <h1 class="mb-25 row">Bu ay toplam Gider:{{ $totalSumAy[0]->totalSum }} ₺</h1>
                         <br>
                         <div class="row">
-                            <span class="fw-bolder me-25">Bu yıl toplam gelir:</span>
+                            <span class="fw-bolder me-25">Bu yıl toplam Gider:</span>
                             <span>{{ $totalSum[0]->totalSum }}</span>
                         </div>
                         <div id="budget-chart"></div>
@@ -60,7 +60,7 @@
         <!-- list and filter start -->
         <div class="card">
             <button type="button" data-bs-toggle="modal" data-bs-target="#modals-slide-in" class="btn btn-gradient-primary">
-                Diğer Gelir Ekle
+                Diğer Gider Ekle
             </button>
 
 
@@ -76,12 +76,12 @@
                                 <div class="col-sm-8">
                                     <select class="form-select form-select-lg" name="customer" onchange="filterIncome()">
                                         <option value="-2">Seçiniz</option>
-                                        @foreach ($income->unique('customer_id') as $val)
+                                        {{-- @foreach ($income->unique('customer_id') as $val)
                                             <option
                                                 value="{{ $val['customer_id'] == null ? '-1' : $val['customer_id'] }}">
                                                 {{ $val['customer_id'] == null ? 'Anonim' : $val['customer_name'] }}
                                             </option>
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                 </div>
                             </div>
@@ -101,10 +101,10 @@
                                 <div class="col-sm-8">
                                     <select class="form-select form-select-lg" name="product" onchange="filterIncome()">
                                         <option value="-2">Seçiniz</option>
-                                        @foreach ($income->unique('product_id') as $val)
+                                        {{-- @foreach ($income->unique('product_id') as $val)
                                             <option value="{{ $val['product_id'] }}">
                                                 {{ $val['product_id'] == -1 ? 'Diğer' : $val['name'] }}</option>
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                 </div>
                             </div>
@@ -120,24 +120,18 @@
                     <thead>
                         <tr>
                             <th>Detay</th>
-                            <th>Ürün</th>
-                            <th>B. Fiyat</th>
-                            <th>Adet</th>
+                            <th>Tablo</th>
                             <th>T. Fiyat</th>
-                            <th>Müşteri</th>
                             <th>İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
 
-                        @foreach ($income as $value)
+                        @foreach ($ExpenseStatement as $value)
                             <tr dataid="{{ $value->id }}">
                                 <td>{{ $value->detail }}</td>
-                                <td>{{ !empty($value->name) ? $value->name : '---' }}</td>
+                                <td>{{ !empty($value->table_name) ? $value->table_name : '---' }}</td>
                                 <td>{{ $value->price }}</td>
-                                <td>{{ $value->amount }}</td>
-                                <td>{{ $value->amount * $value->price }}</td>
-                                <td>{{ $value->costumer_id == -1 ? '---' : $value->customer_name }}</td>
                                 <td>
                                     @if ($value->customer_name == '')
                                         <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
@@ -274,7 +268,7 @@
                 let aylar_vEkran = [];
                 let gelir = [];
 
-                axios.post(route("income.selectee"), {
+                axios.post(route("expenseStatements.selectee"), {
                     product,
                     customer,
                     date

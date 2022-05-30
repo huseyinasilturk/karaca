@@ -250,13 +250,16 @@
                 <div class="user-nav d-sm-flex d-none">
                     <span class="user-name fw-bolder">
                         @if (Auth::check())
-                            {{ Auth::user()->name }}
+                            {{ auth()->user()->user_name }}
                         @else
-                            John Doe
+                            Kullanıcı
                         @endif
                     </span>
                     <span class="user-status">
-                        Admin
+                        @if (Auth::check())
+                            {{ auth()->user()->email }}
+                        @else
+                        @endif
                     </span>
                 </div>
                 <span class="avatar">
@@ -267,12 +270,12 @@
                 </span>
             </a>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">
-                <h6 class="dropdown-header">Profili Yönet</h6>
+                {{-- <h6 class="dropdown-header">Profili Yönet</h6>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item"
                     href="{{ Route::has('profile.show') ? route('profile.show') : 'javascript:void(0)' }}">
                     <i class="me-50" data-feather="user"></i> Profil
-                </a>
+                </a> --}}
 
                 @if (Auth::check())
                     <a class="dropdown-item" href="{{ route('auth.logout') }}">
