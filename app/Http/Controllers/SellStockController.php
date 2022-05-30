@@ -95,15 +95,16 @@ class SellStockController extends Controller
                 "costumer_id" => $request->costumer
             ]);
         }
-
-        $stockLimits = DB::select("SELECT c.name  AS c_name , sl.limit, products.*,COALESCE(SUM(stocks.amount),0) as amount
+        $query = "SELECT c.name  AS c_name , sl.limit, products.*,COALESCE(SUM(stocks.amount),0) as amount
         FROM products
         LEFT JOIN stocks ON products.id = stocks.product_id
         LEFT JOIN stock_limits sl ON sl.product_id = products.id
         LEFT JOIN companies c ON c.id = stocks.company_id
-        WHERE stocks.company_id = ".auth()->user()->company_id." AND ( sl.limit > amount AND sl.company_id =".auth()->user()->company_id.")"  );
+        WHERE stocks.company_id = ".auth()->user()->company_id." AND ( sl.limit > amount AND sl.company_id =".auth()->user()->company_id.") GROUP BY products.id"
+        ;
+        $stockLimits = DB::select($query );
 
-        return response()->json(["success" => 202,"stockLimit"=>$stockLimits]);
+        return response()->json(["success" => 202,"stockLimit"=>$stockLimits,"query"=>$query]);
     }
 
     /**

@@ -69,7 +69,7 @@
 
         function notificationHam(title="",body="",type="success",time=2000) {
                  Push.create(title, {
-                     body: body,
+                     body: body.replaceAll("<br>",""),
                      timeout: time,
                      onClick: function () {
                          window.focus();

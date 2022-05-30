@@ -183,7 +183,7 @@
                         res.data.stockLimit.map((value, key) => {
                             message += "-> " + value["c_name"] + " bayisinde " + value[
                                     "name"] + " ürününden " + value["amount"] +
-                                " adet kaldı.\n";
+                                " adet kaldı.<br> \n";
                             id.push({
                                 id: value["id"],
                                 adet: value["amount"]
