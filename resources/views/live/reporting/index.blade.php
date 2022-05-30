@@ -21,17 +21,27 @@
             <div class="header-left">
                 <h4 class="card-title">Gider Raporu</h4>
             </div>
-            <div class="header-right d-flex align-items-center mt-sm-0 mt-1">
-                <i data-feather="calendar"></i>
-                <input type="text" class="form-control flat-picker border-0 shadow-none bg-transparent pe-0"
-                    placeholder="YYYY-MM-DD" />
+        </div>
+        <div class="row ps-2 pe-2">
+            <label for="colFormLabel" class="col-sm-3 col-form-label">Default</label>
+            <div class="col-sm-9">
+
+                <select class="form-select" id="expenseTypeSelect" onchange="expenseTypeChange(this)" >
+                    <option value="-1" selected="">Seçiniz</option>
+                    @forelse ($Objective["expenseType"]->keyBy("id") as $key => $val )
+                        <option value="{{$key}}">{{$val->text1}}</option>
+                    @empty
+                    @endforelse
+                </select>
             </div>
         </div>
         <div class="card-body">
-            <canvas class="giderTablo chartjs" data-height="400"></canvas>
+            <canvas class="giderTablo chartjs"  data-height="400"></canvas>
         </div>
     </div>
 </div>
+<canvas class="giderTabloClone chartjs"  data-height="400"></canvas>
+
 @endsection
 
 @section('vendor-script')
@@ -45,6 +55,35 @@
 @section('page-script')
 
 <script >
+
+function expenseTypeChange(element)
+{
+
+    let type = $(element).val();
+
+    const cardBody = $(".giderTablo").closest("card-body");
+
+
+    const cloneCard =  $(".giderTabloClone");
+    $(cloneCard).addClass("giderTablo").removeClass("giderTabloClone");
+
+    $(cardBody).append($(cardBody));
+
+    console.log($(cardBody).html());
+    axios.post(route("reporting.filter"),{type}).then((res)=>{
+        $(".giderTablo").remove();
+        data = res.data;
+        let ay = [];
+        let price = [];
+        res.data.data.map((val,index)=>{
+            ay.push(val.ay);
+            price.push(val.fiyat);
+        })
+        giderKart(ay,price);
+    });
+}
+
+
  cardList();
 
 function cardList() {
@@ -63,7 +102,6 @@ function cardList() {
 
 function giderKart (ay,price) {
   'use strict';
-  console.log(ay,price);
 
   var giderTablo = $('.giderTablo');
 
