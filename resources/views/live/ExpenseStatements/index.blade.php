@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'Gelir Listesi')
+@section('title', 'Gider Listesi')
 
 @section('vendor-style')
     {{-- Page Css files --}}
@@ -67,25 +67,7 @@
 
             <div class="row">
                 <div class="col">
-
-
                     <div class="row m-2">
-                        <div class="col-4">
-                            <div class="row">
-                                <label for="colFormLabelSm" class="col-sm-4 col-form-label-lg">Müşteriler</label>
-                                <div class="col-sm-8">
-                                    <select class="form-select form-select-lg" name="customer" onchange="filterIncome()">
-                                        <option value="-2">Seçiniz</option>
-                                        {{-- @foreach ($income->unique('customer_id') as $val)
-                                            <option
-                                                value="{{ $val['customer_id'] == null ? '-1' : $val['customer_id'] }}">
-                                                {{ $val['customer_id'] == null ? 'Anonim' : $val['customer_name'] }}
-                                            </option>
-                                        @endforeach --}}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
                         <div class="col-4">
                             <div class="row">
                                 <label for="colFormLabelSm" class="col-sm-4 col-form-label-lg">Ay</label>
@@ -95,45 +77,32 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-4">
-                            <div class="row">
-                                <label for="colFormLabelSm" class="col-sm-4 col-form-label-lg">Ürün</label>
-                                <div class="col-sm-8">
-                                    <select class="form-select form-select-lg" name="product" onchange="filterIncome()">
-                                        <option value="-2">Seçiniz</option>
-                                        {{-- @foreach ($income->unique('product_id') as $val)
-                                            <option value="{{ $val['product_id'] }}">
-                                                {{ $val['product_id'] == -1 ? 'Diğer' : $val['name'] }}</option>
-                                        @endforeach --}}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-
-
                 </div>
             </div>
 
             <div class="card-datatable table-responsive p-0">
-                <table class="datatables-basic table" id="income_table">
+                <table class="datatables-basic table" id="expenseStatements_table">
                     <thead>
                         <tr>
                             <th>Detay</th>
                             <th>Tablo</th>
+                            <th>Gider Tipi</th>
                             <th>T. Fiyat</th>
                             <th>İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
 
-                        @foreach ($ExpenseStatement as $value)
+                        @foreach ($ExpenseObjective as $value)
                             <tr dataid="{{ $value->id }}">
                                 <td>{{ $value->detail }}</td>
-                                <td>{{ !empty($value->table_name) ? $value->table_name : '---' }}</td>
+                                <td>{{ !empty($value->table_name) ? ($value->table_name != 'expense' ? $value->table_name : 'Diğer Gider') : 'Diğer Gider' }}
+                                </td>
+                                <td>{{ $value->text1 }}</td>
                                 <td>{{ $value->price }}</td>
                                 <td>
-                                    @if ($value->customer_name == '')
+                                    @if ($value->table_name == 'expense')
                                         <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -162,12 +131,12 @@
                     <div class="modal modal-slide-in new-user-modal fade " id="modals-slide-in">
                         <div class="modal-dialog">
                             <form id="insertOrUpdate" class="add-new-user modal-content pt-0"
-                                action="{{ route('income.store') }}" method="POST">
+                                action="{{ route('expenseStatements.store') }}" method="POST">
                                 @csrf
                                 <button type="button" class="btn-close modalCloseBtn" data-bs-dismiss="modal"
                                     aria-label="Close">×</button>
                                 <div class="modal-header mb-1">
-                                    <h5 class="modal-title" id="exampleModalLabel">Diğer Gelir Ekle.</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Diğer Gider Ekle.</h5>
                                 </div>
                                 <div class="modal-body flex-grow-1">
                                     <div class="mb-1">
@@ -176,14 +145,15 @@
                                     </div>
                                     <div class="mb-1">
                                         <label class="form-label" for="fp-default">T. Fiyat</label>
-                                        <input type="text" name="price" class="form-control incomePrice flatpickr-basic" />
+                                        <input type="text" name="price" class="form-control incomePrice flatpickr-basic"
+                                            autocomplete="off" />
                                     </div>
                                     <div class="col-md-12 mb-1">
-                                        <label class="form-label" for="select2-basic">Müşteri Seçin</label>
-                                        <select class="select2 form-select customerSelect" name="costumer">
-                                            <option value="-1">Müşterisiz</option>
-                                            @foreach ($customer as $cstmr)
-                                                <option value="{{ $cstmr->id }}">{{ $cstmr->name }}</option>
+                                        <label class="form-label" for="select2-basic">Gider Tipi Seçin</label>
+                                        <select class="select2 form-select customerSelect" name="expenseType">
+                                            <option value="-1">Diğer</option>
+                                            @foreach ($ExpenseType as $expns)
+                                                <option value="{{ $expns->id }}">{{ $expns->text1 }}</option>
                                             @endforeach
 
                                         </select>
@@ -266,7 +236,7 @@
                 let customer = $("select[name='customer']").val();
 
                 let aylar_vEkran = [];
-                let gelir = [];
+                let gider = [];
 
                 axios.post(route("expenseStatements.selectee"), {
                     product,
@@ -274,16 +244,16 @@
                     date
                 }).then((res) => {
                     aylar_vEkran = [];
-                    gelir = [];
+                    gider = [];
                     res.data.rapor.map((val) => {
                         aylar_vEkran.push(aylar_value[val["mouth"]]);
-                        gelir.push(val["totalSum"]);
+                        gider.push(val["totalSum"]);
                     });
                 }).then(() => {
-                    test(gelir, aylar_vEkran);
+                    test(gider, aylar_vEkran);
                 });
 
-                function test(gelir, aylar_vEkran) {
+                function test(gider, aylar_vEkran) {
 
                     "use strict";
                     var $textMutedColor = "#b9b9c3";
@@ -309,8 +279,8 @@
                         },
                         colors: [window.colors.solid.primary, window.colors.solid.warning],
                         series: [{
-                            name: "Gelir",
-                            data: gelir,
+                            name: "Gider",
+                            data: gider,
                         }, ],
                         dataLabels: {
                             enabled: false,
@@ -367,18 +337,18 @@
 
                 cardRendered();
 
-                axios.post(route("income.filter"), {
+                axios.post(route("expenseStatements.filter"), {
                     product,
                     customer,
                     date
                 }).then((res) => {
                     console.log(res);
-                    $("#income_table").find("tbody").html("");
+                    $("#expenseStatements_table").find("tbody").html("");
 
                     res.data.income.map((value, key) => {
                         islemlerTd = ``;
-                        console.log(value.customer_id);
-                        if (!value.customer_id) {
+                        console.log(value.table_name);
+                        if (value.table_name === 'expense') {
                             islemlerTd = `
                                 <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -393,16 +363,14 @@
                                 </button>
                             `;
                         }
-                        $("#income_table").find("tbody").append(
+                        $("#expenseStatements_table").find("tbody").append(
 
                             `
                         <tr dataid="${value.id}">
                             <td>${value.detail}</td>
-                            <td> ${(value.name==null ? "---" : value.name)} </td>
+                            <td>${value.table_name}</td>
+                            <td>${value.table_name}</td>
                             <td>${value.price}</td>
-                            <td>${value.amount}</td>
-                            <td>${value.amount*value.price}</td>
-                            <td>${(value.customer_name == null ? "---" : value.customer_name)}</td>
                             <td>${islemlerTd}</td>
                         </tr>
 `
@@ -415,16 +383,17 @@
             }
             $("#insertOrUpdate").submit((e) => {
                 e.preventDefault();
-                axios.post(route("income.store"), new FormData(e.target)).then((res) => {
+                axios.post(route("expenseStatements.store"), new FormData(e.target)).then((res) => {
                     console.log(res);
                     if (res.status == 200) {
-                        let income = $('#income_table').DataTable();
+                        let income = $('#expenseStatements_table').DataTable();
                         let customerText = $('.customerSelect option:selected').text();
                         let incomePrice = $('.incomePrice').val();
 
-                        let islemlerTd = ``;
-                        if (res.data.customer_id === '-1') {
-                            let islemlerTd = `
+                        const islemlerTd = ``;
+                        console.log(res.data.table_name);
+                        if (res.data.table_name == 'expense') {
+                            const islemlerTd = `
                                 <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -441,11 +410,9 @@
                         let tr = $(
                             `<tr dataid="${res.data.id}">
                                 <td>${res.data.detail}</td>
-                                <td>---</td>
-                                <td>${incomePrice}</td>
-                                <td>1</td>
-                                <td>${incomePrice}</td>
+                                <td>Diğer Gider</td>
                                 <td>${customerText}</td>
+                                <td>${incomePrice}</td>
                                 <td>${islemlerTd}</td>
                             </tr>`);
                         income.row.add(tr)
@@ -453,7 +420,7 @@
 
                         $('.modalCloseBtn').click();
                         $('#insertOrUpdate').trigger("reset");
-                        toastr["success"]("Gelir başarıyla eklendi.", "İşlem Başarılı");
+                        toastr["success"]("Gider başarıyla eklendi.", "İşlem Başarılı");
                         cardRendered();
                     }
                 });
@@ -461,13 +428,13 @@
 
             function ıncomeStatementDelete(ths) {
                 let incomeId = $(ths).closest("tr").attr("dataid");
-                let getUrl = route("income.destroy", incomeId);
+                let getUrl = route("expenseStatements.destroy", incomeId);
                 axios.get(getUrl)
                     .then((response) => {
                         if (response.status == 202) {
-                            let income = $('#income_table').DataTable();
+                            let income = $('#expenseStatements_table').DataTable();
                             income.row($(ths).closest('tr')).remove().draw();
-                            toastr["success"]("Gelir başarıyla silindi.", "Silme İşlemi Başarılı");
+                            toastr["success"]("Gider başarıyla silindi.", "Silme İşlemi Başarılı");
                             cardRendered();
                         }
                     });

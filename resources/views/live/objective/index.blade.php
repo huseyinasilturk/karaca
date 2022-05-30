@@ -95,12 +95,12 @@
                                             @if (Str::startsWith($inputKey, 'number'))
                                                 <div class="form-group">
                                                     <input class="form-control objective-input" name="{{ $inputKey }}"
-                                                        type="number" placeholder="{{ $input }}">
+                                                        type="number" placeholder="{{ $input }}" autocomplete="off">
                                                 </div>
                                             @elseif (Str::startsWith($inputKey, 'text'))
                                                 <div class="form-group">
                                                     <input class="form-control objective-input" name="{{ $inputKey }}"
-                                                        type="text" placeholder="{{ $input }}">
+                                                        type="text" placeholder="{{ $input }}" autocomplete="off">
                                                 </div>
                                             @endif
                                         @endforeach
