@@ -137,7 +137,7 @@
                                 <td>{{ $value->price }}</td>
                                 <td>{{ $value->amount }}</td>
                                 <td>{{ $value->amount * $value->price }}</td>
-                                <td>{{ $value->costumer_id == -1 ? '---' : $value->customer_name }}</td>
+                                <td>{{ $value->customer_name ? $value->customer_name : 'Müşterisiz' }}</td>
                                 <td>
                                     @if ($value->customer_name == '')
                                         <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
@@ -182,7 +182,8 @@
                                     </div>
                                     <div class="mb-1">
                                         <label class="form-label" for="fp-default">T. Fiyat</label>
-                                        <input type="text" name="price" class="form-control incomePrice flatpickr-basic" />
+                                        <input type="text" name="price" class="form-control incomePrice flatpickr-basic"
+                                            autocomplete="off" />
                                     </div>
                                     <div class="col-md-12 mb-1">
                                         <label class="form-label" for="select2-basic">Müşteri Seçin</label>
@@ -428,9 +429,9 @@
                         let customerText = $('.customerSelect option:selected').text();
                         let incomePrice = $('.incomePrice').val();
 
-                        let islemlerTd = ``;
+                        const islemlerTd = ``;
                         if (res.data.customer_id === '-1') {
-                            let islemlerTd = `
+                            const islemlerTd = `
                                 <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

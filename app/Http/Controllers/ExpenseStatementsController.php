@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\ExpenseStatement;
-use App\Models\IncomeStatement;
+use App\Models\Objective;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,8 +13,12 @@ class ExpenseStatementsController extends Controller
     public function index()
     {
 
-        $ExpenseStatement = ExpenseStatement::where("company_id", "=", auth()->user()->company_id)->get();
+        $ExpenseType = Objective::where("name", "=", "expenseType")->get();
+        // $ExpenseStatement = ExpenseStatement::where("company_id", "=", auth()->user()->company_id)->get();
         $customer = Customer::all();
+
+        $ExpenseObjective = DB::select("SELECT * FROM expense_statements AS es JOIN objectives o ON es.expense_type_id = o.id");
+        // dd($ExpenseObjective);
 
         $totalSum = DB::select("SELECT MONTH(created_at) AS mouth, YEAR(created_at) AS YEAR, SUM(income_statements.price * income_statements.amount) AS totalSum
         FROM income_statements
@@ -25,7 +29,7 @@ class ExpenseStatementsController extends Controller
         WHERE YEAR(created_at) = YEAR(DATE(NOW())) AND MONTH(created_at) = MONTH(DATE(NOW()))  AND company_id =  " . auth()->user()->company_id);
 
 
-        return view("live.ExpenseStatements.index", compact("ExpenseStatement", "totalSum", "totalSumAy", "customer"));
+        return view("live.ExpenseStatements.index", compact("ExpenseObjective", "totalSum", "totalSumAy", "customer", "ExpenseType"));
     }
 
     public function select(Request $request)
@@ -36,5 +40,19 @@ class ExpenseStatementsController extends Controller
         GROUP BY MONTH(expense_date), YEAR(expense_date) ");
 
         return response()->json(["rapor" => $rapor, "test" => $request->all()]);
+    }
+
+    public function store(Request $request)
+    {
+
+        $Expense = ExpenseStatement::create([
+            "price"    => $request->price,
+            "detail" => $request->detail,
+            "expense_type_id" => $request->expenseType,
+            "table_name" => "expense",
+            "company_id" => auth()->user()->company_id
+        ]);
+
+        return response()->json($Expense);
     }
 }
