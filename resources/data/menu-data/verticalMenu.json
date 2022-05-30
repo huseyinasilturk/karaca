@@ -194,6 +194,12 @@
             "slug": "actives"
         },
         {
+            "url": "/reporting",
+            "name": "raporlar",
+            "icon": "lock",
+            "slug": "reporting"
+        },
+        {
             "navheader": "Development",
             "slug": ""
         },

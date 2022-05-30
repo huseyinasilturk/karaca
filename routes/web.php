@@ -27,6 +27,7 @@ use App\Http\Controllers\ExpenseStatementsController;
 use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\ReportingController;
 use App\Http\Controllers\StockLimitController;
 use App\Http\Controllers\StockTransfer;
 
@@ -128,6 +129,13 @@ Route::group(['middleware' => ['web', 'activity']], function () {
             // Stok anasayfa
             Route::get("/", [SellStockController::class, "index"])->name(".sellstock");
             Route::post("/sell", [SellStockController::class, "store"])->name(".store");
+        });
+        // reporting
+        Route::prefix("reporting")->name("reporting")->group(function () {
+
+            Route::get("/", [ReportingController::class, "index"])->name(".index");
+            Route::post("/sell", [ReportingController::class, "store"])->name(".store");
+            Route::get("/expense", [ReportingController::class, "expense"])->name(".expense");
         });
         // income prefix
         Route::prefix("expenseStatements")->name("expenseStatements")->group(function () {
