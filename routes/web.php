@@ -86,10 +86,12 @@ Route::group(['middleware' => ['web', 'activity']], function () {
             Route::get("/list", [UserController::class, "list"])->name(".list");
             Route::get("/userList", [UserController::class, "userList"])->name(".userList");
             Route::post("/add", [UserController::class, "store"])->name(".store");
+            Route::post("/wage/{id}", [UserController::class, "payWage"])->name(".payWage");
             Route::get("/", [UserController::class, "index"])->name(".index");
             Route::delete("/delete/{id}", [UserController::class, "destroy"])->name(".delete");
             Route::put("/edit/{id}", [UserController::class, "update"])->name(".update");
             Route::get("/detail/{id?}", [UserController::class, "detail"])->name(".detail");
+            Route::get("/wage/{id}", [UserController::class, "wageDetail"])->name(".wageDetail");
         });
 
         // Rol prefix
@@ -133,6 +135,7 @@ Route::group(['middleware' => ['web', 'activity']], function () {
             Route::post("/select", [IncomeController::class, "select"])->name(".selectee");
             Route::post("/filter", [IncomeController::class, "filter"])->name(".filter");
             Route::post("/store", [IncomeController::class, "store"])->name(".store");
+            Route::get("/destroy/{id}", [IncomeController::class, "destroy"])->name(".destroy");
         });
 
         // Stok prefix

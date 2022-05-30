@@ -195,7 +195,7 @@
                     console.log("res.data");
                     console.log(res.data);
                     if (res.data.success == '202') {
-                        $('#sellstock').remove();
+                        $('#sellstock tr').remove();
                         productPriceSum();
                         toastr["success"]("Sepetteki ürünler satıldı.", "Satış Başarılı");
                     }

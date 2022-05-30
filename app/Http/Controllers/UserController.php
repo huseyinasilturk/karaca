@@ -8,8 +8,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Mail\Subscribe;
 use App\Models\Company;
+use App\Models\ExpenseStatement;
 use App\Models\Wage;
 use Carbon\Carbon;
+use DateInterval;
+use DatePeriod;
+use DateTime;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -72,16 +76,6 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -111,28 +105,6 @@ class UserController extends Controller
 
         $company = Company::all();
         return redirect()->back()->with(['company' => $company, 'roles' => $roles]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -213,5 +185,54 @@ class UserController extends Controller
         }
 
         return $password;
+    }
+
+    public function wageDetail($id)
+    {
+
+        // kullanıcı oluşturulduğu zamanı al
+        // şu an ki zamanı al
+        // bu iki zaman arasındaki ayları oluştur
+        // ödenmiş maaşları al (expense)
+
+
+        $user = User::with("information", "wage")->where("id", $id)->first();
+        $wages = ExpenseStatement::where(["table_name" => "users", "table_id" => $id])->whereRaw(DB::raw("YEAR(expense_date) = ?"), [(string)now()->year])->get()->each(function ($wage) {
+            return $wage->expense_date = Carbon::parse($wage->expense_date)->format("Y-m") . "-15";
+        });
+
+        $monthDiff = Carbon::parse(now()->format("Y-m-d"))->addMonth()->diffInMonths(Carbon::parse($user->created_at)->format("Y-m-d"));
+        // return $monthDiff;
+
+        $startMonth = intval(Carbon::parse($user->created_at)->format("m"));
+        // return $startMonth;
+
+        $dates = [];
+
+        for ($i = $startMonth; $i < $startMonth + $monthDiff; $i++) {
+            if ($i < 10) {
+                array_push($dates, ["date" => now()->format("Y") . "-0" . $i . "-15", "paid" => 0]);
+            } else {
+                array_push($dates, ["date" => now()->format("Y") . "-" . $i . "-15", "paid" => 0]);
+            }
+        }
+
+        foreach ($wages as $wage) {
+            foreach ($dates as &$date) {
+                if ($wage->expense_date == $date["date"]) {
+                    $date["paid"] = 1;
+                }
+            }
+        }
+
+        return response()->json(["user" => $user, "dates" => $dates], 201);
+    }
+
+    public function payWage(Request $request, $id)
+    {
+        $userCompany = User::find($id)->company_id;
+        $wageExpense = ExpenseStatement::create(["table_name" => "users", "table_id" => $id, "expense_date" => $request->date, "created_at" => $request->date, "price" => $request->wage, "detail" => "Personel maaşı yatırıldı", "company_id" => $userCompany]);
+
+        return response()->json($wageExpense, 201);
     }
 }
