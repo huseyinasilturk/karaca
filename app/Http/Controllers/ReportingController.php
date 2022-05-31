@@ -34,11 +34,12 @@ class ReportingController extends Controller
 
     public function filter(Request $request)
     {
-
+        $type = ($request->type != null  ? " AND expense_type_id = ".$request->type  :  "" );
+        $year = $request->year != null ? "AND YEAR(expense_date) =". $request->year :" AND YEAR(expense_date) = YEAR(NOW())";
         $expense = DB::select("
             SELECT MONTH(expense_date) as ay, SUM(price) as fiyat
             FROM expense_statements
-            WHERE YEAR(expense_date) = YEAR(NOW()) AND expense_type_id = " . $request->type . "
+            WHERE 1=1 ". $year." ". $type."
             GROUP BY MONTH(expense_date)
         ");
 
