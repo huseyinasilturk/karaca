@@ -379,12 +379,10 @@
                     customer,
                     date
                 }).then((res) => {
-                    console.log(res);
                     $("#income_table").find("tbody").html("");
 
                     res.data.income.map((value, key) => {
                         islemlerTd = ``;
-                        console.log(value.customer_id);
                         if (!value.customer_id) {
                             islemlerTd = `
                                 <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
@@ -423,15 +421,14 @@
             $("#insertOrUpdate").submit((e) => {
                 e.preventDefault();
                 axios.post(route("income.store"), new FormData(e.target)).then((res) => {
-                    console.log(res);
                     if (res.status == 200) {
                         let income = $('#income_table').DataTable();
                         let customerText = $('.customerSelect option:selected').text();
                         let incomePrice = $('.incomePrice').val();
 
-                        const islemlerTd = ``;
+                        islemlerTd = ``;
                         if (res.data.customer_id === '-1') {
-                            const islemlerTd = `
+                            islemlerTd = `
                                 <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

@@ -331,24 +331,18 @@
 
             function filterIncome(params) {
 
-                let product = $("select[name='product']").val();
                 let date = $("input[name='date']").val();
-                let customer = $("select[name='customer']").val();
 
                 cardRendered();
 
                 axios.post(route("expenseStatements.filter"), {
-                    product,
-                    customer,
                     date
                 }).then((res) => {
-                    console.log(res);
                     $("#expenseStatements_table").find("tbody").html("");
 
                     res.data.income.map((value, key) => {
                         islemlerTd = ``;
-                        console.log(value.table_name);
-                        if (value.table_name === 'expense') {
+                        if (value.table_name == 'expense') {
                             islemlerTd = `
                                 <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -362,6 +356,7 @@
                                     </svg>
                                 </button>
                             `;
+                            value.table_name = 'Diğer Gider';
                         }
                         $("#expenseStatements_table").find("tbody").append(
 
@@ -369,7 +364,7 @@
                         <tr dataid="${value.id}">
                             <td>${value.detail}</td>
                             <td>${value.table_name}</td>
-                            <td>${value.table_name}</td>
+                            <td>${value.text1}</td>
                             <td>${value.price}</td>
                             <td>${islemlerTd}</td>
                         </tr>
@@ -384,16 +379,14 @@
             $("#insertOrUpdate").submit((e) => {
                 e.preventDefault();
                 axios.post(route("expenseStatements.store"), new FormData(e.target)).then((res) => {
-                    console.log(res);
                     if (res.status == 200) {
                         let income = $('#expenseStatements_table').DataTable();
                         let customerText = $('.customerSelect option:selected').text();
                         let incomePrice = $('.incomePrice').val();
 
-                        const islemlerTd = ``;
-                        console.log(res.data.table_name);
+                        islemlerTd = ``;
                         if (res.data.table_name == 'expense') {
-                            const islemlerTd = `
+                            islemlerTd = `
                                 <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -406,11 +399,12 @@
                                     </svg>
                                 </button>
                             `;
+                            res.data.table_name = 'Diğer Gider';
                         }
                         let tr = $(
                             `<tr dataid="${res.data.id}">
                                 <td>${res.data.detail}</td>
-                                <td>Diğer Gider</td>
+                                <td>${res.data.table_name}</td>
                                 <td>${customerText}</td>
                                 <td>${incomePrice}</td>
                                 <td>${islemlerTd}</td>
