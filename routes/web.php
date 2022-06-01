@@ -27,6 +27,7 @@ use App\Http\Controllers\ExpenseStatementsController;
 use App\Http\Controllers\ObjectiveController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\ReportingController;
 use App\Http\Controllers\StockLimitController;
 use App\Http\Controllers\StockTransfer;
 
@@ -129,6 +130,14 @@ Route::group(['middleware' => ['web', 'activity']], function () {
             Route::get("/", [SellStockController::class, "index"])->name(".sellstock");
             Route::post("/sell", [SellStockController::class, "store"])->name(".store");
         });
+        // reporting
+        Route::prefix("reporting")->name("reporting")->group(function () {
+
+            Route::get("/", [ReportingController::class, "index"])->name(".index");
+            Route::post("/sell", [ReportingController::class, "store"])->name(".store");
+            Route::post("/filter", [ReportingController::class, "filter"])->name(".filter");
+            Route::get("/expense", [ReportingController::class, "expense"])->name(".expense");
+        });
         // income prefix
         Route::prefix("expenseStatements")->name("expenseStatements")->group(function () {
             // Stok anasayfa
@@ -176,6 +185,7 @@ Route::group(['middleware' => ['web', 'activity']], function () {
             Route::get("/{id}", [StockLimitController::class, "edit"])->name(".edit")->whereNumber("id");
             Route::get("/limits", [StockLimitController::class, "limits"])->name(".limits");
 
+            Route::post("/update/{id}", [StockLimitController::class, "update"])->name(".update");
             Route::post("/filter", [StockLimitController::class, "filter"])->name(".filter");
             Route::post("/", [StockLimitController::class, "store"])->name(".store");
             Route::delete("/{id}", [StockLimitController::class, "delete"])->name(".delete");

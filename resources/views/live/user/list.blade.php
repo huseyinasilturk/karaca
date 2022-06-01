@@ -56,7 +56,7 @@
                             method="POST">
                             @csrf
                             @method('put')
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            <button type="button" class="btn-close modalCloseBtn" data-bs-dismiss="modal"
                                 aria-label="Close">×</button>
                             <div class="modal-header mb-1">
                                 <h5 class="modal-title" id="exampleModalLabel">Personel İşlemleri</h5>
@@ -129,7 +129,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="wageDetailModalLabel">Personel Maaş Bilgisi</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                <button type="button" class="btn-close modalCloseBtn2" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -221,7 +221,12 @@
         function insertOrUpdate() {
             axios.post(document.getElementById("add-new-user").getAttribute("action"), new FormData(document.getElementById(
                 "add-new-user"))).then((res) => {
+                console.log("res");
                 console.log(res);
+                if (res.status == 200) {
+                    $('.modalCloseBtn').click();
+                    toastr["success"]("Personel başarıyla eklendi.", "İşlem Başarılı");
+                }
             }).catch((err) => {
                 let errMsjResponse = err.response.data.message;
                 let searchWagePrice = errMsjResponse.search("'wage_price'");
@@ -262,6 +267,10 @@
             axios.post(document.getElementById("add-new-user").getAttribute("action"), new FormData(document.getElementById(
                 "add-new-user"))).then((res) => {
                 console.log(res);
+                if (res.status == 200) {
+                    $('.modalCloseBtn').click();
+                    toastr["success"]("Personel bilgisi başarıyla güncellendi.", "İşlem Başarılı");
+                }
             }).catch((err) => {
                 let errMsj = `
                 <div class="alert alert-danger">

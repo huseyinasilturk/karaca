@@ -18,6 +18,7 @@ class CreateExpenseStatementsTable extends Migration
             $table->decimal("price", 11, 2);
             $table->longText("detail");
             $table->string("table_name");
+            $table->integer("expense_type_id");
             $table->integer("table_id");
             $table->integer("company_id");
             $table->date("expense_date");

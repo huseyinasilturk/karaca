@@ -137,7 +137,7 @@
                                 <td>{{ $value->price }}</td>
                                 <td>{{ $value->amount }}</td>
                                 <td>{{ $value->amount * $value->price }}</td>
-                                <td>{{ $value->costumer_id == -1 ? '---' : $value->customer_name }}</td>
+                                <td>{{ $value->customer_name ? $value->customer_name : 'Müşterisiz' }}</td>
                                 <td>
                                     @if ($value->customer_name == '')
                                         <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
@@ -182,7 +182,8 @@
                                     </div>
                                     <div class="mb-1">
                                         <label class="form-label" for="fp-default">T. Fiyat</label>
-                                        <input type="text" name="price" class="form-control incomePrice flatpickr-basic" />
+                                        <input type="text" name="price" class="form-control incomePrice flatpickr-basic"
+                                            autocomplete="off" />
                                     </div>
                                     <div class="col-md-12 mb-1">
                                         <label class="form-label" for="select2-basic">Müşteri Seçin</label>
@@ -378,12 +379,10 @@
                     customer,
                     date
                 }).then((res) => {
-                    console.log(res);
                     $("#income_table").find("tbody").html("");
 
                     res.data.income.map((value, key) => {
                         islemlerTd = ``;
-                        console.log(value.customer_id);
                         if (!value.customer_id) {
                             islemlerTd = `
                                 <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
@@ -422,15 +421,14 @@
             $("#insertOrUpdate").submit((e) => {
                 e.preventDefault();
                 axios.post(route("income.store"), new FormData(e.target)).then((res) => {
-                    console.log(res);
                     if (res.status == 200) {
                         let income = $('#income_table').DataTable();
                         let customerText = $('.customerSelect option:selected').text();
                         let incomePrice = $('.incomePrice').val();
 
-                        let islemlerTd = ``;
+                        islemlerTd = ``;
                         if (res.data.customer_id === '-1') {
-                            let islemlerTd = `
+                            islemlerTd = `
                                 <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

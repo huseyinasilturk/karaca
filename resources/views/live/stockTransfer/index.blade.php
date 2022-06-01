@@ -308,6 +308,7 @@
                     }
                 );
                 $(".datatables-ajax").DataTable().ajax.reload();
+                $("#stokTransfer").modal("hide");
             })
         }
     </script>
