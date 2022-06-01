@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreReminderRequest;
 use App\Http\Requests\UpdateReminderRequest;
 use App\Models\Reminder;
+use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Request;
 
 class ReminderController extends Controller
@@ -21,7 +22,8 @@ class ReminderController extends Controller
 
     public function notifications()
     {
-        $data = Reminder::where("status", "1")->get();
+        $now = Carbon::now()->toDateTimeString();
+        $data = Reminder::where("status", "1")->whereRaw("MONTH(date) = MONTH(?) AND YEAR(date) = YEAR(?) AND DAY(date) = DAY(?)", [$now, $now, $now])->get();
         return response()->json($data, 200);
     }
 
