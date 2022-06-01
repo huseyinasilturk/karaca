@@ -19,14 +19,10 @@ class ReminderController extends Controller
         return view('live.reminder.list');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function notifications()
     {
-        //
+        $data = Reminder::where("status", "1")->get();
+        return response()->json($data, 200);
     }
 
     /**

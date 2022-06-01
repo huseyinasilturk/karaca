@@ -198,6 +198,7 @@ Route::group(['middleware' => ['web', 'activity']], function () {
             Route::post("/update", [ReminderController::class, "update"])->name(".update");
             Route::post("/delete", [ReminderController::class, "destroy"])->name(".delete");
             Route::post("/events", [ReminderController::class, "events"])->name(".events");
+            Route::get("/notifications", [ReminderController::class, "notifications"])->name(".notifications");
         });
 
         // İzinler prefix

@@ -33,6 +33,10 @@ io.on("connection", (socket) => {
         io.emit("getStockServer", message, id, companyId);
     });
 
+    socket.on("reminderServerSend", (message) => {
+        io.emit("reminderServerListen", message);
+    });
+
     socket.on("disconnect", (socket) => {
         console.log("Disconnect");
     });

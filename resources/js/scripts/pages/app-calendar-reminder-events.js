@@ -27,7 +27,7 @@ $.ajax({
                 value.url = "";
                 value.allDay = false;
                 value.extendedProps = {
-                    calendar: value.status === "1" ? "business" : "personal",
+                    calendar: value.status === "1" ? "select-all" : "holiday",
                     detail: value.detail,
                     date: value.date,
                     status: value.status,
