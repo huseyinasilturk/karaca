@@ -27,6 +27,11 @@ class Product extends Model
 
     public function productCompanyGet()
     {
-        return $this->hasMany(ListPrice::class, 'product_id', 'id')->where("company_id","=",auth()->user()->company_id);
+        return $this->hasMany(ListPrice::class, 'product_id', 'id')->where("company_id", "=", auth()->user()->company_id);
+    }
+
+    public function productCompanyGetAll()
+    {
+        return $this->hasMany(ListPrice::class, 'product_id', 'id');
     }
 }

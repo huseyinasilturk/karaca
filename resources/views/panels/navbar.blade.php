@@ -53,7 +53,7 @@
 @endif
 <div class="navbar-container d-flex content">
     <div class="bookmark-wrapper d-flex align-items-center">
-        <ul class="nav navbar-nav d-xl-none">
+        {{-- <ul class="nav navbar-nav d-xl-none">
             <li class="nav-item"><a class="nav-link menu-toggle" href="javascript:void(0);"><i
                         class="ficon" data-feather="menu"></i></a></li>
         </ul>
@@ -85,7 +85,7 @@
                     <ul class="search-list search-list-bookmark"></ul>
                 </div>
             </li>
-        </ul>
+        </ul> --}}
     </div>
     <ul class="nav navbar-nav align-items-center ms-auto">
         <li class="nav-item dropdown dropdown-language d-none">
@@ -230,7 +230,7 @@
         <li class="nav-item dropdown dropdown-notification me-25">
             <a class="nav-link" href="javascript:void(0);" data-bs-toggle="dropdown">
                 <i class="ficon" data-feather="bell"></i>
-             </a>
+            </a>
             <ul class="dropdown-menu dropdown-menu-media dropdown-menu-end">
                 <li class="dropdown-menu-header">
                     <div class="dropdown-header d-flex">
