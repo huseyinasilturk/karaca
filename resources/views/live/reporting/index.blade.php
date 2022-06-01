@@ -15,33 +15,14 @@
 @endsection
 
 @section('content')
-<div class="col-xl-6 col-12">
-    <div class="card">
-        <div  class="  card-header d-flex justify-content-between   align-items-sm-center align-items-start  flex-sm-row flex-column ">
-            <div class="header-left">
-                <h4 class="card-title">Gider Raporu</h4>
-            </div>
-        </div>
-        <div class="row ps-2 pe-2">
-            <label for="colFormLabel" class="col-sm-3 col-form-label">Default</label>
-            <div class="col-sm-9">
-
-                <select class="form-select" id="expenseTypeSelect" onchange="expenseTypeChange(this)" >
-                    <option value="-1" selected="">Seçiniz</option>
-                    @forelse ($Objective["expenseType"]->keyBy("id") as $key => $val )
-                        <option value="{{$key}}">{{$val->text1}}</option>
-                    @empty
-                    @endforelse
-                </select>
-            </div>
-        </div>
-        <div class="card-body">
-            <canvas class="giderTablo chartjs"  data-height="400"></canvas>
-        </div>
+<div class="row">
+    <div class="col-xl-6 col-12">
+        @include("live.reporting.gider.gider")
+    </div>
+    <div class="col-xl-6 col-12">
+        @include("live.reporting.gelir.gelir")
     </div>
 </div>
-<canvas class="giderTabloClone chartjs"  data-height="400"></canvas>
-
 @endsection
 
 @section('vendor-script')
@@ -56,22 +37,56 @@
 
 <script >
 
+
+
+
+
+
+
+
+function expenseYear(element) {
+    let val = $(element).val();
+
+    if (val.length == 4) {
+        let year = $("#year").val();
+        year = year.length == 4 ? year : null;
+        let type = $("#expenseTypeSelect").val() == -1 ? null : $(element).val() ;
+        const cardBody = $(".giderTablo").closest(".card-body").clone();
+        $(cardBody).html("");
+        console.log($(cardBody).html());
+
+        axios.post(route("reporting.filter"),{type,year}).then((res)=>{
+        const cloneCard =  $(".giderTabloClone");
+        $(cloneCard).addClass("giderTablo").removeClass("giderTabloClone");
+        $(cardBody).append($(cloneCard));
+            data = res.data;
+            let ay = [];
+            let price = [];
+            res.data.data.map((val,index)=>{
+                ay.push(val.ay);
+                price.push(val.fiyat);
+            })
+            giderKart(ay,price);
+        });
+    }
+
+}
+
+
+
 function expenseTypeChange(element)
 {
+    let year = $("#year").val();
+    console.log( year.length);
+    year = year.length == 4 ? year : null;
+    let type = $("#expenseTypeSelect").val() == -1 ? null : $(element).val();
+    const cardBody = $(".giderTablo").closest(".card-body").clone();
+    $(cardBody).html("");
 
-    let type = $(element).val();
-
-    const cardBody = $(".giderTablo").closest("card-body");
-
-
+    axios.post(route("reporting.filter"),{type,year}).then((res)=>{
     const cloneCard =  $(".giderTabloClone");
     $(cloneCard).addClass("giderTablo").removeClass("giderTabloClone");
-
-    $(cardBody).append($(cardBody));
-
-    console.log($(cardBody).html());
-    axios.post(route("reporting.filter"),{type}).then((res)=>{
-        $(".giderTablo").remove();
+    $(cardBody).append($(cloneCard));
         data = res.data;
         let ay = [];
         let price = [];
@@ -98,7 +113,241 @@ function cardList() {
         giderKart(ay,price);
     });
 }
+function cardListGelir() {
+    axios.get(route("reporting.income")).then((res)=>{
+        data = res.data;
+        let ay = [];
+        let price = [];
+        res.data.data.map((val,index)=>{
+            ay.push(val.ay);
+            price.push(val.fiyat);
+        })
+        gelirTablo(ay,price);
+    });
+}
 
+function gelirTablo (ay,price) {
+  'use strict';
+
+  var gelirTablo = $('.gelirTablo');
+
+  // Color Variables
+  var primaryColorShade = '#836AF9',
+    yellowColor = '#ffe800',
+    successColorShade = '#28dac6',
+    warningColorShade = '#ffe802',
+    warningLightColor = '#FDAC34',
+    infoColorShade = '#299AFF',
+    greyColor = '#4F5D70',
+    blueColor = '#2c9aff',
+    blueLightColor = '#84D0FF',
+    greyLightColor = '#EDF1F4',
+    tooltipShadow = 'rgba(0, 0, 0, 0.25)',
+    lineChartPrimary = '#666ee8',
+    lineChartDanger = '#ff4961',
+    labelColor = '#6e6b7b',
+    grid_line_color = 'rgba(200, 200, 200, 0.2)'; // RGBA color helps in dark layout
+
+  // Detect Dark Layout
+
+  if ($('html').hasClass('dark-layout')) {
+    labelColor = '#b4b7bd';
+  }
+
+  if (gelirTablo.length) {
+    var barChartExample = new Chart(gelirTablo, {
+      type: 'bar',
+      options: {
+        elements: {
+          rectangle: {
+            borderWidth: 2,
+            borderSkipped: 'bottom'
+          }
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        responsiveAnimationDuration: 500,
+        legend: {
+          display: false
+        },
+        tooltips: {
+          // Updated default tooltip UI
+          shadowOffsetX: 1,
+          shadowOffsetY: 1,
+          shadowBlur: 8,
+          shadowColor: tooltipShadow,
+          backgroundColor: window.colors.solid.white,
+          titleFontColor: window.colors.solid.black,
+          bodyFontColor: window.colors.solid.black
+        },
+        scales: {
+          xAxes: [
+            {
+              display: true,
+              gridLines: {
+                display: true,
+                color: grid_line_color,
+                zeroLineColor: grid_line_color
+              },
+              scaleLabel: {
+                display: false
+              },
+              ticks: {
+                fontColor: labelColor
+              }
+            }
+          ],
+          yAxes: [
+            {
+              display: true,
+              gridLines: {
+                color: grid_line_color,
+                zeroLineColor: grid_line_color
+              },
+              ticks: {
+                stepSize: 100,
+                min: 0,
+                max: Math.max(...price),
+                fontColor: labelColor
+              }
+            }
+          ]
+        }
+      },
+      data: {
+        labels: ay,
+        datasets: [
+          {
+            data: price,
+            barThickness: 15,
+            backgroundColor: successColorShade,
+            borderColor: 'transparent'
+          }
+        ]
+      }
+    });
+  }
+
+  //Draw rectangle Bar charts with rounded border
+  Chart.elements.Rectangle.prototype.draw = function () {
+    var ctx = this._chart.ctx;
+    var viewVar = this._view;
+    var left, right, top, bottom, signX, signY, borderSkipped, radius;
+    var borderWidth = viewVar.borderWidth;
+    var cornerRadius = 20;
+    if (!viewVar.horizontal) {
+      left = viewVar.x - viewVar.width / 2;
+      right = viewVar.x + viewVar.width / 2;
+      top = viewVar.y;
+      bottom = viewVar.base;
+      signX = 1;
+      signY = top > bottom ? 1 : -1;
+      borderSkipped = viewVar.borderSkipped || 'bottom';
+    } else {
+      left = viewVar.base;
+      right = viewVar.x;
+      top = viewVar.y - viewVar.height / 2;
+      bottom = viewVar.y + viewVar.height / 2;
+      signX = right > left ? 1 : -1;
+      signY = 1;
+      borderSkipped = viewVar.borderSkipped || 'left';
+    }
+
+    if (borderWidth) {
+      var barSize = Math.min(Math.abs(left - right), Math.abs(top - bottom));
+      borderWidth = borderWidth > barSize ? barSize : borderWidth;
+      var halfStroke = borderWidth / 2;
+      var borderLeft = left + (borderSkipped !== 'left' ? halfStroke * signX : 0);
+      var borderRight = right + (borderSkipped !== 'right' ? -halfStroke * signX : 0);
+      var borderTop = top + (borderSkipped !== 'top' ? halfStroke * signY : 0);
+      var borderBottom = bottom + (borderSkipped !== 'bottom' ? -halfStroke * signY : 0);
+      if (borderLeft !== borderRight) {
+        top = borderTop;
+        bottom = borderBottom;
+      }
+      if (borderTop !== borderBottom) {
+        left = borderLeft;
+        right = borderRight;
+      }
+    }
+
+    ctx.beginPath();
+    ctx.fillStyle = viewVar.backgroundColor;
+    ctx.strokeStyle = viewVar.borderColor;
+    ctx.lineWidth = borderWidth;
+    var corners = [
+      [left, bottom],
+      [left, top],
+      [right, top],
+      [right, bottom]
+    ];
+
+    var borders = ['bottom', 'left', 'top', 'right'];
+    var startCorner = borders.indexOf(borderSkipped, 0);
+    if (startCorner === -1) {
+      startCorner = 0;
+    }
+
+    function cornerAt(index) {
+      return corners[(startCorner + index) % 4];
+    }
+
+    var corner = cornerAt(0);
+    ctx.moveTo(corner[0], corner[1]);
+
+    for (var i = 1; i < 4; i++) {
+      corner = cornerAt(i);
+      var nextCornerId = i + 1;
+      if (nextCornerId == 4) {
+        nextCornerId = 0;
+      }
+
+      var nextCorner = cornerAt(nextCornerId);
+
+      var width = corners[2][0] - corners[1][0],
+        height = corners[0][1] - corners[1][1],
+        x = corners[1][0],
+        y = corners[1][1];
+
+      var radius = cornerRadius;
+
+      if (radius > height / 2) {
+        radius = height / 2;
+      }
+      if (radius > width / 2) {
+        radius = width / 2;
+      }
+
+      if (!viewVar.horizontal) {
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+      } else {
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x, y);
+      }
+    }
+
+    ctx.fill();
+    if (borderWidth) {
+      ctx.stroke();
+    }
+  };
+
+};
 
 function giderKart (ay,price) {
   'use strict';
