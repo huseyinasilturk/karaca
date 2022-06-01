@@ -185,6 +185,7 @@ Route::group(['middleware' => ['web', 'activity']], function () {
             Route::get("/{id}", [StockLimitController::class, "edit"])->name(".edit")->whereNumber("id");
             Route::get("/limits", [StockLimitController::class, "limits"])->name(".limits");
 
+            Route::post("/update/{id}", [StockLimitController::class, "update"])->name(".update");
             Route::post("/filter", [StockLimitController::class, "filter"])->name(".filter");
             Route::post("/", [StockLimitController::class, "store"])->name(".store");
             Route::delete("/{id}", [StockLimitController::class, "delete"])->name(".delete");
