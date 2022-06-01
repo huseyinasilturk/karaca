@@ -23,7 +23,7 @@
             <div class="row ps-2 pe-2">
                 <label for="colFormLabel" class="col-sm-3 col-form-label">Gelir Yılı</label>
                 <div class="col-sm-9">
-                    <input type="number" id="year" class="form-control" onkeyup="expenseYear(this)" min="1900" max="2099" step="1" value="2016" />
+                    <input type="number" id="gelirYear" class="form-control" onkeyup="gelirYear(this)" min="1900" max="2099" step="1" value="{{ now()->year }}" />
                 </div>
             </div>
         </div>
