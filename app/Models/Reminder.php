@@ -9,5 +9,5 @@ class Reminder extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['date', 'title', 'detail', 'active', "status"];
+    protected $fillable = ['date', 'title', 'detail',  "status"];
 }

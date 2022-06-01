@@ -43,14 +43,19 @@
                             <span class="align-middle">Filter</span>
                         </h5>
                         <div class="form-check mb-1">
-                            <input type="checkbox" class="form-check-input select-all" id="select-all" checked />
+                            <input type="checkbox" class="form-check-input select-all" id="select-all" />
                             <label class="form-check-label" for="select-all">View All</label>
                         </div>
                         <div class="calendar-events-filter">
                             <div class="form-check form-check-primary mb-1">
-                                <input type="checkbox" class="form-check-input input-filter" id="business"
-                                    data-value="business" />
-                                <label class="form-check-label" for="business">Business</label>
+                                <input type="checkbox" class="form-check-input input-filter" id="select-all"
+                                    data-value="select-all" />
+                                <label class="form-check-label" for="select-all">Business</label>
+                            </div>
+                            <div class="form-check form-check-success mb-1">
+                                <input type="checkbox" class="form-check-input input-filter" id="holiday"
+                                    data-value="holiday">
+                                <label class="form-check-label" for="holiday">Holiday</label>
                             </div>
                         </div>
                     </div>
