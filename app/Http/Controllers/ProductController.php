@@ -81,10 +81,11 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $Product = Product::whereId($id)->with('productFileData', 'productCompanyGet')->first();
-        $Product->productCompanyGet = $Product->productCompanyGet->keyBy('company_id');
+        $Product = Product::whereId($id)->with('productFileData', 'productCompanyGetAll')->first();
+        $Product->productCompanyGetAll = $Product->productCompanyGetAll->keyBy('company_id');
         $ProductTypeObjectives = Objective::whereName("productType")->get();
         $Company = Company::all();
+        // dd($Product);
         return view('live.product.edit', compact('Product', 'ProductTypeObjectives', 'Company'));
     }
 

@@ -18,8 +18,7 @@ class ExpenseStatementsController extends Controller
         // SELECT * FROM expense_statements e INNER JOIN objectives o ON e.expense_type_id = o.id
         // SELECT * FROM expense_statements AS es JOIN objectives o ON es.expense_type_id = o.id
 
-        $ExpenseObjective = DB::select("SELECT * FROM expense_statements AS e INNER JOIN objectives AS o ON e.expense_type_id = o.id");
-        // dd($ExpenseObjective);
+        $ExpenseObjective = DB::select("SELECT e.id as aid , e.* , o.* FROM expense_statements AS e LEFT JOIN objectives AS o ON e.expense_type_id = o.id");
 
         $totalSum = DB::select("SELECT MONTH(expense_date) AS mouth, YEAR(expense_date) AS YEAR, SUM(expense_statements.price) AS totalSum
         FROM expense_statements
@@ -50,7 +49,7 @@ class ExpenseStatementsController extends Controller
 
         $incomeFilter = ExpenseStatement::query();
 
-        $incomeFilter = $incomeFilter->join('objectives', 'expense_statements.expense_type_id', '=', 'objectives.id');
+        $incomeFilter = $incomeFilter->select("objectives.*", "expense_statements.*", "expense_statements.id as aid")->leftJoin('objectives', 'expense_statements.expense_type_id', '=', 'objectives.id');
 
         $incomeFilter = $incomeFilter->where("company_id", "=", auth()->user()->company_id);
 
