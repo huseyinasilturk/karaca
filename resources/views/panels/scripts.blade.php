@@ -29,27 +29,30 @@ crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 @yield('page-script')
 <script>
-            $(function() {
-                let ip_address = '127.0.0.1';
-                let socket_port = '9699';
-                let socket = io(ip_address + ':' + socket_port);
-                let handleLocalStorage = $("<div>"+(localStorage.getItem("notification")!=null ? localStorage.getItem("notification") : "")+"</div>");
-                $(".notifications_navbar").html(handleLocalStorage.html());
+    $(function() {
+        let ip_address = '127.0.0.1';
+        let socket_port = '9699';
+        let socket = io(ip_address + ':' + socket_port);
+        let handleLocalStorage = $("<div>" + (localStorage.getItem("notification") != null ? localStorage
+            .getItem("notification") : "") + "</div>");
+        $(".notifications_navbar").html(handleLocalStorage.html());
 
-                socket.on('getStockServer', (message,id,companyId) => {
+        socket.on('getStockServer', (message, id, companyId) => {
 
-                    const  companyIdServer = {{!empty(auth()->user()->company_id) ? auth()->user()->company_id : -1}};
+            const companyIdServer =
+                {{ !empty(auth()->user()->company_id) ? auth()->user()->company_id : -1 }};
 
-                    if (companyId == companyIdServer) {
+            if (companyId == companyIdServer) {
 
-                        let handleLocalStorage = $("<div>"+(localStorage.getItem("notification")!=null ? localStorage.getItem("notification") : "")+"</div>");
+                let handleLocalStorage = $("<div>" + (localStorage.getItem("notification") != null ?
+                    localStorage.getItem("notification") : "") + "</div>");
 
-                        let handleLocalStorageLength =  handleLocalStorage.find("a").length;
-                        if (handleLocalStorageLength > 4) {
-                            handleLocalStorage.find(a).eq(0).remove();
-                        }
+                let handleLocalStorageLength = handleLocalStorage.find("a").length;
+                if (handleLocalStorageLength > 4) {
+                    handleLocalStorage.find("a").eq(0).remove();
+                }
 
-                        let stockNotification = $(`
+                let stockNotification = $(`
                     <a class="d-flex" href="javascript:void(0)">
                         <div class="list-item d-flex align-items-start">
                             <div class="me-1">
@@ -64,30 +67,104 @@ crossorigin="anonymous" referrerpolicy="no-referrer"></script>
                             </div>
                         </div>
                     </a>`);
-                    handleLocalStorage.append(stockNotification);
-                    localStorage.setItem("notification",handleLocalStorage.html());
+                handleLocalStorage.append(stockNotification);
+                localStorage.setItem("notification", handleLocalStorage.html());
 
 
-                    $(".notifications_navbar").html(handleLocalStorage.html());
+                $(".notifications_navbar").html(handleLocalStorage.html());
 
-                        notificationHam("Stok Uyarısı",message,"error",2000)
-                    id.map((val)=>{
-                        $("span[pro_id='"+val["id"]+"']").html(val["adet"])
-                    })
-                    }
-let count = 0;
+                notificationHam("Stok Uyarısı", message, "error", 2000)
+                id.map((val) => {
+                    $("span[pro_id='" + val["id"] + "']").html(val["adet"])
+                })
+            }
+
+        });
+
+        let count = 0;
 
         setInterval(() => {
             count++;
             socket.emit('reminderServerSend', "sadsad" + count);
-            axios.get("reminder/notifications").then(res => console.log(res));
-        }, 10000);
+            axios.get("reminder/notifications").then(res => {
+                console.log(res);
+                let handleLocalStorage = $("<div>" + (localStorage.getItem("notification") !=
+                    null ?
+                    localStorage.getItem("notification") : "") + "</div>");
+
+                let handleLocalStorageLength = handleLocalStorage.find("a").length;
+                if (handleLocalStorageLength > 4) {
+                    handleLocalStorage.find("a").eq(0).remove();
+                }
+
+                let message = ""
+
+                res.data.map(val => {
+                    message += val.title + "<br>"
+                })
+
+                let stockNotification = $(`
+                    <a class="d-flex" href="javascript:void(0)" onclick="modalShowReminder()" >
+                        <div class="list-item d-flex align-items-start">
+                            <div class="me-1">
+                                <div class="avatar bg-light-primary">
+                                    <div class="avatar-content"><i class="avatar-icon"
+                                            data-feather="alert-triangle"></i></div>
+                                </div>
+                            </div>
+                            <div class="list-item-body flex-grow-1">
+                                <p class="media-heading"><span class="fw-bolder">Hatırlatıcı Uyarısı</span>
+                                </p><small class="notification-text"> ${message}</small>
+                            </div>
+                        </div>
+                    </a>`);
+                handleLocalStorage.append(stockNotification);
+                localStorage.setItem("notification", handleLocalStorage.html());
+
+                $(".notifications_navbar").html(handleLocalStorage.html());
+
+                notificationHam("Hatırlatıcı Uyarısı", message, "error", 2000);
+
+                id.map((val) => {
+                    $("span[pro_id='" + val["id"] + "']").html(val["adet"])
+                })
+            });
+        }, 1000 * 60 * 10);
 
         socket.on('reminderServerListen', (message) => {
             console.log(message);
         });
-                });
 
     });
+
+    function modalShowReminder(test) {
+        axios.get("reminder/notifications").then(res => {
+            console.log("res", res);
+            $("#exampleModal").modal("show");
+        })
+    }
 </script>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" onClick='$("#exampleModal").modal("hide")'
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onClick='$("#exampleModal").modal("hide")'>Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- END: Page JS-->
