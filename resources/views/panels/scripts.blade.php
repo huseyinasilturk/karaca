@@ -1,3 +1,23 @@
+<div class="modal fade" id="reminderModal" tabindex="-1" role="dialog" aria-labelledby="reminderModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reminderModalLabel">Hatırlatıcılar</h5>
+                <button type="button" class="close" onClick='$("#reminderModal").modal("hide")'
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="reminder-form">
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- BEGIN: Vendor JS-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
 integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
@@ -140,31 +160,33 @@ crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     function modalShowReminder(test) {
         axios.get("reminder/notifications").then(res => {
             console.log("res", res);
-            $("#exampleModal").modal("show");
+
+            if (res.data.length === 0) {
+                $("#reminder-form").append("<p>Aktif hatırlatıcı bulunmamakta</p>")
+            } else {
+                res.data.map((val) => {
+                    const box = $(`<div class="d-flex justify-content-between align-items-center pt-1 reminder-item">
+                                    <span>${val.title}</span>
+                                    <div class="d-flex flex-column">
+                                        <div class="form-check form-check-primary form-switch">
+                                            <input type="checkbox" onchange="statusHandler(this,${val.id})" checked="true" class="form-check-input">
+                                        </div>
+                                    </div>
+                                </div><hr/>`)
+                    $("#reminder-form").append(box)
+                })
+            }
+
+            $("#reminderModal").modal("show");
         })
+    }
+
+    function statusHandler(el, id) {
+        axios.get("reminder/change-status/" + id).then(res => res.status === 200 && $(el).closest(".reminder-item")
+            .remove())
     }
 </script>
 
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                <button type="button" class="close" onClick='$("#exampleModal").modal("hide")'
-                    aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onClick='$("#exampleModal").modal("hide")'>Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 <!-- END: Page JS-->
