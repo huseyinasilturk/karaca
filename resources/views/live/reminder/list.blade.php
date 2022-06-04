@@ -103,7 +103,7 @@
                             </div>
                             <div class="mb-1">
                                 <div class="d-flex flex-column">
-                                    <label class="form-check-label mb-50" for="status">Statü</label>
+                                    <label class="form-check-label mb-50" for="status">Bildirimleri Aç</label>
                                     <div class="form-check form-check-primary form-switch">
                                         <input type="checkbox" name="status" value="1" checked
                                             onchange="switchHandler(this)" class="form-check-input" id="status" />
