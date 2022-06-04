@@ -201,6 +201,7 @@ Route::group(['middleware' => ['web', 'activity']], function () {
             Route::post("/delete", [ReminderController::class, "destroy"])->name(".delete");
             Route::post("/events", [ReminderController::class, "events"])->name(".events");
             Route::get("/notifications", [ReminderController::class, "notifications"])->name(".notifications");
+            Route::get("/change-status/{id}", [ReminderController::class, "changeStatus"])->name(".changeStatus")->whereNumber("id");
         });
 
         // İzinler prefix

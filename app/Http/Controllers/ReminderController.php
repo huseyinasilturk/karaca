@@ -47,28 +47,6 @@ class ReminderController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Reminder  $reminder
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Reminder $reminder)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Reminder  $reminder
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Reminder $reminder)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateReminderRequest  $request
@@ -116,9 +94,28 @@ class ReminderController extends Controller
         }
     }
 
-    function events()
+    public function events()
     {
         $Reminder = Reminder::all();
         return response()->json(['message' => 'Successful :)', 'events' => $Reminder, 'status' => 201]);
+    }
+
+    public function changeStatus($id)
+    {
+        $reminder = Reminder::find($id);
+
+        if (!$reminder) {
+            return response()->json(["message" => "Hatırlatıcı bulunamadı"], 404);
+        }
+
+        $newStatus = $reminder->status == "1" ? "0" : "1";
+
+        $changeStatus = $reminder->update(["status" => $newStatus]);
+
+        if (!$changeStatus) {
+            return response()->json(["message" => "Hatırlatıcı statüsü güncellenemedi"], 404);
+        }
+
+        return response()->json(["message" => "Hatırlatıcı statüsü güncellendi"], 200);
     }
 }
