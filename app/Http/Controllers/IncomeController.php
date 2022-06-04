@@ -20,7 +20,10 @@ class IncomeController extends Controller
 
 
 
-        $income = IncomeStatement::select(["income_statements.*", "products.name", "customers.id as customer_id", "customers.name as customer_name"])->leftjoin("products", "products.id", "=", "income_statements.product_id")->leftjoin("customers", "customers.id", "=", "income_statements.customer_id")->where("company_id", "=", auth()->user()->company_id)->get();
+        $income = IncomeStatement::select(["income_statements.*","users.user_name", "products.name", "customers.id as customer_id", "customers.name as customer_name"])
+        ->leftjoin("products", "products.id", "=", "income_statements.product_id")->leftjoin("customers", "customers.id", "=", "income_statements.customer_id")
+        ->leftJoin("users","users.id","=","income_statements.sell_person_id")
+        ->where("income_statements.company_id", "=", auth()->user()->company_id)->get();
         $customer = Customer::all();
 
         $totalSum = DB::select("SELECT MONTH(created_at) AS mouth, YEAR(created_at) AS YEAR, SUM(income_statements.price * income_statements.amount) AS totalSum
@@ -41,7 +44,10 @@ class IncomeController extends Controller
 
         $incomeFilter = IncomeStatement::query();
 
-        $incomeFilter = $incomeFilter->select(["income_statements.*", "products.name", "customers.id as customer_id", "customers.name as customer_name"])->leftjoin("products", "products.id", "=", "income_statements.product_id")->leftjoin("customers", "customers.id", "=", "income_statements.customer_id")->where("company_id", "=", auth()->user()->company_id);
+        $incomeFilter = $incomeFilter->select(["income_statements.*","users.user_name", "products.name", "customers.id as customer_id", "customers.name as customer_name"])
+        ->leftjoin("products", "products.id", "=", "income_statements.product_id")->leftjoin("customers", "customers.id", "=", "income_statements.customer_id")
+        ->leftJoin("users","users.id","=","income_statements.sell_person_id")
+        ->where("income_statements.company_id", "=", auth()->user()->company_id);
 
         if ($request->customer != -2) {
             $incomeFilter->where("income_statements.customer_id", "=", $request->customer);
@@ -52,8 +58,11 @@ class IncomeController extends Controller
         if ($request->date != null) {
             $incomeFilter->where("income_statements.created_at", "like", "%" . $request->date . "%");
         }
+        if ($request->day != -2) {
+            $incomeFilter->where("income_statements.created_at", "like", "%-" . $request->day . "%");
+        }
 
-        return response()->json(["income" => $incomeFilter->get()]);
+        return response()->json(["income" => $incomeFilter->get(),"query"=>DB::getQueryLog(),"req"=>$request->all()]);
     }
 
     public function select(Request $request)

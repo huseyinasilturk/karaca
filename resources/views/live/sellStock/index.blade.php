@@ -111,7 +111,7 @@
                                 <label class="section-label form-label mb-1">Satış Faturası</label>
                                 <div class="col-md-12 mb-1 text-center">
                                     <label class="form-label" for="select2-basic">Müşteri Seçin</label>
-                                    <select class="select2 form-select" name="costumer">
+                                    <select class="select2 form-select" name="costumer_id">
                                         @foreach ($customer as $value)
                                             <option value="{{ $value->id }}"> {{ $value->name }} </option>
                                         @endforeach
@@ -217,11 +217,13 @@
             let kalanStok = stok - adet;
             $(this).closest(".card").find(".stok").html(kalanStok);
 
-            productidNow = $(this).attr("id");
-            productPriceNow = parseInt($(this).closest(".card").find("input[name='price']").val());
+            productidNow = $(this).attr("id")+"-"+parseFloat($(this).closest(".card").find("input[name='price']").val());
+            productidNow = productidNow.replace(".","");
+            productPriceNow = parseFloat($(this).closest(".card").find("input[name='price']").val());
             productNumberControl = $('#sellstock tr[productID=' + productidNow + ']').length;
             if (productNumberControl > 0) {
-                productNumber = parseInt($('#sellstock tr[productID=' + productidNow + ']').find(".productNumber")
+
+                productNumber = parseFloat($('#sellstock tr[productID=' + productidNow + ']').find(".productNumber")
                     .text());
                 newProductNumber = (productNumber + adet);
                 newProductPrice = (productPriceNow * newProductNumber);
@@ -238,7 +240,7 @@
             } else {
 
                 const tableRow = `
-                <tr productId="${$(this).attr("id")}">
+                <tr productId="${($(this).attr("id")+"-"+parseFloat($(this).closest(".card").find("input[name='price']").val())).replace(".","")}">
                     <td class="productName">
                         ${$(this).attr("name")}
                     </td>
@@ -246,7 +248,7 @@
                         ${adet}
                     </td>
                     <td class="productPrice">
-                        ${parseInt($(this).closest(".card").find("input[name='price']").val())*adet}
+                        ${parseFloat($(this).closest(".card").find("input[name='price']").val())*adet}
                     </td>
                     <td class="productAction">
                         <button class="btn bg-transparent p-0" onclick="productDelete(this)">

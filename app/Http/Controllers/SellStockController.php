@@ -65,7 +65,6 @@ class SellStockController extends Controller
     public function store(Request $request)
     {
 
-
         $test = [];
 
 
@@ -92,7 +91,9 @@ class SellStockController extends Controller
                 "price"    => $product->price,
                 "amount"    => $product->adet,
                 "detail"    => "Ürün Satış İşlemi",
-                "costumer_id" => $request->costumer
+                "company_id"=> auth()->user()->company_id,
+                "customer_id" => $request->costumer_id,
+                "sell_person_id" => auth()->user()->id
             ]);
         }
         $query = "SELECT c.name  AS c_name , sl.limit, products.*,COALESCE(SUM(stocks.amount),0) as amount

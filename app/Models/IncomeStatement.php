@@ -15,6 +15,7 @@ class IncomeStatement extends Model
         "amount"	,
         "detail"	,
         "company_id"	,
+        "sell_person_id",
         "customer_id"
     ];
 }

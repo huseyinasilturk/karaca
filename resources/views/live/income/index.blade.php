@@ -70,7 +70,7 @@
 
 
                     <div class="row m-2">
-                        <div class="col-4">
+                        <div class="col-3">
                             <div class="row">
                                 <label for="colFormLabelSm" class="col-sm-4 col-form-label-lg">Müşteriler</label>
                                 <div class="col-sm-8">
@@ -86,7 +86,23 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
+                            <div class="row">
+                                <label for="colFormLabelSm" class="col-sm-4 col-form-label-lg">Günlük</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select form-select-lg" name="dat" onchange="filterIncome()">
+                                        <option value="-2">Seçiniz</option>
+                                        @for ($i = 1; $i < 32; $i++)
+                                        <option
+                                            value="{{ $i<10 ? "0".$i : $i }}">
+                                            {{ $i }}
+                                        </option>
+                                        @endfor
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3">
                             <div class="row">
                                 <label for="colFormLabelSm" class="col-sm-4 col-form-label-lg">Ay</label>
                                 <div class="col-sm-8">
@@ -95,7 +111,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <div class="row">
                                 <label for="colFormLabelSm" class="col-sm-4 col-form-label-lg">Ürün</label>
                                 <div class="col-sm-8">
@@ -125,6 +141,7 @@
                             <th>Adet</th>
                             <th>T. Fiyat</th>
                             <th>Müşteri</th>
+                            <th>Satan Kullanıcı</th>
                             <th>İşlemler</th>
                         </tr>
                     </thead>
@@ -138,6 +155,7 @@
                                 <td>{{ $value->amount }}</td>
                                 <td>{{ $value->amount * $value->price }}</td>
                                 <td>{{ $value->customer_name ? $value->customer_name : 'Müşterisiz' }}</td>
+                                <td>{{ $value->user_name ? $value->user_name : 'Üyesiz' }}</td>
                                 <td>
                                     @if ($value->customer_name == '')
                                         <button class="btn bg-transparent p-0" onclick="ıncomeStatementDelete(this)">
@@ -370,6 +388,7 @@
 
                 let product = $("select[name='product']").val();
                 let date = $("input[name='date']").val();
+                let day = $("select[name='dat']").val();
                 let customer = $("select[name='customer']").val();
 
                 cardRendered();
@@ -377,7 +396,8 @@
                 axios.post(route("income.filter"), {
                     product,
                     customer,
-                    date
+                    date,
+                    day
                 }).then((res) => {
                     $("#income_table").find("tbody").html("");
 
@@ -408,6 +428,7 @@
                             <td>${value.amount}</td>
                             <td>${value.amount*value.price}</td>
                             <td>${(value.customer_name == null ? "---" : value.customer_name)}</td>
+                            <td>${(value.user_name == null ? "---" : value.user_name)}</td>
                             <td>${islemlerTd}</td>
                         </tr>
 `

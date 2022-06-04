@@ -118,27 +118,21 @@ class UserController extends Controller
     {
 
 
-        $information = Information::create($request->only("name", "surname", "birthday"));
+        // $information = Information::create($request->only("name", "surname", "birthday"));
 
         $user = User::find($id);
+        $information = Information::find($user->information_id)->update($request->only("name", "surname", "birthday"));
 
         $user->update($request->only("user_name", "email", "company_id"));
 
-        $wage = Wage::where("user_id", "=", $id)->where("wage_price", "=", $request->wage)->where("status", "=", 1);
+        $wage = Wage::where("user_id", "=", $id)->update(["status"=> 0]);
 
-        $test = $wage->get()->first();
-
-        if ($test->wage_price == $request->wage) {
-            return response()->json(["status" => $wage->get(), "test" => 1]);
-        }
-
-        return response()->json(["status" => $test]);
-
-        $information = Information::find($user->information_id)->update($request->only("name", "surname", "birthday"));
-
-        Wage::where("user_id", "=", $user->id)->update(["status" => 0]);
-
-        $assingRole = $user->syncRoles($request->user_role);
+        $wage = Wage::create([
+            "wage_date"=>Carbon::now(),
+            "user_id"=>$id,
+            "wage_price"=>$request->wage,
+            "status"=>1
+        ]);
 
         return response()->json(["status" => 202]);
     }
