@@ -37,9 +37,13 @@ use App\Http\Controllers\StockTransfer;
 |--------------------------------------------------------------------------
 |
 |
-*/
-
-Route::group(['prefix' => 'activity', 'namespace' => 'jeremykenedy\LaravelLogger\App\Http\Controllers'], function () {
+*/  Route::prefix("auth")->name("auth")->group(function () {
+    Route::post("login", [AuthenticationController::class, 'loginUser'])->name(".loginUser");
+    Route::get("login", [AuthenticationController::class, 'login'])->name(".login");
+    Route::get("logout", [AuthenticationController::class, 'logout'])->name(".logout");
+});
+Route::group(["middleware" => "auth"], function () {
+Route::group(['prefix' => 'activity', 'namespace' => 'jeremykenedy\LaravelLogger\App\Http\Controllers',"middleware" => "auth"], function () {
 
     // Dashboards
     Route::get('/', 'LaravelLoggerController@showAccessLog')->name('activity');
@@ -58,11 +62,7 @@ Route::group(['prefix' => 'activity', 'namespace' => 'jeremykenedy\LaravelLogger
 Route::group(['middleware' => ['web', 'activity']], function () {
 
     // Auth prefix
-    Route::prefix("auth")->name("auth")->group(function () {
-        Route::post("login", [AuthenticationController::class, 'loginUser'])->name(".loginUser");
-        Route::get("login", [AuthenticationController::class, 'login'])->name(".login");
-        Route::get("logout", [AuthenticationController::class, 'logout'])->name(".logout");
-    });
+
 
     Route::group(["middleware" => "auth"], function () {
         Route::prefix("objective")->name("objective")->group(function () {
@@ -455,4 +455,5 @@ Route::group(['middleware' => ['web', 'activity']], function () {
     Route::get('/maps/leaflet', [ChartsController::class, 'maps_leaflet'])->name('map-leaflet');
 
     Route::get('lang/{locale}', [LanguageController::class, 'swap']);
+});
 });
