@@ -109,6 +109,13 @@
                                             onchange="switchHandler(this)" class="form-check-input" id="status" />
                                     </div>
                                 </div>
+                                <div class="d-flex flex-column pt-3">
+                                    <label class="form-check-label mb-50" for="status">1 Yıl boyunca</label>
+                                    <div class="form-check form-check-primary form-switch">
+                                        <input type="checkbox" name="year" value="1"
+                                            onchange="switchHandler(this)" class="form-check-input" id="year" />
+                                    </div>
+                                </div>
                             </div>
                             <div class="mb-1 d-flex">
                                 <button type="submit" class="btn btn-primary add-event-btn me-1">Ekle</button>
