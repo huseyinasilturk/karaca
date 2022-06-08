@@ -27,7 +27,6 @@
         .e-cols {
             padding: 0 10px;
         }
-
     </style>
 
 @endsection
@@ -217,8 +216,9 @@
             let kalanStok = stok - adet;
             $(this).closest(".card").find(".stok").html(kalanStok);
 
-            productidNow = $(this).attr("id")+"-"+parseFloat($(this).closest(".card").find("input[name='price']").val());
-            productidNow = productidNow.replace(".","");
+            productidNow = $(this).attr("id") + "-" + parseFloat($(this).closest(".card").find(
+                "input[name='price']").val());
+            productidNow = productidNow.replace(".", "");
             productPriceNow = parseFloat($(this).closest(".card").find("input[name='price']").val());
             productNumberControl = $('#sellstock tr[productID=' + productidNow + ']').length;
             if (productNumberControl > 0) {
@@ -251,9 +251,9 @@
                         ${parseFloat($(this).closest(".card").find("input[name='price']").val())*adet}
                     </td>
                     <td class="productAction">
-                        <button class="btn bg-transparent p-0" onclick="productDelete(this)">
+                        <span class="btn bg-transparent p-0" onclick="productDelete(this)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash font-small-4 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        </button>
+                        </span>
                     </td>
                 </tr>
             `;
@@ -284,6 +284,8 @@
             productid = $(ths).closest("tr").attr("productid");
             productClass = ".productList" + productid;
             productValue = $(productClass).val();
+            console.log("productid");
+            console.log(productid);
             const productValueObj = JSON.parse(productValue);
             productNumber = productValueObj.adet;
             productListClass = ".productCard" + productid;
