@@ -125,13 +125,13 @@ class UserController extends Controller
 
         $user->update($request->only("user_name", "email", "company_id"));
 
-        $wage = Wage::where("user_id", "=", $id)->update(["status"=> 0]);
+        $wage = Wage::where("user_id", "=", $id)->update(["status" => 0]);
 
         $wage = Wage::create([
-            "wage_date"=>Carbon::now(),
-            "user_id"=>$id,
-            "wage_price"=>$request->wage,
-            "status"=>1
+            "wage_date" => Carbon::now(),
+            "user_id" => $id,
+            "wage_price" => $request->wage,
+            "status" => 1
         ]);
 
         return response()->json(["status" => 202]);
@@ -225,7 +225,8 @@ class UserController extends Controller
     public function payWage(Request $request, $id)
     {
         $userCompany = User::find($id)->company_id;
-        $wageExpense = ExpenseStatement::create(["table_name" => "users", "table_id" => $id, "expense_date" => $request->date, "created_at" => $request->date, "price" => $request->wage, "detail" => "Personel maaşı yatırıldı", "company_id" => $userCompany]);
+        $information = Information::find($id);
+        $wageExpense = ExpenseStatement::create(["table_name" => "users", "table_id" => $id, "expense_date" => $request->date, "created_at" => $request->date, "price" => $request->wage, "detail" => $information["name"] . " " . $information["surname"] . " Personel maaşı yatırıldı", "company_id" => $userCompany]);
 
         return response()->json($wageExpense, 201);
     }

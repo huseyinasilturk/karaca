@@ -29,21 +29,20 @@ class SellStockController extends Controller
         DB::enableQueryLog();
         $customer = Customer::all();
         $stocks =  Product::select(["products.*", DB::raw("COALESCE(SUM(stocks.amount),0) as amount"), DB::raw("COALESCE(list_prices.list_price,0) as list_price")])
-        ->with("productFileData")
-        ->leftjoin("stocks", "products.id", "stocks.product_id")
-        ->leftjoin("list_prices", "list_prices.product_id", "products.id")
-        ->where("stocks.company_id", "=", auth()->user()->company_id)
-        ->where(function ($query)
-        {
-            $query->where("list_prices.company_id", "=", auth()->user()->company_id)->orWhereNull("list_prices.company_id");
-        })
-        ->groupBy("stocks.product_id")
-        ->get();
+            ->with("productFileData")
+            ->leftjoin("stocks", "products.id", "stocks.product_id")
+            ->leftjoin("list_prices", "list_prices.product_id", "products.id")
+            ->where("stocks.company_id", "=", auth()->user()->company_id)
+            ->where(function ($query) {
+                $query->where("list_prices.company_id", "=", auth()->user()->company_id)->orWhereNull("list_prices.company_id");
+            })
+            ->groupBy("stocks.product_id")
+            ->get();
 
         // return $stocks;
         // return  DB::getQueryLog();
 
-        return view("live.sellStock.index", compact("stocks", "breadcrumbs","customer"));
+        return view("live.sellStock.index", compact("stocks", "breadcrumbs", "customer"));
     }
 
     /**
@@ -91,8 +90,8 @@ class SellStockController extends Controller
                 "price"    => $product->price,
                 "amount"    => $product->adet,
                 "detail"    => "Ürün Satış İşlemi",
-                "company_id"=> auth()->user()->company_id,
-                "customer_id" => $request->costumer_id,
+                "company_id" => auth()->user()->company_id,
+                "customer_id" => (!empty($request->costumer_id) ? $request->costumer_id : 0),
                 "sell_person_id" => auth()->user()->id
             ]);
         }
@@ -101,11 +100,10 @@ class SellStockController extends Controller
         LEFT JOIN stocks ON products.id = stocks.product_id
         LEFT JOIN stock_limits sl ON sl.product_id = products.id
         LEFT JOIN companies c ON c.id = stocks.company_id
-        WHERE stocks.company_id = ".auth()->user()->company_id." AND ( sl.limit > amount AND sl.company_id =".auth()->user()->company_id.") GROUP BY products.id"
-        ;
-        $stockLimits = DB::select($query );
+        WHERE stocks.company_id = " . auth()->user()->company_id . " AND ( sl.limit > amount AND sl.company_id =" . auth()->user()->company_id . ") GROUP BY products.id";
+        $stockLimits = DB::select($query);
 
-        return response()->json(["success" => 202,"stockLimit"=>$stockLimits,"query"=>$query]);
+        return response()->json(["success" => 202, "stockLimit" => $stockLimits, "query" => $query]);
     }
 
     /**

@@ -491,7 +491,7 @@
                     "slug": "",
                     "submenu": [
                         {
-                            "name": "Welcome",
+                            "name": "Hoşgeldiniz",
                             "slug": "mail-welcome",
                             "url": "https://pixinvent.com/demo/vuexy-mail-template/mail-welcome.html",
                             "newTab": true
