@@ -470,6 +470,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 method: "POST",
                 data: $(".event-form").serialize(),
                 success: (res) => {
+                    if (res.year == 1) {
+                        Swal.fire(
+                            "Başarılı!",
+                            "1 yıl boyunca her ayın o gününe hatırlatıcı eklendi ( Sayfa yenilenmek zorunda lütfen bekle).",
+                            "success"
+                        );
+                        setTimeout(() => {
+                            location.reload();
+                        }, 3000);
+                    }
                     if (res.status === 201) {
                         newEvent.id = res.id;
                         addEvent(newEvent);
