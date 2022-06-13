@@ -191,8 +191,6 @@
 
                         socket.emit('sendToStockServer', message, id, companyId);
                     }
-                    console.log("res.data");
-                    console.log(res.data);
                     if (res.data.success == '202') {
                         $('#sellstock tr').remove();
                         productPriceSum();
@@ -205,6 +203,8 @@
         $(".clickSub").on('click', function(e) {
             let stok = parseInt($(this).closest(".card").find(".stok").html());
             let adet = parseInt($(this).closest(".card").find(".adet").val());
+            console.log("adet");
+            console.log(adet);
             if (adet == 0) {
                 alert("Ürün Adedi 0'dan büyük olmalı");
                 return;
@@ -269,7 +269,28 @@
                 $("#sellstock").append(tableRow);
             }
             productPriceSum();
+            productPriceJson();
         })
+
+        function productPriceJson(ths) {
+            $('#satisYap input').remove();
+            $('#sellstock tr').each(function(a, b) {
+                dataid = $(b).attr("productid");
+                dataid = dataid.split("-");
+                id = dataid[0];
+                productPrice = parseFloat($(b).find(".productPrice").html());
+                productNumber = parseFloat($(b).find(".productNumber").html());
+                priceUnit = (productPrice / productNumber);
+                let test = {
+                    adet: productNumber,
+                    id: id,
+                    price: priceUnit
+                };
+                let value = JSON.stringify(test);
+                priceInput = $(`<input type="hidden" name="product[]" class="productList${id}" value='${value}'>`);
+                $('.price-details').after(priceInput);
+            });
+        }
 
         function productPriceSum(ths) {
             priceTotal = 0;
@@ -281,11 +302,12 @@
         }
 
         function productDelete(ths) {
+            indexNo = $(ths).closest("tr").index();
             productid = $(ths).closest("tr").attr("productid");
+            productSplit = productid.split("-");
+            productid = productSplit[0];
             productClass = ".productList" + productid;
             productValue = $(productClass).val();
-            console.log("productid");
-            console.log(productid);
             const productValueObj = JSON.parse(productValue);
             productNumber = productValueObj.adet;
             productListClass = ".productCard" + productid;
@@ -293,7 +315,8 @@
             newProductNumberSum = (productNumber + productListStockNumber);
             $(productListClass).find(".stok").text(newProductNumberSum);
             $(ths).closest("tr").remove();
-            $(productClass).remove();
+            $('#satisYap').find("input").eq(indexNo).remove();
+            // $(productClass).remove();
             productPriceSum();
         }
     </script>
