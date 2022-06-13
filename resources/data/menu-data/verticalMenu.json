@@ -29,13 +29,15 @@
                     "url": "company/",
                     "name": "Firma Listele",
                     "icon": "list",
-                    "slug": "company.index"
+                    "slug": "company.index",
+                    "permission": "company.read"
                 },
                 {
                     "url": "company/add",
                     "name": "Firma Ekle",
                     "icon": "plus",
-                    "slug": "company.create"
+                    "slug": "company.create",
+                    "permission": "company.add"
                 }
             ]
         },
