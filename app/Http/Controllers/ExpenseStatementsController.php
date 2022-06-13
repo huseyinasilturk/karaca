@@ -12,7 +12,9 @@ class ExpenseStatementsController extends Controller
 {
     public function index()
     {
-
+        if(!auth()->user()->can("expense.read")) {
+            return redirect("/");
+        }
         $ExpenseType = Objective::where("name", "=", "expenseType")->get();
         // $ExpenseStatement = ExpenseStatement::where("company_id", "=", auth()->user()->company_id)->get();
         // SELECT * FROM expense_statements e INNER JOIN objectives o ON e.expense_type_id = o.id

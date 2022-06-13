@@ -51,13 +51,15 @@
                     "url": "income/",
                     "name": "Gelir Listesi",
                     "icon": "list",
-                    "slug": "income.index"
+                    "slug": "income.index",
+                    "permission": "income.read"
                 },
                 {
                     "url": "expenseStatements/",
                     "name": "Gider Listesi",
                     "icon": "list",
-                    "slug": "expenseStatements.index"
+                    "slug": "expenseStatements.index",
+                    "permission": "expense.read"
                 }
             ]
         },

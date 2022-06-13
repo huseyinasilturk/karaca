@@ -17,7 +17,9 @@ class IncomeController extends Controller
      */
     public function index()
     {
-
+        if(!auth()->user()->can("expense.read")) {
+            return redirect("/");
+        }
 
 
         $income = IncomeStatement::select(["income_statements.*","users.user_name", "products.name", "customers.id as customer_id", "customers.name as customer_name"])
