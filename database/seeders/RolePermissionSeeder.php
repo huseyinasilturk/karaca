@@ -42,7 +42,16 @@ class RolePermissionSeeder extends Seeder
             $this->getPermissionArr("objective.add", "Nesne Ekle"),
             $this->getPermissionArr("objective.read", "Nesne Oku"),
             $this->getPermissionArr("objective.update", "Nesne Güncelle"),
-            $this->getPermissionArr("objective.delete", "Nesne Sil")
+            $this->getPermissionArr("objective.delete", "Nesne Sil"),
+
+            // Personel yetkileri
+            $this->getPermissionArr("person.add", "Kullanıcı Ekle"),
+            $this->getPermissionArr("person.read", "Kullanıcı Oku"),
+            $this->getPermissionArr("person.update", "Kullanıcı Güncelle"),
+            $this->getPermissionArr("person.delete", "Kullanıcı Sil"),
+            $this->getPermissionArr("person.wage", "Kullanıcı Maaşı Ayarla"),
+            $this->getPermissionArr("person.export", "Kullanıcı Çıktı Al")
+
         ];
 
         $roles = [
