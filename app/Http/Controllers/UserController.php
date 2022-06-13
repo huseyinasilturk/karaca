@@ -31,6 +31,11 @@ class UserController extends Controller
      */
     public function list()
     {
+
+        if(!auth()->user()->can("person.read")) {
+            return back();
+        }
+
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Personeller"], ['name' => "Liste"]
         ];

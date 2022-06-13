@@ -10,6 +10,10 @@ class CompanyController extends Controller
 {
     public function index()
     {
+        if(!auth()->user()->can("company.read")) {
+            return back();
+        }
+
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Firmalar"], ['name' => "Firma Listele"]
         ];
@@ -24,6 +28,9 @@ class CompanyController extends Controller
 
     public function create()
     {
+        if(!auth()->user()->can("company.add")) {
+            return back();
+        }
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Firmalar"], ['name' => "Firma Ekle"]
         ];
@@ -64,6 +71,10 @@ class CompanyController extends Controller
 
     public function edit($id)
     {
+        if(!auth()->user()->can("company.update")) {
+            return back();
+        }
+
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Firmalar"], ['name' => "Firma Güncelle"]
         ];
