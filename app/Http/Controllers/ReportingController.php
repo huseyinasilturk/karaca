@@ -31,7 +31,30 @@ class ReportingController extends Controller
         return response()->json(["data"=>$expense]);
     }
 
+    public function income()
+    {
 
+        $income = DB::select("
+        SELECT MONTH(created_at) as ay, SUM(price) * amount as fiyat
+        FROM income_statements
+        WHERE YEAR(created_at) = YEAR(NOW())
+        GROUP BY MONTH(created_at)
+        ");
+
+        return response()->json(["data"=>$income]);
+    }
+    public function filter2(Request $request)
+    {
+        $year = $request->year != null ? "AND YEAR(created_at) =". $request->year :" AND YEAR(created_at) = YEAR(NOW())";
+        $expense = DB::select("
+            SELECT MONTH(created_at) as ay, SUM(price) * amount as fiyat
+            FROM income_statements
+            WHERE 1=1 ". $year."
+            GROUP BY MONTH(created_at)
+        ");
+
+        return response()->json(["data"=>$expense]);
+    }
     public function filter(Request $request)
     {
         $type = ($request->type != null  ? " AND expense_type_id = ".$request->type  :  "" );

@@ -40,6 +40,30 @@
 
 
 
+function gelirYear(element) {
+    let val = $(element).val();
+    if (val.length == 4) {
+        let year = $("#gelirYear").val();
+        year = year.length == 4 ? year : null;
+        const cardBody = $(".gelirTablo").closest(".card-body").clone();
+        $(cardBody).html("");
+
+        axios.post(route("reporting.filter2"),{year}).then((res)=>{
+        const cloneCard =  $(".gelirTabloClone");
+        $(cloneCard).addClass("gelirTablo").removeClass("gelirTabloClone").removeClass("d-none");;
+        $(cardBody).append($(cloneCard));
+            data = res.data;
+            let ay = [];
+            let price = [];
+            res.data.data.map((val,index)=>{
+                ay.push(val.ay);
+                price.push(val.fiyat);
+            })
+            gelirTablo(ay,price);
+        });
+    }
+
+}
 
 
 
@@ -57,7 +81,7 @@ function expenseYear(element) {
 
         axios.post(route("reporting.filter"),{type,year}).then((res)=>{
         const cloneCard =  $(".giderTabloClone");
-        $(cloneCard).addClass("giderTablo").removeClass("giderTabloClone");
+        $(cloneCard).addClass("giderTablo").removeClass("giderTabloClone").removeClass("d-none");;
         $(cardBody).append($(cloneCard));
             data = res.data;
             let ay = [];
@@ -85,7 +109,7 @@ function expenseTypeChange(element)
 
     axios.post(route("reporting.filter"),{type,year}).then((res)=>{
     const cloneCard =  $(".giderTabloClone");
-    $(cloneCard).addClass("giderTablo").removeClass("giderTabloClone");
+    $(cloneCard).addClass("giderTablo").removeClass("giderTabloClone").removeClass("d-none");
     $(cardBody).append($(cloneCard));
         data = res.data;
         let ay = [];
@@ -100,6 +124,7 @@ function expenseTypeChange(element)
 
 
  cardList();
+ cardListGelir();
 
 function cardList() {
     axios.get(route("reporting.expense")).then((res)=>{
@@ -387,7 +412,7 @@ function giderKart (ay,price) {
             borderSkipped: 'bottom'
           }
         },
-        responsive: true,
+        responsive: false,
         maintainAspectRatio: false,
         responsiveAnimationDuration: 500,
         legend: {

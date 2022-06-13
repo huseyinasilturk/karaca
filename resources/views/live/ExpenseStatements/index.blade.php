@@ -95,7 +95,7 @@
                     <tbody>
 
                         @foreach ($ExpenseObjective as $value)
-                            <tr dataid="{{ $value->id }}">
+                            <tr dataid="{{ $value->aid }}">
                                 <td>{{ $value->detail }}</td>
                                 <td>{{ !empty($value->table_name) ? ($value->table_name != 'expense' ? $value->table_name : 'Diğer Gider') : 'Diğer Gider' }}
                                 </td>
@@ -361,7 +361,7 @@
                         $("#expenseStatements_table").find("tbody").append(
 
                             `
-                        <tr dataid="${value.id}">
+                        <tr dataid="${value.aid}">
                             <td>${value.detail}</td>
                             <td>${value.table_name}</td>
                             <td>${value.text1}</td>
