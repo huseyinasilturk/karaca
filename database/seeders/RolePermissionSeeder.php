@@ -50,7 +50,13 @@ class RolePermissionSeeder extends Seeder
             $this->getPermissionArr("person.update", "Kullanıcı Güncelle"),
             $this->getPermissionArr("person.delete", "Kullanıcı Sil"),
             $this->getPermissionArr("person.wage", "Kullanıcı Maaşı Ayarla"),
-            $this->getPermissionArr("person.export", "Kullanıcı Çıktı Al")
+            $this->getPermissionArr("person.export", "Kullanıcı Çıktı Al"),
+
+            // Gelir Gider yetkileri
+            $this->getPermissionArr("expense.read", "Gider Oku"),
+            $this->getPermissionArr("expense.delete", "Gider Sil"),
+            $this->getPermissionArr("income.read", "Gelir Oku"),
+            $this->getPermissionArr("income.delete", "Gelir Sil"),
 
         ];
 
