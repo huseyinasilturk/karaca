@@ -897,7 +897,7 @@
           "slug": "",
           "submenu": [
             {
-              "name": "Welcome",
+              "name": "Hoşgeldiniz",
               "slug": "mail-welcome",
               "icon": "circle",
               "url": "https://pixinvent.com/demo/vuexy-mail-template/mail-welcome.html",

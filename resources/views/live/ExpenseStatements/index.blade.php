@@ -99,7 +99,7 @@
                                 <td>{{ $value->detail }}</td>
                                 <td>{{ !empty($value->table_name) ? ($value->table_name != 'expense' ? $value->table_name : 'Diğer Gider') : 'Diğer Gider' }}
                                 </td>
-                                <td>{{ $value->text1 }}</td>
+                                <td>{{ $value->table_name == 'users' ? 'Maaş' : $value->text1 }}</td>
                                 <td>{{ $value->price }}</td>
                                 <td>
                                     @if ($value->table_name == 'expense')

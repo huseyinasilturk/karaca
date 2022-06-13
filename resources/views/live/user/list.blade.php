@@ -259,6 +259,9 @@
                 if (res.status == 200) {
                     $('.modalCloseBtn').click();
                     toastr["success"]("Personel bilgisi başarıyla güncellendi.", "İşlem Başarılı");
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
                 }
             }).catch((err) => {
                 let errMsj = `

@@ -160,7 +160,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     function modalShowReminder(test) {
         axios.get("reminder/notifications").then(res => {
             console.log("res", res);
-
+            $('#reminder-form p').remove();
             if (res.data.length === 0) {
                 $("#reminder-form").append("<p>Aktif hatırlatıcı bulunmamakta</p>")
             } else {

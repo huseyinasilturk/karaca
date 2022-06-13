@@ -76,7 +76,7 @@
                                     </div>
                                     <div class="item-meta text-center">
                                         <span class="btn btn-danger btn-sm p-0" onclick="productImageDelete(this)"
-                                            dataID="1"><i class="fa-solid fa-trash p-1"></i></span>
+                                            dataID="{{$probj->id}}"><i class="fa-solid fa-trash p-1"></i></span>
                                     </div>
                                 </a>
                             </div>
