@@ -54,7 +54,8 @@
                                             @else
                                                 <div class="swiper-slide">
                                                     <img class="img-fluid  pt-1" style="max-height: 95px"
-                                                        src="{{ asset('images/banner/banner-14.jpg') }}" alt="banner" />
+                                                        src="{{ asset('images/banner/banner-14.jpg') }}"
+                                                        alt="banner" />
                                                 </div>
                                             @endif
                                         </div>
@@ -132,6 +133,14 @@
                                     </table>
                                     <hr />
                                     <ul class="list-unstyled">
+                                        <div class="col-md-12 mb-1 text-center">
+                                            <label class="form-label" for="select2-basic">Satış Tipi Seçin</label>
+                                            <select class="select2 form-select" name="sales_id">
+                                                @foreach ($SalesType as $sales)
+                                                    <option value="{{ $sales->id }}"> {{ $sales->text1 }} </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                         <li class="price-detail">
                                             <div class="detail-title detail-total">Toplam</div>
                                             <div class="detail-amt fw-bolder">0₺</div>
@@ -172,31 +181,39 @@
 
             $("#satisYap").on('submit', function(e) {
                 e.preventDefault();
+                customerid = $('select[name="costumer_id"]').val();
+                salesid = $('select[name="sales_id"]').val();
+                if (customerid == null) {
+                    toastr["error"]("Müşteri seçilmeden satış yapılamaz.", "Satış Başarısız");
+                } else if (salesid == null) {
+                    toastr["error"]("Satış tipi seçilmeden satış yapılamaz.", "Satış Başarısız");
+                } else {
+                    axios.post(route("sellstock.store"), new FormData(this)).then((res) => {
 
-                axios.post(route("sellstock.store"), new FormData(this)).then((res) => {
+                        if (res.data.stockLimit.length) {
+                            let message = " ";
+                            let id = [];
+                            let companyId = {{ auth()->user()->company_id }};
+                            res.data.stockLimit.map((value, key) => {
+                                message += "-> " + value["c_name"] + " bayisinde " + value[
+                                        "name"] + " ürününden " + value["amount"] +
+                                    " adet kaldı.<br> \n";
+                                id.push({
+                                    id: value["id"],
+                                    adet: value["amount"]
+                                });
+                            })
 
-                    if (res.data.stockLimit.length) {
-                        let message = " ";
-                        let id = [];
-                        let companyId = {{ auth()->user()->company_id }};
-                        res.data.stockLimit.map((value, key) => {
-                            message += "-> " + value["c_name"] + " bayisinde " + value[
-                                    "name"] + " ürününden " + value["amount"] +
-                                " adet kaldı.<br> \n";
-                            id.push({
-                                id: value["id"],
-                                adet: value["amount"]
-                            });
-                        })
+                            socket.emit('sendToStockServer', message, id, companyId);
+                        }
+                        if (res.data.success == '202') {
+                            $('#sellstock tr').remove();
+                            productPriceSum();
+                            toastr["success"]("Sepetteki ürünler satıldı.", "Satış Başarılı");
+                        }
+                    });
+                }
 
-                        socket.emit('sendToStockServer', message, id, companyId);
-                    }
-                    if (res.data.success == '202') {
-                        $('#sellstock tr').remove();
-                        productPriceSum();
-                        toastr["success"]("Sepetteki ürünler satıldı.", "Satış Başarılı");
-                    }
-                });
             })
         });
 

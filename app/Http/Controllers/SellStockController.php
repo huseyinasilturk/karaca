@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\IncomeStatement;
+use App\Models\Objective;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\StockLimit;
@@ -22,6 +23,7 @@ class SellStockController extends Controller
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Stok"], ['name' => "Satış"]
         ];
+        $SalesType = Objective::where("name", "=", "salesType")->get();
 
         // $stocks = DB::select("SELECT COALESCE(SUM(stocks.amount),0) AS stock, products.* FROM products LEFT JOIN stocks ON products.id = stocks.product_id  GROUP BY stocks.product_id")
 
@@ -42,7 +44,7 @@ class SellStockController extends Controller
         // return $stocks;
         // return  DB::getQueryLog();
 
-        return view("live.sellStock.index", compact("stocks", "breadcrumbs", "customer"));
+        return view("live.sellStock.index", compact("stocks", "breadcrumbs", "customer", "SalesType"));
     }
 
     /**
@@ -92,6 +94,7 @@ class SellStockController extends Controller
                 "detail"    => "Ürün Satış İşlemi",
                 "company_id" => auth()->user()->company_id,
                 "customer_id" => (!empty($request->costumer_id) ? $request->costumer_id : 0),
+                "sales_id" => (!empty($request->sales_id) ? $request->sales_id : 0),
                 "sell_person_id" => auth()->user()->id
             ]);
         }
