@@ -21,6 +21,7 @@ class CreateIncomeStatementsTable extends Migration
             $table->string("detail");
             $table->integer("company_id");
             $table->integer("customer_id");
+            $table->integer("sales_id");
             $table->integer("sell_person_id")->default(0);
             $table->timestamps();
         });

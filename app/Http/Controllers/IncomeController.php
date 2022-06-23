@@ -17,15 +17,15 @@ class IncomeController extends Controller
      */
     public function index()
     {
-        if(!auth()->user()->can("expense.read")) {
+        if (!auth()->user()->can("expense.read")) {
             return redirect("/");
         }
 
 
-        $income = IncomeStatement::select(["income_statements.*","users.user_name", "products.name", "customers.id as customer_id", "customers.name as customer_name"])
-        ->leftjoin("products", "products.id", "=", "income_statements.product_id")->leftjoin("customers", "customers.id", "=", "income_statements.customer_id")
-        ->leftJoin("users","users.id","=","income_statements.sell_person_id")
-        ->where("income_statements.company_id", "=", auth()->user()->company_id)->get();
+        $income = IncomeStatement::select(["income_statements.*", "users.user_name", "products.name", "customers.id as customer_id", "customers.name as customer_name"])
+            ->leftjoin("products", "products.id", "=", "income_statements.product_id")->leftjoin("customers", "customers.id", "=", "income_statements.customer_id")
+            ->leftJoin("users", "users.id", "=", "income_statements.sell_person_id")
+            ->where("income_statements.company_id", "=", auth()->user()->company_id)->get();
         $customer = Customer::all();
 
         $totalSum = DB::select("SELECT MONTH(created_at) AS mouth, YEAR(created_at) AS YEAR, SUM(income_statements.price * income_statements.amount) AS totalSum
@@ -46,10 +46,10 @@ class IncomeController extends Controller
 
         $incomeFilter = IncomeStatement::query();
 
-        $incomeFilter = $incomeFilter->select(["income_statements.*","users.user_name", "products.name", "customers.id as customer_id", "customers.name as customer_name"])
-        ->leftjoin("products", "products.id", "=", "income_statements.product_id")->leftjoin("customers", "customers.id", "=", "income_statements.customer_id")
-        ->leftJoin("users","users.id","=","income_statements.sell_person_id")
-        ->where("income_statements.company_id", "=", auth()->user()->company_id);
+        $incomeFilter = $incomeFilter->select(["income_statements.*", "users.user_name", "products.name", "customers.id as customer_id", "customers.name as customer_name"])
+            ->leftjoin("products", "products.id", "=", "income_statements.product_id")->leftjoin("customers", "customers.id", "=", "income_statements.customer_id")
+            ->leftJoin("users", "users.id", "=", "income_statements.sell_person_id")
+            ->where("income_statements.company_id", "=", auth()->user()->company_id);
 
         if ($request->customer != -2) {
             $incomeFilter->where("income_statements.customer_id", "=", $request->customer);
@@ -64,7 +64,7 @@ class IncomeController extends Controller
             $incomeFilter->where("income_statements.created_at", "like", "%-" . $request->day . "%");
         }
 
-        return response()->json(["income" => $incomeFilter->get(),"query"=>DB::getQueryLog(),"req"=>$request->all()]);
+        return response()->json(["income" => $incomeFilter->get(), "query" => DB::getQueryLog(), "req" => $request->all()]);
     }
 
     public function select(Request $request)
@@ -112,6 +112,7 @@ class IncomeController extends Controller
             "amount" =>    1,
             "detail" => $request->detail,
             "customer_id" => $request->costumer,
+            // "sales_id" => $request->sales_id,
             "company_id" => auth()->user()->company_id
         ]);
 
