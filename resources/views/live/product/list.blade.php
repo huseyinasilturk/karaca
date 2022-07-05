@@ -144,14 +144,24 @@
                 {
                     targets: 4,
                     render: function(data, type, full, meta) {
-                        return `<div class="btn-tooltip">
-                                <a href="/product/edit/${full['id']}" class="btn bg-transparent p-0">${feather.icons["edit-2"].toSvg({
+
+                        let elements = "<div class='btn-tooltip'>";
+
+                        if ("{{ auth()->user()->can('product.update') }}" === "1") {
+                            elements += ` <a href="/product/edit/${full['id']}" class="btn bg-transparent p-0">${feather.icons["edit-2"].toSvg({
                                 class: "font-small-4 text-primary",
-                            })}</a>
-                            <button class="btn bg-transparent p-0" onclick="productDelete(this,${full["id"]})">${feather.icons["trash"].toSvg({
+                            })}</a>`
+                        }
+
+                        if ("{{ auth()->user()->can('product.delete') }}" === "1") {
+                            elements += `  <button class="btn bg-transparent p-0" onclick="productDelete(this,${full["id"]})">${feather.icons["trash"].toSvg({
                                 class: "font-small-4 text-danger",
-                            })}</button>
-                            </div>`;
+                            })}</button>`
+                        }
+
+                        elements += '</div>'
+
+                        return elements;
                     }
                 }
             ],

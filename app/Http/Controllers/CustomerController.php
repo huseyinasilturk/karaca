@@ -11,6 +11,9 @@ class CustomerController extends Controller
 {
     public function index()
     {
+        if (!auth()->user()->can("customer.read")) {
+            return back();
+        }
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Müşteriler"], ['name' => "Listele"]
         ];
@@ -22,6 +25,9 @@ class CustomerController extends Controller
 
     public function add()
     {
+        if (!auth()->user()->can("customer.add")) {
+            return back();
+        }
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Müşteriler"], ['name' => "Ekle"]
         ];
@@ -65,6 +71,9 @@ class CustomerController extends Controller
 
     public function edit($id)
     {
+        if (!auth()->user()->can("customer.update")) {
+            return back();
+        }
 
         $customer = Customer::find($id);
 

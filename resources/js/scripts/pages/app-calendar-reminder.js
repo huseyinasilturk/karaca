@@ -29,6 +29,8 @@ $(document).on("click", ".body-content-overlay", function (e) {
     $(".app-calendar-sidebar, .body-content-overlay").removeClass("show");
 });
 
+console.log("{{auth()->user()}}")
+
 document.addEventListener("DOMContentLoaded", function () {
     var calendarEl = document.getElementById("calendar"),
         eventToUpdate,
@@ -159,72 +161,86 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Event click function
     function eventClick(info) {
-        eventToUpdate = info.event;
-        if (eventToUpdate.url) {
-            info.jsEvent.preventDefault();
-            //window.open(eventToUpdate.url, '_blank');
+        if ("{{ auth()->user()->can('reminder.update') }}" === "1" || "{{ auth()->user()->can('reminder.delete') }}" === "1") {
+            eventToUpdate = info.event;
+            if (eventToUpdate.url) {
+                info.jsEvent.preventDefault();
+                //window.open(eventToUpdate.url, '_blank');
+            }
+
+            sidebar.modal("show");
+            addEventBtn.addClass("d-none");
+            cancelBtn.addClass("d-none");
+            updateEventBtn.removeClass("d-none");
+            btnDeleteEvent.removeClass("d-none");
+
+            eventTitle.val(eventToUpdate.title);
+            startDate.val(
+                new Date(eventToUpdate.extendedProps.date).toLocaleString()
+            );
+            status.val(eventToUpdate.extendedProps.status);
+            eventToUpdate.extendedProps.status === "1"
+                ? status.prop("checked", true)
+                : status.prop("checked", false);
+
+            // startDate.setDate(eventToUpdate.extendedProps.date, true, "Y-m-d");
+            // start.setDate(eventToUpdate.start, true, "Y-m-d");
+            eventToUpdate.allDay === true
+                ? allDaySwitch.prop("checked", true)
+                : allDaySwitch.prop("checked", false);
+            // eventToUpdate.end !== null
+            // ? end.setDate(eventToUpdate.end, true, "Y-m-d")
+            // : end.setDate(eventToUpdate.start, true, "Y-m-d");
+            sidebar
+                .find(eventLabel)
+                .val(eventToUpdate.extendedProps.calendar)
+                .trigger("change");
+            eventToUpdate.extendedProps.location !== undefined
+                ? eventLocation.val(eventToUpdate.extendedProps.location)
+                : null;
+            calendarEditor.val(eventToUpdate.extendedProps.detail);
+
+            if ("{{ auth()->user()->can('reminder.delete') }}" === "1") {
+                //  Delete Event
+                btnDeleteEvent.on("click", function () {
+                    var eventData2 = {
+                        id: eventToUpdate.id,
+                    };
+                    $.ajax({
+                        url: route("reminder.delete"),
+                        method: "POST",
+                        data: eventData2,
+                        success: (res) => {
+                            if (res.status === 201) {
+                                removeEvent(eventToUpdate.id);
+                                eventToUpdate.remove();
+                                sidebar.modal("hide");
+                                $(".event-sidebar").removeClass("show");
+                                $(".app-calendar .body-content-overlay").removeClass(
+                                    "show"
+                                );
+                                Swal.fire(
+                                    "Başarılı!",
+                                    "Belirtilen tarihteki hatırlatıcı silindi.",
+                                    "success"
+                                );
+                            } else {
+                            }
+                        },
+                    });
+                });
+            }
+        } else {
+            toastr["error"](
+                "Hatırlatıcı güncelleme veya silme yetkiniz bulunmamakta",
+                "Hata!", {
+                closeButton: true,
+                tapToDismiss: true,
+                timeOut: 2000,
+                progressBar: true
+            }
+            );
         }
-
-        sidebar.modal("show");
-        addEventBtn.addClass("d-none");
-        cancelBtn.addClass("d-none");
-        updateEventBtn.removeClass("d-none");
-        btnDeleteEvent.removeClass("d-none");
-
-        eventTitle.val(eventToUpdate.title);
-        startDate.val(
-            new Date(eventToUpdate.extendedProps.date).toLocaleString()
-        );
-        status.val(eventToUpdate.extendedProps.status);
-        eventToUpdate.extendedProps.status === "1"
-            ? status.prop("checked", true)
-            : status.prop("checked", false);
-
-        // startDate.setDate(eventToUpdate.extendedProps.date, true, "Y-m-d");
-        // start.setDate(eventToUpdate.start, true, "Y-m-d");
-        eventToUpdate.allDay === true
-            ? allDaySwitch.prop("checked", true)
-            : allDaySwitch.prop("checked", false);
-        // eventToUpdate.end !== null
-        // ? end.setDate(eventToUpdate.end, true, "Y-m-d")
-        // : end.setDate(eventToUpdate.start, true, "Y-m-d");
-        sidebar
-            .find(eventLabel)
-            .val(eventToUpdate.extendedProps.calendar)
-            .trigger("change");
-        eventToUpdate.extendedProps.location !== undefined
-            ? eventLocation.val(eventToUpdate.extendedProps.location)
-            : null;
-        calendarEditor.val(eventToUpdate.extendedProps.detail);
-
-        //  Delete Event
-        btnDeleteEvent.on("click", function () {
-            var eventData2 = {
-                id: eventToUpdate.id,
-            };
-            $.ajax({
-                url: route("reminder.delete"),
-                method: "POST",
-                data: eventData2,
-                success: (res) => {
-                    if (res.status === 201) {
-                        removeEvent(eventToUpdate.id);
-                        eventToUpdate.remove();
-                        sidebar.modal("hide");
-                        $(".event-sidebar").removeClass("show");
-                        $(".app-calendar .body-content-overlay").removeClass(
-                            "show"
-                        );
-                        Swal.fire(
-                            "Başarılı!",
-                            "Belirtilen tarihteki hatırlatıcı silindi.",
-                            "success"
-                        );
-                    } else {
-                    }
-                },
-            });
-        });
     }
 
     // Modify sidebar toggler
@@ -320,13 +336,26 @@ document.addEventListener("DOMContentLoaded", function () {
             ];
         },
         dateClick: function (info) {
-            var date = moment(info.date).format("YYYY-MM-DD");
-            resetValues();
-            sidebar.modal("show");
-            addEventBtn.removeClass("d-none");
-            updateEventBtn.addClass("d-none");
-            btnDeleteEvent.addClass("d-none");
-            startDate.val(date);
+            if ("{{ auth()->user()->can('reminder.add') }}" === "1") {
+                var date = moment(info.date).format("YYYY-MM-DD");
+                resetValues();
+                sidebar.modal("show");
+                addEventBtn.removeClass("d-none");
+                updateEventBtn.addClass("d-none");
+                btnDeleteEvent.addClass("d-none");
+                startDate.val(date);
+            } else {
+                toastr["error"](
+                    "Hatırlatıcı ekleme yetkiniz bulunmamakta",
+                    "Hata!", {
+                    closeButton: true,
+                    tapToDismiss: true,
+                    timeOut: 2000,
+                    progressBar: true
+                }
+                );
+            }
+
         },
         eventClick: function (info) {
             eventClick(info);
@@ -595,7 +624,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (filterInput.length) {
         filterInput.on("change", function () {
             $(".input-filter:checked").length <
-            calEventFilter.find("input").length
+                calEventFilter.find("input").length
                 ? selectAll.prop("checked", false)
                 : selectAll.prop("checked", true);
             calendar.refetchEvents();

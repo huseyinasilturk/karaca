@@ -17,6 +17,10 @@ class ObjectiveController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->can("objective.read")) {
+            return back();
+        }
+
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Nesneler"], ['name' => "Nesneler"]
         ];

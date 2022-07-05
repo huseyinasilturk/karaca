@@ -15,6 +15,10 @@ class StockController extends Controller
 {
     public function index()
     {
+        if (!auth()->user()->can("stock.add")) {
+            return back();
+        }
+
         $pageConfigs = [
             'contentLayout' => "content-detached-left-sidebar",
             'pageClass' => 'ecommerce-application',

@@ -12,6 +12,10 @@ class DayOffController extends Controller
 
     public function index()
     {
+        if (!auth()->user()->can("dayoff.read")) {
+            return back();
+        }
+
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "İzinler"], ['name' => "Listele"]
         ];
@@ -22,6 +26,11 @@ class DayOffController extends Controller
 
     public function create()
     {
+
+        if (!auth()->user()->can("dayoff.add")) {
+            return back();
+        }
+
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "İzinler"], ['name' => "Ekle"]
         ];
@@ -64,6 +73,11 @@ class DayOffController extends Controller
 
     public function edit($id)
     {
+
+        if (!auth()->user()->can("dayoff.update")) {
+            return back();
+        }
+
         $dayOff = DayOff::find($id);
 
         $personals = User::with("information")->get();

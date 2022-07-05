@@ -16,6 +16,10 @@ class ProductController extends Controller
 {
     public function index()
     {
+        if (!auth()->user()->can("product.read")) {
+            return back();
+        }
+
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Ürün"], ['name' => "Listeleme"]
         ];
@@ -33,6 +37,10 @@ class ProductController extends Controller
 
     public function create()
     {
+        if (!auth()->user()->can("product.add")) {
+            return back();
+        }
+
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Ürün"], ['name' => "Ekle"]
         ];
@@ -81,6 +89,10 @@ class ProductController extends Controller
 
     public function edit($id)
     {
+        if (!auth()->user()->can("stock.update")) {
+            return back();
+        }
+
         $Product = Product::whereId($id)->with('productFileData', 'productCompanyGetAll')->first();
         $Product->productCompanyGetAll = $Product->productCompanyGetAll->keyBy('company_id');
         $ProductTypeObjectives = Objective::whereName("productType")->get();

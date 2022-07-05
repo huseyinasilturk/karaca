@@ -17,6 +17,9 @@ class ReminderController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->can("reminder.read")) {
+            return back();
+        }
         return view('live.reminder.list');
     }
 
@@ -37,15 +40,14 @@ class ReminderController extends Controller
     {
 
         if (!empty($request->year)) {
-         $newData = [];
-         $data = $request->only("title", "detail", "status");
-         $newDate = Carbon::parse($request->date);
-        for ($i=0; $i < 12; $i++) {
-            array_push($newData, array_merge( $data ,["date"=>$newDate,"created_at"=>Carbon::now() ] ) );
-            $newDate = Carbon::parse($newDate )->addMonth();
-
-        }
-           $reminder = Reminder::insert($newData);
+            $newData = [];
+            $data = $request->only("title", "detail", "status");
+            $newDate = Carbon::parse($request->date);
+            for ($i = 0; $i < 12; $i++) {
+                array_push($newData, array_merge($data, ["date" => $newDate, "created_at" => Carbon::now()]));
+                $newDate = Carbon::parse($newDate)->addMonth();
+            }
+            $reminder = Reminder::insert($newData);
             if ($reminder) {
                 return response()->json([
                     'status' => 201,
@@ -54,7 +56,7 @@ class ReminderController extends Controller
                 ]);
             }
         }
-        $data = $request->only("title", "detail", "status","date");
+        $data = $request->only("title", "detail", "status", "date");
 
         $reminder = Reminder::create($data);
         if ($reminder) {

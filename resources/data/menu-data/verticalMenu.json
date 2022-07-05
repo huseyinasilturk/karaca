@@ -73,19 +73,22 @@
                     "url": "stock/",
                     "name": "Stoğa Ekle",
                     "icon": "plus",
-                    "slug": "stock.index"
+                    "slug": "stock.index",
+                    "permission": "stock.add"
                 },
                 {
                     "url": "sellstock/",
                     "name": "Satış",
                     "icon": "shopping-bag",
-                    "slug": "sellstock.index"
+                    "slug": "sellstock.index",
+                    "permission": "stock.sell"
                 },
                 {
                     "url": "stockTransfer/",
                     "name": "Stok Aktar",
                     "icon": "shopping-bag",
-                    "slug": "stockTransfer.index"
+                    "slug": "stockTransfer.index",
+                    "permission": "stock.transfer"
                 },
                 {
                     "url": "stock-limit",
@@ -97,13 +100,15 @@
                             "url": "stock-limit/",
                             "name": "Limitler",
                             "icon": "list",
-                            "slug": "stockLimit.index"
+                            "slug": "stockLimit.index",
+                            "permission": "stockLimit.read"
                         },
                         {
                             "url": "stock-limit/add",
                             "name": "Limit Ekle",
                             "icon": "plus",
-                            "slug": "stockLimit.add"
+                            "slug": "stockLimit.add",
+                            "permission": "stockLimit.add"
                         }
                     ]
                 }
@@ -114,18 +119,21 @@
             "name": "Ürünler",
             "icon": "shopping-cart",
             "slug": "",
+            "permission": "product.read",
             "submenu": [
                 {
                     "url": "product/",
                     "name": "Ürün Listele",
                     "icon": "list",
-                    "slug": "product.index"
+                    "slug": "product.index",
+                    "permission": "product.read"
                 },
                 {
                     "url": "product/add",
                     "name": "Ürün Ekle",
                     "icon": "plus",
-                    "slug": "product.create"
+                    "slug": "product.create",
+                    "permission": "product.add"
                 }
             ]
         },
@@ -134,18 +142,21 @@
             "name": "İzin",
             "icon": "minimize",
             "slug": "#",
+            "permission": "dayoff.read",
             "submenu": [
                 {
                     "url": "dayoff/",
                     "name": "İzin Listele",
                     "icon": "list",
-                    "slug": "dayoff.index"
+                    "slug": "dayoff.index",
+                    "permission": "dayoff.read"
                 },
                 {
                     "url": "dayoff/add",
                     "name": "İzin Ekle",
                     "icon": "plus",
-                    "slug": "dayoff.add"
+                    "slug": "dayoff.add",
+                    "permission": "dayoff.add"
                 }
             ]
         },
@@ -154,27 +165,30 @@
             "name": "Müşteri",
             "icon": "users",
             "slug": "#",
+            "permission": "customer.read",
             "submenu": [
                 {
                     "url": "customer/",
                     "name": "Müşteri Listele",
                     "icon": "list",
-                    "slug": "customer.index"
+                    "slug": "customer.index",
+                    "permission": "customer.read"
                 },
                 {
                     "url": "customer/add",
                     "name": "Müşteri Ekle",
                     "icon": "plus",
-                    "slug": "customer.add"
+                    "slug": "customer.add",
+                    "permission": "customer.add"
                 }
             ]
         },
-
         {
             "url": "reminder",
             "name": "Hatırlatıcı",
             "icon": "calendar",
-            "slug": "reminder.index"
+            "slug": "reminder.index",
+            "permission": "reminder.read"
         },
         {
             "navheader": "Araçlar",
@@ -190,7 +204,8 @@
             "url": "objective",
             "name": "Nesneler",
             "icon": "command",
-            "slug": "objective.index"
+            "slug": "objective.index",
+            "permission": "objective.read"
         },
         {
             "url": "/activity",
