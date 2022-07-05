@@ -197,8 +197,8 @@
                         <div class="modal-body">
                             <label style="margin-bottom: 5px">Ürün Miktarı</label>
                             <div class="mb-1">
-                                <input type="number" placeholder="Ürün Miktarı" oninput="onAmountChange(this)" name="amount"
-                                    autocomplete="off" class="form-control" />
+                                <input type="number" placeholder="Ürün Miktarı" oninput="onAmountChange(this)"
+                                    name="amount" autocomplete="off" class="form-control" />
                             </div>
 
                             <label style="margin-bottom: 5px">Alış Fiyatı</label>

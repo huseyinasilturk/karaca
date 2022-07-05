@@ -19,6 +19,11 @@ class SellStockController extends Controller
      */
     public function index()
     {
+
+        if (!auth()->user()->can("stock.sell")) {
+            return back();
+        }
+
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Stok"], ['name' => "Satış"]
         ];

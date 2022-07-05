@@ -16,6 +16,10 @@ class StockTransfer extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->can("stock.transfer")) {
+            return back();
+        }
+
         $companies = Company::all();
         return view("live.stockTransfer.index", compact("companies"));
     }

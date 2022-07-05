@@ -12,6 +12,10 @@ class StockLimitController extends Controller
 {
     public function index()
     {
+        if (!auth()->user()->can("stockLimit.read")) {
+            return back();
+        }
+
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Stok Limiti"], ['name' => "Listele"]
         ];
@@ -21,6 +25,10 @@ class StockLimitController extends Controller
 
     public function add()
     {
+        if (!auth()->user()->can("stockLimit.add")) {
+            return back();
+        }
+
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Stok Limiti"], ['name' => "Ekle"]
         ];
@@ -49,6 +57,9 @@ class StockLimitController extends Controller
 
     public function edit($id)
     {
+        if (!auth()->user()->can("stockLimit.update")) {
+            return back();
+        }
         $breadcrumbs = [
             ['link' => "/", 'name' => "Anasayfa"], ['link' => "javascript:void(0)", 'name' => "Stok Limiti"], ['name' => "Güncelle"]
         ];

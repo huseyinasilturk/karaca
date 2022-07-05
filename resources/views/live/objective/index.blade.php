@@ -35,7 +35,8 @@
                                 {{ $objective['name'] }}
                             </a>
                         </h2>
-                        <div data-parent="#{{ $key }}" id="{{ $key }}" class="accordion-collapse collapse">
+                        <div data-parent="#{{ $key }}" id="{{ $key }}"
+                            class="accordion-collapse collapse">
                             <div class="accordion-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped">
@@ -95,12 +96,14 @@
                                             @if (Str::startsWith($inputKey, 'number'))
                                                 <div class="form-group">
                                                     <input class="form-control objective-input" name="{{ $inputKey }}"
-                                                        type="number" placeholder="{{ $input }}" autocomplete="off">
+                                                        type="number" placeholder="{{ $input }}"
+                                                        autocomplete="off">
                                                 </div>
                                             @elseif (Str::startsWith($inputKey, 'text'))
                                                 <div class="form-group">
                                                     <input class="form-control objective-input" name="{{ $inputKey }}"
-                                                        type="text" placeholder="{{ $input }}" autocomplete="off">
+                                                        type="text" placeholder="{{ $input }}"
+                                                        autocomplete="off">
                                                 </div>
                                             @endif
                                         @endforeach

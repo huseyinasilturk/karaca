@@ -32,18 +32,6 @@ class RolePermissionSeeder extends Seeder
             $this->getPermissionArr("company.update", "Firma Güncelle"),
             $this->getPermissionArr("company.delete", "Firma Sil"),
 
-            // Ürün yetkileri
-            $this->getPermissionArr("product.add", "Ürün Ekle"),
-            $this->getPermissionArr("product.read", "Ürün Oku"),
-            $this->getPermissionArr("product.update", "Ürün Güncelle"),
-            $this->getPermissionArr("product.delete", "Ürün Sil"),
-
-            // Nesne yetkileri
-            $this->getPermissionArr("objective.add", "Nesne Ekle"),
-            $this->getPermissionArr("objective.read", "Nesne Oku"),
-            $this->getPermissionArr("objective.update", "Nesne Güncelle"),
-            $this->getPermissionArr("objective.delete", "Nesne Sil"),
-
             // Personel yetkileri
             $this->getPermissionArr("person.add", "Kullanıcı Ekle"),
             $this->getPermissionArr("person.read", "Kullanıcı Oku"),
@@ -58,6 +46,43 @@ class RolePermissionSeeder extends Seeder
             $this->getPermissionArr("income.read", "Gelir Oku"),
             $this->getPermissionArr("income.delete", "Gelir Sil"),
 
+            // Stok yetkileri
+            $this->getPermissionArr("stock.add", "Stok Ekle"),
+            $this->getPermissionArr("stock.sell", "Satış"),
+            $this->getPermissionArr("stock.transfer", "Stok Aktar"),
+            $this->getPermissionArr("stockLimit.read", "Stok Limiti Oku"),
+            $this->getPermissionArr("stockLimit.add", "Stok Limiti Ekle"),
+            $this->getPermissionArr("stockLimit.update", "Stok Limiti Güncelle"),
+            $this->getPermissionArr("stockLimit.delete", "Stok Limiti Sil"),
+
+            // Ürün yetkileri
+            $this->getPermissionArr("product.read", "Ürün Oku"),
+            $this->getPermissionArr("product.add", "Ürün Ekle"),
+            $this->getPermissionArr("product.update", "Ürün Güncelle"),
+            $this->getPermissionArr("product.delete", "Ürün Sil"),
+
+            // İzin yetkileri
+            $this->getPermissionArr("dayoff.read", "İzin Oku"),
+            $this->getPermissionArr("dayoff.add", "İzin Ekle"),
+            $this->getPermissionArr("dayoff.update", "İzin Güncelle"),
+            $this->getPermissionArr("dayoff.delete", "İzin Sil"),
+
+            // Müşteri yetkileri
+            $this->getPermissionArr("customer.read", "Müşteri Oku"),
+            $this->getPermissionArr("customer.add", "Müşteri Ekle"),
+            $this->getPermissionArr("customer.update", "Müşteri Güncelle"),
+            $this->getPermissionArr("customer.delete", "Müşteri Sil"),
+
+            // Müşteri yetkileri
+            $this->getPermissionArr("reminder.read", "Hatırlatıcı Oku"),
+            $this->getPermissionArr("reminder.add", "Hatırlatıcı Ekle"),
+            $this->getPermissionArr("reminder.update", "Hatırlatıcı Güncelle"),
+            $this->getPermissionArr("reminder.delete", "Hatırlatıcı Sil"),
+
+            // Nesne yetkileri
+            $this->getPermissionArr("objective.read", "Nesne Oku"),
+
+
         ];
 
         $roles = [
@@ -69,7 +94,7 @@ class RolePermissionSeeder extends Seeder
                 "permissions" => [
                     "company.add", "company.read", "company.update", "company.delete",
                     "product.add", "product.read", "product.update", "product.delete",
-                    "objective.add", "objective.read", "objective.update", "objective.delete",
+                    "objective.read"
                 ]
             ],
             // Garson rolü
@@ -89,7 +114,7 @@ class RolePermissionSeeder extends Seeder
                 "permissions" => [
                     "company.add", "company.read", "company.update", "company.delete",
                     "product.add", "product.read", "product.update", "product.delete",
-                    "objective.add", "objective.read", "objective.update", "objective.delete",
+                    "objective.read"
                 ]
             ]
         ];
