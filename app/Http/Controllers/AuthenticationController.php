@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Objective;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Validator;
@@ -37,10 +38,9 @@ class AuthenticationController extends Controller
         return response()->json(['message' => 'Giriş Başarılı', "status" => 200]);
     }
 
-    public function login()
+    public function login(Request $request)
     {
         $pageConfigs = ['blankPage' => true];
-
         return view('/live/authentication/login', ['pageConfigs' => $pageConfigs]);
     }
 
