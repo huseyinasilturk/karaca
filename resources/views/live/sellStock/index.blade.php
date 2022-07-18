@@ -175,7 +175,7 @@
 
     <script>
         $(function() {
-            let ip_address = 'http://93.113.61.118';
+            let ip_address = 'http://denizlikaracapastanesi.com';
             let socket_port = '9699';
             let socket = io(ip_address + ':' + socket_port);
 
