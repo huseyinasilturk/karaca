@@ -24,7 +24,7 @@ class VeresiyeController extends Controller
         $musteriler = Customer::all();
         $totalSum = DB::select("SELECT MONTH(expense_date) AS mouth, YEAR(expense_date) AS YEAR, SUM(expense_statements.price) AS totalSum
         FROM expense_statements
-        WHERE YEAR(expense_date) = YEAR(DATE(NOW())) AND company_id =  " . auth()->user()->company_id);
+        WHERE YEAR(expense_date) = YEAR(DATE(NOW())) AND 1 = 2 and company_id =  " . auth()->user()->company_id);
 
         $totalSumAy = DB::select("SELECT MONTH(expense_date) AS mouth, YEAR(expense_date) AS YEAR, SUM(expense_statements.price) AS totalSum
         FROM expense_statements
