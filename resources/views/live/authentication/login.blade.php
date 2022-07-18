@@ -19,11 +19,10 @@
         <div class="auth-inner my-2">
             <!-- Login basic -->
             <div class="card mb-0">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <a href="#" class="brand-logo">
-                        <i class="fa-solid fa-cake-candles" style="padding: 4px; font-size: 20px;"></i>
-                        <h2 class="brand-text text-primary">Karaca</h2>
-                    </a>
+                      <img width="90px" src="{{asset("images/unknown.png")}}">
+                     </a>
 
                     <h4 class="card-title mb-1">KARACA YÖNETİM PANELİ</h4>
                     <p class="card-text mb-2">Size atanan kullanıcı adı ve şifre ile giriş yapabilirsiniz</p>

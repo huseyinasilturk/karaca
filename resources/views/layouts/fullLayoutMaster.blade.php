@@ -43,7 +43,7 @@
         <div class="header-navbar-shadow"></div>
 
         <div class="content-wrapper">
-            <div class="content-body">
+            <div class="content-body" style=" background-image: url('{{asset("images/unknown.png")}}')">
 
                 {{-- Include Startkit Content --}}
                 @yield('content')

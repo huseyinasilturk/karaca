@@ -15,7 +15,7 @@
 @endsection
 
 @section('content')
-
+<img src="{{asset('images/unknown.png')}}"/>
 
 @endsection
 

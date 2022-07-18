@@ -14,7 +14,7 @@ data-asset-path="{{ asset('/')}}">
   <!-- BEGIN: Content-->
   <div class="app-content content {{ $configData['pageClass'] }}">
     <!-- BEGIN: Header-->
-    <div class="content-overlay"></div>
+    <div class="content-overlay"  style=" background-image: url('{{asset("images/unknown.png")}}')"></div>
     <div class="header-navbar-shadow"></div>
 
     <div class="content-wrapper {{ $configData['layoutWidth'] === 'boxed' ? 'container-xxl p-0' : '' }}">
@@ -29,7 +29,7 @@ data-asset-path="{{ asset('/')}}">
         </div>
       </div>
       <div class="{{ $configData['contentsidebarClass'] }}">
-        <div class="content-body">
+        <div class="content-body"  style=" background-image: url('{{asset("images/unknown.png")}}')">
           {{-- Include Page Content --}}
           @yield('content')
         </div>

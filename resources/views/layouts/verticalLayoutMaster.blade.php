@@ -16,7 +16,7 @@
     <!-- BEGIN: Content-->
     <div class="app-content content {{ $configData['pageClass'] }}">
         <!-- BEGIN: Header-->
-        <div class="content-overlay"></div>
+        <div class="content-overlay"  style=" background-image: url('{{asset("images/unknown.png")}}')"></div>
         <div class="header-navbar-shadow"></div>
 
         @if ($configData['contentLayout'] !== 'default' && isset($configData['contentLayout']))

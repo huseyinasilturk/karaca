@@ -27,7 +27,7 @@
                 </div>
                 <div class="{{ $configData['contentsidebarClass'] }}">
                     <div class="content-wrapper">
-                        <div class="content-body">
+                        <div class="content-body"  style=" background-image: url('{{asset("images/unknown.png")}}')">
                             {{-- Include Page Content --}}
                             @yield('content')
                         </div>

@@ -30,6 +30,7 @@ use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\ReportingController;
 use App\Http\Controllers\StockLimitController;
 use App\Http\Controllers\StockTransfer;
+use App\Http\Controllers\VeresiyeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -165,7 +166,11 @@ Route::group(['middleware' => ['web', 'activity']], function () {
             Route::post("/", [StockController::class, "store"])->name(".store");
             Route::post("/filter-products", [StockController::class, "filterProducts"])->name(".filterProducts");
         });
-
+    // Stok prefix
+    Route::prefix("veresiye")->name("veresiye")->group(function () {
+        Route::get("/", [VeresiyeController::class, "index"])->name(".index");
+        Route::post("/store", [VeresiyeController::class, "store"])->name(".store");
+    });
         // Müşteri prefix
         Route::prefix("customer")->name("customer")->group(function () {
             Route::get("/", [CustomerController::class, "index"])->name(".index");
