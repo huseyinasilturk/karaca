@@ -50,7 +50,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 @yield('page-script')
 <script>
     $(function() {
-        let ip_address = '93.113.61.118';
+        let ip_address = 'http://denizlikaracapastanesi.com';
         let socket_port = '9699';
         let socket = io(ip_address + ':' + socket_port);
         let handleLocalStorage = $("<div>" + (localStorage.getItem("notification") != null ? localStorage
