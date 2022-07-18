@@ -38,6 +38,12 @@ class ObjectiveController extends Controller
                     'text1' => 'Tip',
                 ],
             ],
+            'veresiyeTipi' => [
+                'name' => 'veresiyeTipi',
+                'inputs' => [
+                    'text1' => 'Tip',
+                ],
+            ],
             'productType' => [
                 'name' => 'Ürün Tipi',
                 'inputs' => [
